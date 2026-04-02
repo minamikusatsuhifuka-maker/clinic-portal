@@ -1,4 +1,6 @@
 "use client"
+import { isFirebaseConfigured } from "@/lib/firebase"
+import { authService } from "@/lib/authService"
 import { useState, useEffect } from "react"
 import { useAppStore } from "@/store/useAppStore"
 import Sidebar from "@/components/Sidebar"
@@ -15,6 +17,8 @@ export interface AppUser {
   name: string
   role: UserRole
   avatar: string
+  photoURL?: string | null
+  email?: string
 }
 
 const TITLES: Record<string, string> = {
@@ -29,6 +33,32 @@ const TITLES: Record<string, string> = {
 
 /* ───── ログイン画面 ───── */
 function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [googleError, setGoogleError] = useState("")
+  const firebaseReady = isFirebaseConfigured()
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true)
+    setGoogleError("")
+    try {
+      const user = await authService.signInWithGoogle()
+      if (user) {
+        onLogin({
+          name: user.displayName,
+          role: user.role,
+          avatar: user.displayName.charAt(0),
+          photoURL: user.photoURL,
+          email: user.email,
+        })
+      } else {
+        setGoogleError("ログインに失敗しました。もう一度お試しください。")
+      }
+    } catch {
+      setGoogleError("エラーが発生しました。")
+    }
+    setGoogleLoading(false)
+  }
+
   return (
     <div style={{
       minHeight: "100vh",
@@ -56,10 +86,42 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
           南草津皮フ科 スタッフポータルへようこそ
         </p>
 
+        {/* Googleログイン（Firebase設定済み時） */}
+        {firebaseReady && (
+          <div style={{ marginBottom: 20 }}>
+            <button
+              onClick={handleGoogleLogin}
+              disabled={googleLoading}
+              style={{
+                width: "100%", display: "flex", alignItems: "center",
+                justifyContent: "center", gap: 10, padding: "13px 20px",
+                borderRadius: 14, border: "1px solid rgba(124,101,204,0.22)",
+                background: "#fff", fontSize: 14, fontWeight: 600,
+                color: "#3a2f5a", cursor: "pointer", marginBottom: 8,
+                boxShadow: "0 2px 8px rgba(90,60,160,0.07)",
+                opacity: googleLoading ? 0.7 : 1,
+              }}>
+              {googleLoading ? (
+                <span style={{ fontSize: 16 }}>⏳</span>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 48 48">
+                  <path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 29.8 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.5 20-21 0-1.3-.2-2.7-.5-4z"/>
+                </svg>
+              )}
+              {googleLoading ? "ログイン中..." : "Googleアカウントでログイン"}
+            </button>
+            {googleError && (
+              <p style={{ fontSize: 12, color: "#ef4444", textAlign: "center", marginTop: 6 }}>
+                {googleError}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* 区切り */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <div style={{ flex: 1, height: 1, background: "rgba(124,101,204,0.1)" }} />
-          <span style={{ fontSize: 11, color: "#c4bde0" }}>デモモードで体験する</span>
+          <span style={{ fontSize: 11, color: "#c4bde0" }}>{firebaseReady ? "またはデモモードで体験" : "デモモードで体験する"}</span>
           <div style={{ flex: 1, height: 1, background: "rgba(124,101,204,0.1)" }} />
         </div>
 
@@ -254,9 +316,13 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
         <button style={{ ...base, color: "#7a6e96" }}><Bell size={14} style={{ color: "#c4bde0" }} />通知設定</button>
       </nav>
       <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(124,101,204,0.09)", display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
-          {user.avatar}
-        </div>
+        {user.photoURL ? (
+          <img src={user.photoURL} alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+        ) : (
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+            {user.avatar}
+          </div>
+        )}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: "#3a2f5a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
           <div style={{ fontSize: 10, color: "#b0a8c8", marginTop: 1 }}>
