@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { RISKS, type Risk } from "@/data/risks"
 import { useAppStore } from "@/store/useAppStore"
 import { X, Send, ChevronRight, Phone } from "lucide-react"
+import AiAdviceBox from "@/components/AiAdviceBox"
 
 const LEVEL_CLS: Record<string, string> = {
   CRITICAL: "bg-rose-100 text-rose-700 border border-rose-200",
@@ -107,6 +108,8 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
               ))}
             </div>
           </div>
+
+          <AiAdviceBox riskName={risk.name} level={risk.level} />
 
           {/* チェックリスト */}
           <div>

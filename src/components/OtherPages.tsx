@@ -65,6 +65,7 @@ export function NearMissPage() {
         )}
       </AnimatePresence>
 
+      <NearMissAiAnalysis reports={nearMisses} />
       <div className="space-y-3">
         {nearMisses.map((nm, i) => (
           <motion.div key={nm.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
@@ -246,6 +247,56 @@ export function ManualPage() {
           </motion.button>
         ))}
       </div>
+    </div>
+  )
+}
+
+/* ---- ヒヤリハットAI分析ボタン（NearMissPageから呼ぶ用） ---- */
+function NearMissAiAnalysis({ reports }: { reports: Array<{ tag: string; body: string }> }) {
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState("")
+
+  const analyze = async () => {
+    setLoading(true)
+    setResult("")
+    try {
+      const res = await fetch("/api/ai-analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reports }),
+      })
+      const data = await res.json()
+      setResult(data.analysis || "分析に失敗しました。")
+    } catch {
+      setResult("通信エラーが発生しました。")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="bg-gradient-to-br from-violet-50 to-pink-50 border border-violet-200 rounded-2xl p-4 mt-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-400 to-pink-400 flex items-center justify-center">
+            <span className="text-white text-sm">✨</span>
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-violet-800">Gemini AI パターン分析</div>
+            <div className="text-xs text-violet-400">蓄積された事例から改善提案を生成</div>
+          </div>
+        </div>
+        <button onClick={analyze} disabled={loading || reports.length === 0}
+          className="bg-gradient-to-r from-violet-500 to-pink-500 text-white text-xs font-semibold px-3 py-2 rounded-xl hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center gap-1.5">
+          {loading ? "分析中..." : "✨ 分析する"}
+        </button>
+      </div>
+      {result && (
+        <motion.div initial={{ opacity:0, y:4 }} animate={{ opacity:1, y:0 }}
+          className="bg-white/80 rounded-xl p-3 text-xs text-violet-800 leading-relaxed border border-violet-100 whitespace-pre-wrap">
+          {result}
+        </motion.div>
+      )}
     </div>
   )
 }
