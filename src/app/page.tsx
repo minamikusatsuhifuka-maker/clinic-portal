@@ -3,7 +3,8 @@ import { useAppStore } from "@/store/useAppStore"
 import Sidebar from "@/components/Sidebar"
 import HomePage from "@/components/HomePage"
 import RiskPage from "@/components/RiskPage"
-import { NearMissPage, MatrixPage, ConfidencePage, ManualPage } from "@/components/OtherPages"
+import { NearMissPage, MatrixPage, ConfidencePage } from "@/components/OtherPages"
+import ManualPage from "@/components/ManualPage"
 import { AnimatePresence, motion } from "framer-motion"
 
 const TITLES: Record<string,string> = {
