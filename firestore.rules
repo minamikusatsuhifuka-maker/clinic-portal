@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ヒヤリハット：認証ユーザーのみ読み書き可
+    match /nearMisses/{docId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if false;
+    }
+    // チェックリスト：認証ユーザーのみ
+    match /checklists/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    // マネージャーメモ：認証ユーザーのみ
+    match /managerMemos/{docId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

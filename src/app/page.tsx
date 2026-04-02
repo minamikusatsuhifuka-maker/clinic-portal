@@ -5,7 +5,8 @@ import HomePage from "@/components/HomePage"
 import RiskPage from "@/components/RiskPage"
 import ManualPage from "@/components/ManualPage"
 import AdminPage from "@/components/AdminPage"
-import { NearMissPage, MatrixPage, ConfidencePage } from "@/components/OtherPages"
+import { MatrixPage, ConfidencePage } from "@/components/OtherPages"
+import NearMissPage from "@/components/NearMissPage"
 import { AnimatePresence, motion } from "framer-motion"
 
 const TITLES:Record<string,string>={
