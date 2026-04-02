@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "CarePortal | クリニックスタッフポータル",
-  description: "安心・安全・成長のためのクリニック専用スタッフポータル",
+  title: "南草津皮フ科 | スタッフポータル CarePortal",
+  description: "南草津皮フ科のスタッフポータル。リスク管理・マニュアル・ヒヤリハット共有。",
   manifest: "/manifest.json",
 }
 

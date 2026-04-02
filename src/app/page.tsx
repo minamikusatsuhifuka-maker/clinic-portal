@@ -53,7 +53,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
           CarePortal
         </h1>
         <p style={{ fontSize: 13, color: "#b0a8c8", marginBottom: 36, lineHeight: 1.6 }}>
-          クリニックスタッフポータルへようこそ
+          南草津皮フ科 スタッフポータルへようこそ
         </p>
 
         {/* 区切り */}
@@ -217,7 +217,7 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
           <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏥</div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#3a2f5a" }}>CarePortal</div>
-            <div style={{ fontSize: 10, color: "#b0a8c8", marginTop: 1 }}>クリニックポータル</div>
+            <div style={{ fontSize: 10, color: "#b0a8c8", marginTop: 1 }}>南草津皮フ科</div>
           </div>
         </div>
       </div>

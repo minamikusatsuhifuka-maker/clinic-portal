@@ -60,8 +60,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長（最初に連絡）", phone: "090-XXXX-XXXX" },
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長（最初に連絡）", phone: "077-599-1451" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
       { icon: "🚒", name: "消防・救急", phone: "119" },
       { icon: "👮", name: "警察", phone: "110" },
       { icon: "🏛️", name: "市区町村災害対策本部", phone: "XX-XXXX-XXXX" },
@@ -110,8 +110,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長", phone: "090-XXXX-XXXX" },
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長", phone: "077-599-1451" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
       { icon: "🤝", name: "人材派遣会社", phone: "XX-XXXX-XXXX" },
     ],
     checklist: [
@@ -155,8 +155,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長（まず最初に）", phone: "090-XXXX-XXXX" },
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長（まず最初に）", phone: "077-599-1451" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
       { icon: "⚖️", name: "顧問弁護士", phone: "XX-XXXX-XXXX" },
       { icon: "🏛️", name: "保健所", phone: "XX-XXXX-XXXX" },
     ],
@@ -196,8 +196,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
-      { icon: "🏥", name: "院長", phone: "090-XXXX-XXXX" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
+      { icon: "🏥", name: "楠葉院長", phone: "077-599-1451" },
     ],
     checklist: [
       "問題を発見した時点で作業を止めた",
@@ -239,8 +239,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長（5分以内に連絡）", phone: "090-XXXX-XXXX" },
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長（5分以内に連絡）", phone: "077-599-1451" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
       { icon: "⚖️", name: "顧問弁護士", phone: "XX-XXXX-XXXX" },
       { icon: "🏛️", name: "個人情報保護委員会", phone: "03-6457-9849" },
       { icon: "👮", name: "警察（不正アクセスの場合）", phone: "110" },
@@ -286,7 +286,7 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長", phone: "077-599-1451" },
       { icon: "💻", name: "ITサポート会社", phone: "XX-XXXX-XXXX" },
       { icon: "👮", name: "警察サイバー犯罪相談", phone: "#9110" },
       { icon: "🏛️", name: "IPA安心相談窓口", phone: "03-5978-7509" },
@@ -333,8 +333,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "📋", name: "マネージャー（まず相談）", phone: "090-XXXX-XXXX" },
-      { icon: "🏥", name: "院長", phone: "090-XXXX-XXXX" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
+      { icon: "🏥", name: "楠葉院長", phone: "077-599-1451" },
       { icon: "🩺", name: "産業医", phone: "XX-XXXX-XXXX" },
       { icon: "🏛️", name: "労働基準監督署", phone: "XX-XXXX-XXXX" },
       { icon: "💚", name: "こころの健康相談統一ダイヤル", phone: "0570-064-556" },
@@ -376,8 +376,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長", phone: "090-XXXX-XXXX" },
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長", phone: "077-599-1451" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
     ],
     checklist: [
       "患者からの価格・競合に関する声を記録した",
@@ -414,8 +414,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長", phone: "090-XXXX-XXXX" },
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長", phone: "077-599-1451" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
       { icon: "📦", name: "主要仕入れ先", phone: "XX-XXXX-XXXX" },
     ],
     checklist: [
@@ -457,8 +457,8 @@ export const RISKS: Risk[] = [
       },
     ],
     contacts: [
-      { icon: "🏥", name: "院長", phone: "090-XXXX-XXXX" },
-      { icon: "📋", name: "マネージャー", phone: "090-XXXX-XXXX" },
+      { icon: "🏥", name: "楠葉院長", phone: "077-599-1451" },
+      { icon: "📋", name: "マネージャー（後日設定）", phone: "未定" },
       { icon: "⚖️", name: "顧問弁護士", phone: "XX-XXXX-XXXX" },
       { icon: "🏛️", name: "地区医師会", phone: "XX-XXXX-XXXX" },
     ],
