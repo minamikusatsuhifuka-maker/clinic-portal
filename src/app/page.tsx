@@ -1,49 +1,287 @@
 "use client"
+import { useState, useEffect } from "react"
 import { useAppStore } from "@/store/useAppStore"
 import Sidebar from "@/components/Sidebar"
 import HomePage from "@/components/HomePage"
 import RiskPage from "@/components/RiskPage"
 import ManualPage from "@/components/ManualPage"
 import AdminPage from "@/components/AdminPage"
-import { MatrixPage, ConfidencePage } from "@/components/OtherPages"
 import NearMissPage from "@/components/NearMissPage"
+import { MatrixPage, ConfidencePage } from "@/components/OtherPages"
 import { AnimatePresence, motion } from "framer-motion"
 
-const TITLES:Record<string,string>={
-  home:"ダッシュボード", risk:"リスク管理（10項目）", manual:"業務マニュアル",
-  matrix:"役割マトリクス", confidence:"4つの自信", nearmiss:"ヒヤリハット・事例共有",
-  admin:"管理者ダッシュボード",
+export type UserRole = "staff" | "manager" | "admin"
+export interface AppUser {
+  name: string
+  role: UserRole
+  avatar: string
 }
 
-export default function App() {
-  const { activePage }=useAppStore()
+const TITLES: Record<string, string> = {
+  home: "ダッシュボード",
+  risk: "リスク管理（10項目）",
+  manual: "業務マニュアル",
+  matrix: "役割マトリクス",
+  confidence: "4つの自信",
+  nearmiss: "ヒヤリハット・事例共有",
+  admin: "管理者ダッシュボード",
+}
+
+/* ───── ログイン画面 ───── */
+function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
   return (
-    <div style={{display:"flex",height:"100vh",overflow:"hidden",background:"#f8f6fc"}}>
-      <Sidebar/>
-      <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-        <header style={{height:52,background:"#fff",borderBottom:"1px solid rgba(124,101,204,0.1)",display:"flex",alignItems:"center",padding:"0 24px",gap:12,flexShrink:0,boxShadow:"0 1px 3px rgba(90,60,160,0.04)"}}>
-          <h2 style={{fontSize:15,fontWeight:700,color:"#3a2f5a",flex:1}}>{TITLES[activePage]}</h2>
-          <div style={{display:"flex",alignItems:"center",gap:6,background:"#edfbf4",border:"1px solid #86efac",padding:"5px 12px",borderRadius:999,fontSize:11,fontWeight:600,color:"#166534"}}>
-            <span style={{width:6,height:6,borderRadius:"50%",background:"#22c55e",display:"inline-block"}}/>Chatwork 連携中
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #f8f6fc 0%, #fce4ec 100%)",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
+    }}>
+      <div style={{
+        background: "#fff", borderRadius: 28,
+        boxShadow: "0 8px 48px rgba(90,60,160,0.12)",
+        padding: "44px 40px", width: "100%", maxWidth: 400, textAlign: "center",
+      }}>
+        {/* ロゴ */}
+        <div style={{
+          width: 68, height: 68, borderRadius: 20,
+          background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 34, margin: "0 auto 20px",
+          boxShadow: "0 4px 20px rgba(167,139,250,0.4)",
+        }}>🏥</div>
+
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#3a2f5a", marginBottom: 6, letterSpacing: "-0.02em" }}>
+          CarePortal
+        </h1>
+        <p style={{ fontSize: 13, color: "#b0a8c8", marginBottom: 36, lineHeight: 1.6 }}>
+          クリニックスタッフポータルへようこそ
+        </p>
+
+        {/* 区切り */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(124,101,204,0.1)" }} />
+          <span style={{ fontSize: 11, color: "#c4bde0" }}>デモモードで体験する</span>
+          <div style={{ flex: 1, height: 1, background: "rgba(124,101,204,0.1)" }} />
+        </div>
+
+        {/* デモログインボタン */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <button
+            onClick={() => onLogin({ name: "田中 花子", role: "staff", avatar: "田" })}
+            style={{
+              padding: "14px", borderRadius: 16,
+              border: "1px solid rgba(124,101,204,0.2)",
+              background: "#f5f2fd", color: "#5f4ba8",
+              fontSize: 14, fontWeight: 600, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+            }}>
+            <span style={{ fontSize: 20 }}>👩‍⚕️</span>
+            <span>スタッフとしてログイン</span>
+          </button>
+
+          <button
+            onClick={() => onLogin({ name: "山田 マネージャー", role: "manager", avatar: "山" })}
+            style={{
+              padding: "14px", borderRadius: 16,
+              border: "1px solid rgba(251,191,36,0.4)",
+              background: "#fffbeb", color: "#b45309",
+              fontSize: 14, fontWeight: 600, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+            }}>
+            <span style={{ fontSize: 20 }}>📋</span>
+            <span>マネージャーとしてログイン</span>
+          </button>
+
+          <button
+            onClick={() => onLogin({ name: "佐藤 院長", role: "admin", avatar: "佐" })}
+            style={{
+              padding: "14px", borderRadius: 16,
+              border: "1px solid rgba(167,139,250,0.35)",
+              background: "linear-gradient(135deg,#ede8fb,#fce4ec)", color: "#3a2f5a",
+              fontSize: 14, fontWeight: 600, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+            }}>
+            <span style={{ fontSize: 20 }}>👑</span>
+            <span>管理者としてログイン</span>
+          </button>
+        </div>
+
+        <p style={{
+          fontSize: 11, color: "#c4bde0", marginTop: 24, lineHeight: 1.7,
+          background: "#f8f6fc", padding: "10px 14px", borderRadius: 10,
+        }}>
+          ※ デモモードで動作中です。本番運用時は<br />Firebase認証を設定してください。
+        </p>
+      </div>
+    </div>
+  )
+}
+
+/* ───── メインアプリ ───── */
+function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
+  const { activePage } = useAppStore()
+  const isAdminOrManager = user.role === "admin" || user.role === "manager"
+
+  return (
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#f8f6fc" }}>
+      <SidebarWithUser user={user} onLogout={onLogout} />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        {/* トップバー */}
+        <header style={{
+          height: 52, background: "#fff",
+          borderBottom: "1px solid rgba(124,101,204,0.1)",
+          display: "flex", alignItems: "center",
+          padding: "0 24px", gap: 10, flexShrink: 0,
+          boxShadow: "0 1px 3px rgba(90,60,160,0.04)",
+        }}>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#3a2f5a", flex: 1 }}>
+            {TITLES[activePage]}
+          </h2>
+          {user.role === "admin" && (
+            <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: "linear-gradient(135deg,#ede8fb,#fce4ec)", border: "1px solid rgba(167,139,250,0.28)", color: "#5f4ba8" }}>
+              👑 管理者
+            </span>
+          )}
+          {user.role === "manager" && (
+            <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: "#fffbeb", border: "1px solid #fde68a", color: "#b45309" }}>
+              📋 マネージャー
+            </span>
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#edfbf4", border: "1px solid #86efac", padding: "5px 12px", borderRadius: 999, fontSize: 11, fontWeight: 600, color: "#166534" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
+            稼働中
           </div>
-          <div style={{background:"#f5f2fd",border:"1px solid rgba(124,101,204,0.15)",padding:"5px 12px",borderRadius:999,fontSize:11,color:"#9b87e4"}}>
-            {new Date().toLocaleDateString("ja-JP",{month:"long",day:"numeric",weekday:"short"})}
+          <div style={{ background: "#f5f2fd", border: "1px solid rgba(124,101,204,0.15)", padding: "5px 12px", borderRadius: 999, fontSize: 11, color: "#9b87e4" }}>
+            {new Date().toLocaleDateString("ja-JP", { month: "long", day: "numeric", weekday: "short" })}
           </div>
         </header>
-        <main style={{flex:1,overflowY:"auto"}}>
+
+        {/* コンテンツ */}
+        <main style={{ flex: 1, overflowY: "auto" }}>
           <AnimatePresence mode="wait">
-            <motion.div key={activePage} initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-4}} transition={{duration:0.16}}>
-              {activePage==="home"       && <HomePage/>}
-              {activePage==="risk"       && <RiskPage/>}
-              {activePage==="manual"     && <ManualPage/>}
-              {activePage==="matrix"     && <MatrixPage/>}
-              {activePage==="confidence" && <ConfidencePage/>}
-              {activePage==="nearmiss"   && <NearMissPage/>}
-              {activePage==="admin"      && <AdminPage/>}
+            <motion.div key={activePage}
+              initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.16 }}>
+              {activePage === "home"       && <HomePage />}
+              {activePage === "risk"       && <RiskPage />}
+              {activePage === "manual"     && <ManualPage />}
+              {activePage === "matrix"     && <MatrixPage />}
+              {activePage === "confidence" && <ConfidencePage />}
+              {activePage === "nearmiss"   && <NearMissPage />}
+              {activePage === "admin"      && (
+                isAdminOrManager ? <AdminPage /> : (
+                  <div style={{ padding: 60, textAlign: "center" }}>
+                    <div style={{ fontSize: 40, marginBottom: 14 }}>🔒</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#7a6e96" }}>
+                      管理者・マネージャーのみアクセスできます
+                    </div>
+                  </div>
+                )
+              )}
             </motion.div>
           </AnimatePresence>
         </main>
       </div>
     </div>
   )
+}
+
+/* ───── ユーザー情報付きサイドバー ───── */
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut } from "lucide-react"
+
+const NAV = [
+  { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
+  { id: "risk",       icon: Shield,             label: "リスク管理",       badge: 3,    alert: true  },
+  { id: "manual",     icon: BookOpen,           label: "業務マニュアル",   badge: null, alert: false },
+  { id: "matrix",     icon: Grid3X3,            label: "役割マトリクス",   badge: null, alert: false },
+  { id: "confidence", icon: Star,               label: "4つの自信",        badge: null, alert: false },
+  { id: "nearmiss",   icon: MessageCircleHeart, label: "ヒヤリハット共有", badge: 6,    alert: false },
+  { id: "admin",      icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
+]
+const LINKS = [
+  { label: "Googleカレンダー", href: "https://calendar.google.com", emoji: "📅" },
+  { label: "Googleドライブ",   href: "https://drive.google.com",    emoji: "📁" },
+  { label: "Chatwork",         href: "https://www.chatwork.com",    emoji: "💬" },
+]
+
+function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
+  const { activePage, setActivePage } = useAppStore()
+  const base: React.CSSProperties = {
+    width: "100%", display: "flex", alignItems: "center", gap: 9,
+    padding: "9px 10px", borderRadius: 10, marginBottom: 2,
+    fontSize: 13, cursor: "pointer", border: "1px solid transparent", background: "transparent",
+  }
+  return (
+    <aside style={{ width: 220, minWidth: 220, background: "#fff", borderRight: "1px solid rgba(124,101,204,0.11)", height: "100vh", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid rgba(124,101,204,0.09)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏥</div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#3a2f5a" }}>CarePortal</div>
+            <div style={{ fontSize: 10, color: "#b0a8c8", marginTop: 1 }}>クリニックポータル</div>
+          </div>
+        </div>
+      </div>
+      <nav style={{ flex: 1, padding: "10px", overflowY: "auto" }}>
+        <div style={{ fontSize: 9, fontWeight: 700, color: "#c4bde0", padding: "6px 8px 4px", letterSpacing: "0.1em" }}>MENU</div>
+        {NAV.map(n => {
+          const Icon = n.icon
+          const active = activePage === n.id
+          if (n.id === "admin" && user.role === "staff") return null
+          return (
+            <button key={n.id} onClick={() => setActivePage(n.id)}
+              style={{ ...base, background: active ? "#ede8fb" : "transparent", border: active ? "1px solid rgba(124,101,204,0.18)" : "1px solid transparent", color: active ? "#5f4ba8" : "#7a6e96", fontWeight: active ? 600 : 400 }}>
+              <Icon size={15} style={{ color: active ? "#7c65cc" : "#b0a8c8", flexShrink: 0 }} />
+              <span style={{ flex: 1, textAlign: "left" }}>{n.label}</span>
+              {n.badge && (
+                <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 10, background: n.alert ? "#fef2f2" : "#edfbf4", color: n.alert ? "#c0392b" : "#166534", border: `1px solid ${n.alert ? "#fca5a5" : "#86efac"}` }}>
+                  {n.badge}
+                </span>
+              )}
+            </button>
+          )
+        })}
+        <div style={{ fontSize: 9, fontWeight: 700, color: "#c4bde0", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>外部リンク</div>
+        {LINKS.map(l => (
+          <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer"
+            style={{ ...base, textDecoration: "none", color: "#7a6e96" }}>
+            <span style={{ fontSize: 15 }}>{l.emoji}</span>
+            <span style={{ flex: 1 }}>{l.label}</span>
+            <ExternalLink size={10} style={{ color: "#c4bde0" }} />
+          </a>
+        ))}
+        <div style={{ fontSize: 9, fontWeight: 700, color: "#c4bde0", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>設定</div>
+        <button style={{ ...base, color: "#7a6e96" }}><Settings size={14} style={{ color: "#c4bde0" }} />システム設定</button>
+        <button style={{ ...base, color: "#7a6e96" }}><Bell size={14} style={{ color: "#c4bde0" }} />通知設定</button>
+      </nav>
+      <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(124,101,204,0.09)", display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+          {user.avatar}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#3a2f5a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
+          <div style={{ fontSize: 10, color: "#b0a8c8", marginTop: 1 }}>
+            {user.role === "admin" ? "👑 管理者" : user.role === "manager" ? "📋 マネージャー" : "一般スタッフ"}
+          </div>
+        </div>
+        <button onClick={onLogout} title="ログアウト"
+          style={{ width: 26, height: 26, borderRadius: 8, background: "#f5f2fd", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#c4bde0", flexShrink: 0 }}
+          onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
+          onMouseLeave={e => (e.currentTarget.style.color = "#c4bde0")}>
+          <LogOut size={12} />
+        </button>
+      </div>
+    </aside>
+  )
+}
+
+/* ───── ルート ───── */
+export default function App() {
+  const [user, setUser] = useState<AppUser | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
+  if (!mounted) return null
+
+  if (!user) return <LoginScreen onLogin={setUser} />
+  return <MainApp user={user} onLogout={() => setUser(null)} />
 }

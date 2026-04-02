@@ -2,7 +2,6 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAppStore } from "@/store/useAppStore"
-import { useNearMisses } from "@/hooks/useNearMisses"
 import { useEditStore } from "@/store/useEditStore"
 import { Users, FileText, MessageSquareHeart, TrendingUp, ChevronRight, X, Star, Check } from "lucide-react"
 
@@ -91,8 +90,7 @@ function StaffModal({staff,onClose}:{staff:typeof STAFF[0],onClose:()=>void}){
 }
 
 export default function AdminPage() {
-  const { nearMisses: localNM } = useAppStore()
-  const { nearMisses, resolveNearMiss, mode } = useNearMisses()
+  const { nearMisses } = useAppStore()
   const { manuals } = useEditStore()
   const [tab,setTab]=useState<"overview"|"staff"|"risk"|"nearmiss">("overview")
   const [selectedStaff,setSelectedStaff]=useState<typeof STAFF[0]|null>(null)
