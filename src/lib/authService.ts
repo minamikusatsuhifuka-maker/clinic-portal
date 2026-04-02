@@ -20,8 +20,7 @@ export interface AppUser {
 
 // 管理者メールアドレス（院長）
 const ADMIN_EMAILS: string[] = [
-  // 楠葉院長のGmailアドレスをここに設定
-  // 例: "kusuba@gmail.com"
+  "minamikusatsuhifuka@gmail.com",
 ]
 
 // マネージャーメールアドレス（後日設定）
