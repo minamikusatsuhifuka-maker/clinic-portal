@@ -14,6 +14,7 @@ import NearMissPage from "@/components/NearMissPage"
 import { MatrixPage, ConfidencePage } from "@/components/OtherPages"
 import AchievementPage from "@/components/AchievementPage"
 import InsightPage from "@/components/InsightPage"
+import ContactsPage from "@/components/ContactsPage"
 import AiAssistant from "@/components/AiAssistant"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -36,6 +37,7 @@ function getTitles(visibleCount: number): Record<string, string> {
     nearmiss: "ヒヤリハット・事例共有",
     achievement: "人生目標・感謝・院長メッセージ",
     insight: "気づきノート（学び・実践・共有）",
+    contacts: "緊急連絡先",
     admin: "管理者ダッシュボード",
   }
 }
@@ -243,6 +245,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "nearmiss"   && <NearMissPage />}
               {activePage === "achievement" && <AchievementPage userRole={user.role} userName={user.name} />}
               {activePage === "insight"     && <InsightPage userRole={user.role} userName={user.name} />}
+              {activePage === "contacts"   && <ContactsPage />}
               {activePage === "admin"      && (
                 isAdminOrManager ? <AdminPage /> : (
                   <div style={{ padding: 60, textAlign: "center" }}>
@@ -263,7 +266,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 }
 
 /* ───── ユーザー情報付きサイドバー ───── */
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -274,6 +277,7 @@ const NAV = [
   { id: "nearmiss",    icon: MessageCircleHeart, label: "ヒヤリハット共有", badge: 6,    alert: false },
   { id: "achievement", icon: Trophy,             label: "人生・感謝・院長", badge: null, alert: false },
   { id: "insight",     icon: Lightbulb,          label: "気づきノート",     badge: null, alert: false },
+  { id: "contacts",    icon: Phone,              label: "緊急連絡先",       badge: null, alert: false },
   { id: "admin",       icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
 ]
 const LINKS = [
