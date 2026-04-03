@@ -12,6 +12,7 @@ import ManualPage from "@/components/ManualPage"
 import AdminPage from "@/components/AdminPage"
 import NearMissPage from "@/components/NearMissPage"
 import { MatrixPage, ConfidencePage } from "@/components/OtherPages"
+import AchievementPage from "@/components/AchievementPage"
 import AiAssistant from "@/components/AiAssistant"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -32,6 +33,7 @@ function getTitles(visibleCount: number): Record<string, string> {
     matrix: "役割マトリクス",
     confidence: "4つの自信",
     nearmiss: "ヒヤリハット・事例共有",
+    achievement: "人生目標・感謝・院長メッセージ",
     admin: "管理者ダッシュボード",
   }
 }
@@ -237,6 +239,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "matrix"     && <MatrixPage />}
               {activePage === "confidence" && <ConfidencePage />}
               {activePage === "nearmiss"   && <NearMissPage />}
+              {activePage === "achievement" && <AchievementPage userRole={user.role} userName={user.name} />}
               {activePage === "admin"      && (
                 isAdminOrManager ? <AdminPage /> : (
                   <div style={{ padding: 60, textAlign: "center" }}>
@@ -257,7 +260,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 }
 
 /* ───── ユーザー情報付きサイドバー ───── */
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -265,8 +268,9 @@ const NAV = [
   { id: "manual",     icon: BookOpen,           label: "業務マニュアル",   badge: null, alert: false },
   { id: "matrix",     icon: Grid3X3,            label: "役割マトリクス",   badge: null, alert: false },
   { id: "confidence", icon: Star,               label: "4つの自信",        badge: null, alert: false },
-  { id: "nearmiss",   icon: MessageCircleHeart, label: "ヒヤリハット共有", badge: 6,    alert: false },
-  { id: "admin",      icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
+  { id: "nearmiss",    icon: MessageCircleHeart, label: "ヒヤリハット共有", badge: 6,    alert: false },
+  { id: "achievement", icon: Trophy,             label: "人生・感謝・院長", badge: null, alert: false },
+  { id: "admin",       icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
 ]
 const LINKS = [
   { label: "Googleカレンダー", href: "https://calendar.google.com", emoji: "📅" },

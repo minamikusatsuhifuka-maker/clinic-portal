@@ -2,6 +2,7 @@
 import { motion } from "framer-motion"
 import { AlertTriangle, CheckCircle2, Bell, ArrowRight } from "lucide-react"
 import { useAppStore } from "@/store/useAppStore"
+import { useAchievementStore } from "@/store/useAchievementStore"
 
 const cont={hidden:{},show:{transition:{staggerChildren:0.07}}}
 const item={hidden:{opacity:0,y:10},show:{opacity:1,y:0}}
@@ -9,6 +10,8 @@ const card:React.CSSProperties={background:"#fff",borderRadius:16,border:"1px so
 
 export default function HomePage() {
   const { setActivePage, nearMisses } = useAppStore()
+  const { directorMessages } = useAchievementStore()
+  const latestMsg = directorMessages[0]
   const dateStr=new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"long",day:"numeric",weekday:"short"})
   return (
     <motion.div variants={cont} initial="hidden" animate="show" style={{padding:24,maxWidth:900,display:"flex",flexDirection:"column",gap:14}}>
@@ -21,6 +24,21 @@ export default function HomePage() {
           <span style={{width:7,height:7,borderRadius:"50%",background:"#22c55e",display:"inline-block"}}/>Chatwork 連携中
         </div>
       </motion.div>
+
+      {latestMsg && (
+        <motion.div variants={item}
+          style={{ background:"linear-gradient(135deg,#fffbeb,#fef9ef)", border:"1px solid #fde68a", borderRadius:14, padding:"14px 18px", cursor:"pointer" }}
+          onClick={() => setActivePage("achievement")}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ width:36, height:36, borderRadius:"50%", background:"linear-gradient(135deg,#fbbf24,#f59e0b)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>👑</div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontSize:11, color:"#b45309", fontWeight:700, marginBottom:2 }}>院長メッセージ · {latestMsg.principle}</div>
+              <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a" }}>{latestMsg.title}</div>
+              <div style={{ fontSize:12, color:"#7a6e96", marginTop:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{latestMsg.body.split("\n")[0]}</div>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       <motion.div variants={item} style={{background:"#fff0f0",border:"1.5px solid #f87171",borderRadius:14,padding:"12px 16px",display:"flex",alignItems:"center",gap:12}}>
         <AlertTriangle size={18} style={{color:"#ef4444",flexShrink:0}}/>
