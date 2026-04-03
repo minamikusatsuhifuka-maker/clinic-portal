@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Send, Loader2, RotateCcw, Sparkles, X, ChevronDown } from "lucide-react"
+import VoiceInputButton from "@/components/VoiceInputButton"
 import { useAppStore } from "@/store/useAppStore"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -354,7 +355,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
                         send()
                       }
                     }}
-                    placeholder="何でも相談してください... （Shift+Enterで改行）"
+                    placeholder="何でも相談してください... （Shift+Enterで改行 / 🎤マイクで音声入力）"
                     style={{
                       flex: 1, border: "none", background: "transparent",
                       fontSize: 14, color: "#3a2f5a", outline: "none",
@@ -363,6 +364,20 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
                       overflow: "auto",
                     }}
                     rows={1}
+                  />
+                </div>
+                <div style={{ position: "relative", flexShrink: 0 }}>
+                  <VoiceInputButton
+                    onTranscript={(text) => {
+                      setInput(text)
+                      if (inputRef.current) {
+                        inputRef.current.style.height = "auto"
+                        inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 160) + "px"
+                      }
+                    }}
+                    onSend={(text) => send(text)}
+                    accentColor="#a78bfa"
+                    size={44}
                   />
                 </div>
                 <button onClick={() => send()} disabled={!input.trim() || loading}
