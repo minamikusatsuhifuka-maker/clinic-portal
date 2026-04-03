@@ -3,6 +3,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAppStore } from "@/store/useAppStore"
 import { useEditStore } from "@/store/useEditStore"
+import { RISKS } from "@/data/risks"
 import { Users, FileText, MessageSquareHeart, TrendingUp, ChevronRight, X, Star, Check } from "lucide-react"
 
 const card:React.CSSProperties={background:"#fff",borderRadius:16,border:"1px solid rgba(124,101,204,0.11)",boxShadow:"0 1px 4px rgba(90,60,160,0.05)"}
@@ -91,15 +92,16 @@ function StaffModal({staff,onClose}:{staff:typeof STAFF[0],onClose:()=>void}){
 
 export default function AdminPage() {
   const { nearMisses } = useAppStore()
-  const { manuals } = useEditStore()
-  const [tab,setTab]=useState<"overview"|"staff"|"risk"|"nearmiss">("overview")
+  const { manuals, riskVisibility, toggleRiskVisibility, setAllRiskVisibility } = useEditStore()
+  const [tab,setTab]=useState<"overview"|"staff"|"risk"|"risksetting"|"nearmiss">("overview")
   const [selectedStaff,setSelectedStaff]=useState<typeof STAFF[0]|null>(null)
 
   const tabs=[
-    {id:"overview",label:"概要",icon:"📊"},
-    {id:"staff",   label:"スタッフ管理",icon:"👥"},
-    {id:"risk",    label:"リスク状況",icon:"🛡️"},
-    {id:"nearmiss",label:"ヒヤリハット管理",icon:"💬"},
+    {id:"overview",   label:"概要",icon:"📊"},
+    {id:"staff",      label:"スタッフ管理",icon:"👥"},
+    {id:"risk",       label:"リスク状況",icon:"🛡️"},
+    {id:"risksetting",label:"リスク表示設定",icon:"⚙️"},
+    {id:"nearmiss",   label:"ヒヤリハット管理",icon:"💬"},
   ] as const
 
   return (
@@ -215,6 +217,73 @@ export default function AdminPage() {
               <span style={{fontSize:11,color:r.lastChecked==="未対応"?"#ef4444":"#b0a8c8",fontWeight:r.lastChecked==="未対応"?700:400,flexShrink:0}}>{r.lastChecked}</span>
             </div>
           ))}
+        </motion.div>
+      )}
+
+      {tab==="risksetting" && (
+        <motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} style={{display:"flex",flexDirection:"column",gap:12}}>
+          <div style={{...card,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div>
+              <div style={{fontSize:14,fontWeight:700,color:"#3a2f5a"}}>⚙️ リスク項目の表示・非表示設定</div>
+              <div style={{fontSize:12,color:"#b0a8c8",marginTop:4}}>非表示にした項目はスタッフのリスク管理画面に表示されません</div>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>setAllRiskVisibility(true)}
+                style={{fontSize:11,fontWeight:600,padding:"6px 14px",borderRadius:999,border:"1px solid #86efac",background:"#edfbf4",color:"#166534",cursor:"pointer"}}>
+                すべて表示
+              </button>
+              <button onClick={()=>setAllRiskVisibility(false)}
+                style={{fontSize:11,fontWeight:600,padding:"6px 14px",borderRadius:999,border:"1px solid #fca5a5",background:"#fef2f2",color:"#c0392b",cursor:"pointer"}}>
+                すべて非表示
+              </button>
+            </div>
+          </div>
+
+          <div style={{...card,padding:0,overflow:"hidden"}}>
+            {RISKS.map((r,i)=>{
+              const visible = riskVisibility[r.id] !== false
+              const levelColor =
+                r.level==="CRITICAL" ? {bg:"#ef4444",text:"white"} :
+                r.level==="HIGH"     ? {bg:"#f59e0b",text:"white"} :
+                                       {bg:"#60a5fa",text:"white"}
+              return (
+                <div key={r.id}
+                  style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderBottom:i<RISKS.length-1?"1px solid rgba(124,101,204,0.07)":"none",opacity:visible?1:0.45,transition:"opacity 0.2s"}}>
+                  <span style={{fontSize:11,fontWeight:700,color:"#c4bde0",width:24,fontFamily:"monospace",flexShrink:0}}>{String(r.id).padStart(2,"0")}</span>
+                  <span style={{fontSize:20,flexShrink:0}}>{r.icon}</span>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:600,color:"#3a2f5a",lineHeight:1.4}}>{r.name}</div>
+                    <div style={{fontSize:11,color:"#b0a8c8",marginTop:2}}>{r.summary}</div>
+                  </div>
+                  <span style={{background:levelColor.bg,color:levelColor.text,fontSize:10,fontWeight:700,padding:"2px 10px",borderRadius:999,flexShrink:0}}>{r.level}</span>
+                  <button onClick={()=>toggleRiskVisibility(r.id)}
+                    style={{
+                      width:48,height:26,borderRadius:13,border:"none",cursor:"pointer",
+                      background:visible?"linear-gradient(135deg,#a78bfa,#f472b6)":"#e5e7eb",
+                      position:"relative",transition:"background 0.2s",flexShrink:0,
+                    }}>
+                    <div style={{
+                      width:20,height:20,borderRadius:"50%",background:"white",
+                      position:"absolute",top:3,
+                      left:visible?24:4,
+                      transition:"left 0.2s",
+                      boxShadow:"0 1px 3px rgba(0,0,0,0.2)",
+                    }}/>
+                  </button>
+                  <span style={{fontSize:11,fontWeight:600,color:visible?"#166534":"#b0a8c8",width:36,textAlign:"right",flexShrink:0}}>
+                    {visible?"表示":"非表示"}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+
+          <div style={{...card,padding:"12px 16px",background:"#fffbeb",border:"1px solid #fde68a"}}>
+            <div style={{fontSize:12,color:"#b45309",lineHeight:1.7}}>
+              ⚠️ 非表示にしたリスク項目はスタッフの画面に表示されなくなります。<br/>
+              重要度の高い項目（CRITICAL・HIGH）は非表示にしないことを推奨します。
+            </div>
+          </div>
         </motion.div>
       )}
 

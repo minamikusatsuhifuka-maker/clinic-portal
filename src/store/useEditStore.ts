@@ -25,10 +25,13 @@ export interface EditableRiskContact {
 interface EditStore {
   riskContacts: EditableRiskContact[]
   manuals: ManualItem[]
+  riskVisibility: Record<number, boolean>
   updateRiskContacts: (riskId: number, contacts: ContactItem[]) => void
   updateManual: (id: string, data: Partial<ManualItem>) => void
   addManual: (item: Omit<ManualItem, "id">) => void
   deleteManual: (id: string) => void
+  toggleRiskVisibility: (riskId: number) => void
+  setAllRiskVisibility: (visible: boolean) => void
 }
 
 const DEFAULT_CONTACTS: EditableRiskContact[] = RISKS.map((r) => ({
@@ -51,6 +54,7 @@ export const useEditStore = create<EditStore>()(
   persist(
     (set) => ({
       riskContacts: DEFAULT_CONTACTS,
+      riskVisibility: Object.fromEntries(RISKS.map((r) => [r.id, true])),
       manuals: DEFAULT_MANUALS,
       updateRiskContacts: (riskId, contacts) =>
         set((state) => ({
@@ -69,6 +73,19 @@ export const useEditStore = create<EditStore>()(
       deleteManual: (id) =>
         set((state) => ({
           manuals: state.manuals.filter((m) => m.id !== id),
+        })),
+      toggleRiskVisibility: (riskId) =>
+        set((state) => ({
+          riskVisibility: {
+            ...state.riskVisibility,
+            [riskId]: !state.riskVisibility[riskId],
+          },
+        })),
+      setAllRiskVisibility: (visible) =>
+        set((state) => ({
+          riskVisibility: Object.fromEntries(
+            Object.keys(state.riskVisibility).map((id) => [id, visible])
+          ),
         })),
     }),
     { name: "care-portal-edit-store" }

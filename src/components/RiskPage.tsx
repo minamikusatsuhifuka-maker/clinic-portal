@@ -212,7 +212,9 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
 export default function RiskPage() {
   const [selected, setSelected] = useState<Risk | null>(null)
   const [filter, setFilter] = useState("ALL")
-  const filtered = filter === "ALL" ? RISKS : RISKS.filter((r) => r.level === filter)
+  const { riskVisibility } = useEditStore()
+  const visibleRisks = RISKS.filter((r) => riskVisibility[r.id] !== false)
+  const filtered = filter === "ALL" ? visibleRisks : visibleRisks.filter((r) => r.level === filter)
 
   return (
     <div style={{ padding:24, maxWidth:800 }}>
