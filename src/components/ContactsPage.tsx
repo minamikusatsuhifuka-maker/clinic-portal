@@ -116,35 +116,48 @@ function UploadZone({ onExtracted }: { onExtracted: (contacts: Partial<Contact>[
   )
 }
 
-function ContactCard({ contact, onEdit, onDelete, onToggleFav }: { contact: Contact; onEdit: () => void; onDelete: () => void; onToggleFav: () => void }) {
+function ContactRow({ contact, onEdit, onDelete, onToggleFav, isLast }: { contact: Contact; onEdit: () => void; onDelete: () => void; onToggleFav: () => void; isLast: boolean }) {
+  const [expanded, setExpanded] = useState(false)
   const cc = CAT_COLOR[contact.category]
   const initial = (contact.name||contact.company||"?").charAt(0)
+  const hasDetails = contact.whenToContact||contact.email||contact.address||contact.notes
   return (
-    <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} style={{ ...card, padding:16 }}>
-      <div style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:contact.whenToContact?10:0 }}>
-        <div style={{ width:42, height:42, borderRadius:"50%", background:cc.bg, border:`1.5px solid ${cc.color}44`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:700, color:cc.color, flexShrink:0 }}>{initial}</div>
+    <div style={{ borderBottom:isLast?"none":"1px solid rgba(124,101,204,0.07)" }}>
+      <div
+        onClick={() => hasDetails && setExpanded(!expanded)}
+        style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", cursor:hasDetails?"pointer":"default", transition:"background 0.15s" }}
+        onMouseEnter={e => (e.currentTarget.style.background="#fafafe")}
+        onMouseLeave={e => (e.currentTarget.style.background="transparent")}>
+        <div style={{ width:36, height:36, borderRadius:"50%", background:cc.bg, border:`1.5px solid ${cc.color}44`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, fontWeight:700, color:cc.color, flexShrink:0 }}>{initial}</div>
         <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, flexWrap:"wrap" }}>
-            {contact.name && <span style={{ fontSize:14, fontWeight:700, color:"#3a2f5a" }}>{contact.name}</span>}
-            {contact.role && <span style={{ fontSize:11, color:"#7a6e96" }}>{contact.role}</span>}
-            <span style={{ fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:999, background:cc.bg, color:cc.color, marginLeft:"auto" }}>{contact.category}</span>
+          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+            <span style={{ fontSize:13, fontWeight:700, color:"#3a2f5a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{contact.name||contact.company}</span>
+            {contact.role && <span style={{ fontSize:11, color:"#7a6e96", flexShrink:0 }}>{contact.role}</span>}
           </div>
-          {contact.company && <div style={{ fontSize:12, color:"#7a6e96", marginBottom:6 }}>{contact.company}{contact.department?` · ${contact.department}`:""}</div>}
-          <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
-            {contact.phone && <a href={`tel:${contact.phone}`} style={{ display:"flex", alignItems:"center", gap:7, fontSize:13, fontWeight:600, color:"#5f4ba8", textDecoration:"none" }}><Phone size={13} style={{ color:"#a78bfa" }}/>{contact.phone}{contact.phone2 && <span style={{ fontSize:12, color:"#7a6e96", fontWeight:400 }}>/ {contact.phone2}</span>}</a>}
-            {contact.email && <a href={`mailto:${contact.email}`} style={{ display:"flex", alignItems:"center", gap:7, fontSize:12, color:"#60a5fa", textDecoration:"none" }}><Mail size={12} style={{ color:"#93c5fd" }}/>{contact.email}</a>}
-            {contact.address && <div style={{ display:"flex", alignItems:"center", gap:7, fontSize:12, color:"#7a6e96" }}><MapPin size={12} style={{ color:"#b0a8c8" }}/>{contact.address}</div>}
-          </div>
+          {contact.name && contact.company && <div style={{ fontSize:11, color:"#b0a8c8", marginTop:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{contact.company}{contact.department?` · ${contact.department}`:""}</div>}
         </div>
-        <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
-          <button onClick={onToggleFav} style={{ width:28, height:28, borderRadius:8, background:contact.isFavorite?"#fffbeb":"#f8f6fc", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}><Star size={13} fill={contact.isFavorite?"#f59e0b":"none"} style={{ color:contact.isFavorite?"#f59e0b":"#c4bde0" }}/></button>
-          <button onClick={onEdit} style={{ width:28, height:28, borderRadius:8, background:"#f5f2fd", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#9b87e4" }}><Edit3 size={12}/></button>
-          <button onClick={onDelete} style={{ width:28, height:28, borderRadius:8, background:"#fef2f2", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#f87171" }}><Trash2 size={12}/></button>
+        <span style={{ fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:999, background:cc.bg, color:cc.color, flexShrink:0, whiteSpace:"nowrap" }}>{contact.category}</span>
+        {contact.phone && <a href={`tel:${contact.phone}`} onClick={e => e.stopPropagation()} style={{ display:"flex", alignItems:"center", gap:5, fontSize:12, fontWeight:600, color:"#5f4ba8", textDecoration:"none", flexShrink:0, padding:"4px 10px", borderRadius:8, background:"#f5f2fd" }}><Phone size={12} style={{ color:"#a78bfa" }}/>{contact.phone}</a>}
+        <div style={{ display:"flex", gap:3, flexShrink:0 }} onClick={e => e.stopPropagation()}>
+          <button onClick={onToggleFav} style={{ width:26, height:26, borderRadius:6, background:contact.isFavorite?"#fffbeb":"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}><Star size={12} fill={contact.isFavorite?"#f59e0b":"none"} style={{ color:contact.isFavorite?"#f59e0b":"#c4bde0" }}/></button>
+          <button onClick={onEdit} style={{ width:26, height:26, borderRadius:6, background:"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#b0a8c8" }}><Edit3 size={11}/></button>
+          <button onClick={onDelete} style={{ width:26, height:26, borderRadius:6, background:"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#d4d0e0" }}><Trash2 size={11}/></button>
         </div>
       </div>
-      {contact.whenToContact && <div style={{ background:"#f8f6fc", borderRadius:10, padding:"8px 12px", fontSize:12, color:"#7a6e96", display:"flex", gap:8, alignItems:"flex-start" }}><span style={{ color:"#a78bfa", flexShrink:0, fontWeight:700 }}>連絡タイミング：</span><span style={{ lineHeight:1.6 }}>{contact.whenToContact}</span></div>}
-      {contact.notes && <div style={{ marginTop:6, fontSize:12, color:"#b0a8c8", paddingLeft:4 }}>{contact.notes}</div>}
-    </motion.div>
+      <AnimatePresence>
+        {expanded && hasDetails && (
+          <motion.div initial={{ height:0, opacity:0 }} animate={{ height:"auto", opacity:1 }} exit={{ height:0, opacity:0 }} style={{ overflow:"hidden" }}>
+            <div style={{ padding:"0 16px 12px 64px", display:"flex", flexDirection:"column", gap:5 }}>
+              {contact.whenToContact && <div style={{ fontSize:12, color:"#7a6e96", display:"flex", gap:6 }}><span style={{ color:"#a78bfa", fontWeight:600, flexShrink:0 }}>連絡タイミング:</span>{contact.whenToContact}</div>}
+              {contact.phone2 && <div style={{ fontSize:12, color:"#7a6e96", display:"flex", alignItems:"center", gap:5 }}><Phone size={11} style={{ color:"#b0a8c8" }}/>電話2: {contact.phone2}</div>}
+              {contact.email && <a href={`mailto:${contact.email}`} style={{ fontSize:12, color:"#60a5fa", textDecoration:"none", display:"flex", alignItems:"center", gap:5 }}><Mail size={11} style={{ color:"#93c5fd" }}/>{contact.email}</a>}
+              {contact.address && <div style={{ fontSize:12, color:"#7a6e96", display:"flex", alignItems:"center", gap:5 }}><MapPin size={11} style={{ color:"#b0a8c8" }}/>{contact.address}</div>}
+              {contact.notes && <div style={{ fontSize:12, color:"#b0a8c8", fontStyle:"italic" }}>{contact.notes}</div>}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
 
@@ -192,8 +205,22 @@ export default function ContactsPage() {
       <div style={{ display:"flex", gap:6, marginBottom:16, flexWrap:"wrap" }}>
         {(["すべて",...CATEGORIES] as const).map(cat => { const cc=cat!=="すべて"?CAT_COLOR[cat]:null; return (<button key={cat} onClick={() => setCatFilter(cat)} style={{ fontSize:11, padding:"5px 12px", borderRadius:999, border:`1px solid ${catFilter===cat?(cc?.color??"#7c65cc"):"rgba(124,101,204,0.18)"}`, background:catFilter===cat?(cc?.bg??"#f5f2fd"):"#fff", color:catFilter===cat?(cc?.color??"#5f4ba8"):"#7a6e96", cursor:"pointer", fontWeight:catFilter===cat?700:400 }}>{cat}</button>) })}
       </div>
-      {favs.length>0 && <div style={{ marginBottom:20 }}><div style={{ fontSize:12, fontWeight:700, color:"#f59e0b", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}><Star size={13} fill="#f59e0b"/> よく使う連絡先</div><div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))", gap:10 }}>{favs.map(c => <ContactCard key={c.id} contact={c} onEdit={() => { setEditTarget(c); setShowForm(true) }} onDelete={() => { if (confirm(`「${c.name||c.company}」を削除しますか？`)) deleteContact(c.id) }} onToggleFav={() => toggleFavorite(c.id)}/>)}</div></div>}
-      {others.length>0 && <div>{favs.length>0 && <div style={{ fontSize:12, fontWeight:700, color:"#b0a8c8", marginBottom:10 }}>その他の連絡先</div>}<div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))", gap:10 }}>{others.map(c => <ContactCard key={c.id} contact={c} onEdit={() => { setEditTarget(c); setShowForm(true) }} onDelete={() => { if (confirm(`「${c.name||c.company}」を削除しますか？`)) deleteContact(c.id) }} onToggleFav={() => toggleFavorite(c.id)}/>)}</div></div>}
+      {filtered.length>0 && (
+        <div style={{ ...card, padding:0, overflow:"hidden" }}>
+          {favs.length>0 && (
+            <>
+              <div style={{ padding:"10px 16px", background:"#fffbeb", borderBottom:"1px solid #fde68a", display:"flex", alignItems:"center", gap:6, fontSize:12, fontWeight:700, color:"#b45309" }}><Star size={12} fill="#f59e0b"/> よく使う連絡先</div>
+              {favs.map((c,i) => <ContactRow key={c.id} contact={c} isLast={i===favs.length-1 && others.length===0} onEdit={() => { setEditTarget(c); setShowForm(true) }} onDelete={() => { if (confirm(`「${c.name||c.company}」を削除しますか？`)) deleteContact(c.id) }} onToggleFav={() => toggleFavorite(c.id)}/>)}
+            </>
+          )}
+          {others.length>0 && (
+            <>
+              {favs.length>0 && <div style={{ padding:"10px 16px", background:"#f8f6fc", borderTop:"1px solid rgba(124,101,204,0.07)", borderBottom:"1px solid rgba(124,101,204,0.07)", fontSize:12, fontWeight:700, color:"#b0a8c8" }}>その他の連絡先</div>}
+              {others.map((c,i) => <ContactRow key={c.id} contact={c} isLast={i===others.length-1} onEdit={() => { setEditTarget(c); setShowForm(true) }} onDelete={() => { if (confirm(`「${c.name||c.company}」を削除しますか？`)) deleteContact(c.id) }} onToggleFav={() => toggleFavorite(c.id)}/>)}
+            </>
+          )}
+        </div>
+      )}
       {filtered.length===0 && <div style={{ ...card, padding:48, textAlign:"center" }}><div style={{ fontSize:36, marginBottom:12 }}>📞</div><div style={{ fontSize:14, fontWeight:600, color:"#7a6e96", marginBottom:6 }}>連絡先が見つかりません</div><div style={{ fontSize:12, color:"#b0a8c8" }}>「AI自動読み取り」で名刺の写真をアップロードするか、手動で追加してください</div></div>}
       <AnimatePresence>{duplicateInfo && <DuplicateAlert existing={duplicateInfo.existing} incoming={duplicateInfo.incoming} onOverride={() => { addContact({ name:"", company:"", department:"", role:"", phone:"", phone2:"", email:"", address:"", category:"その他", whenToContact:"", notes:"", ...duplicateInfo.incoming } as Omit<Contact, "id"|"createdAt"|"isFavorite">); setSuccessCount(p => p+1); setDuplicateInfo(null); processPending(pendingContacts, pendingIndex+1) }} onCancel={() => { setDuplicateInfo(null); processPending(pendingContacts, pendingIndex+1) }}/>}</AnimatePresence>
       <AnimatePresence>{showForm && <ContactForm initial={editTarget??undefined} onSave={data => { if (editTarget) updateContact(editTarget.id, data); else addContact(data); setShowForm(false); setEditTarget(null) }} onClose={() => { setShowForm(false); setEditTarget(null) }}/>}</AnimatePresence>
