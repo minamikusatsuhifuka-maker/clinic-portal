@@ -318,7 +318,7 @@ export function MatrixPage() {
       <div className="flex gap-2 mb-5 flex-wrap">
         {[
           { id:"nurse",       label:"看護師"    },
-          { id:"receptionist",label:"受付"      },
+          { id:"receptionist",label:"マルチタスク" },
           { id:"doctor",      label:"医師"      },
           { id:"manager",     label:"マネージャー" },
           { id:"director",    label:"院長"      },
