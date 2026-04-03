@@ -348,13 +348,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
                     ref={inputRef}
                     value={input}
                     onChange={handleInput}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault()
-                        send()
-                      }
-                    }}
-                    placeholder="何でも相談してください... （Shift+Enterで改行 / 🎤マイクで音声入力）"
+                    placeholder="何でも相談してください... （🎤マイクで音声入力も使えます）"
                     style={{
                       flex: 1, border: "none", background: "transparent",
                       fontSize: 14, color: "#3a2f5a", outline: "none",
