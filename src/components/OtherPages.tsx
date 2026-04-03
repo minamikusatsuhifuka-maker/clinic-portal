@@ -105,8 +105,11 @@ const MATRIX: Record<string, { q1: string[]; q2: string[]; q3: string[]; q4: str
       "後輩・新人スタッフの指導育成",
       "ヒヤリハット事例の振り返り",
       "資格取得・外部研修への参加",
-      "業務改善提案の検討と提出",
+      "美容施術の知識・技術習得",
+      "美容カウンセリングスキルの向上",
+      "SNS映えする院内環境づくりへの提案",
       "患者満足度向上のための工夫",
+      "リピーター患者との関係性構築",
     ],
     q3: [
       "電話・ナースコール対応",
@@ -135,10 +138,13 @@ const MATRIX: Record<string, { q1: string[]; q2: string[]; q3: string[]; q4: str
       "接遇・コミュニケーションスキル向上",
       "予約・受付システムの深い習熟",
       "患者情報管理の精度向上",
-      "多職種との連携強化",
+      "美容カウンセリングの基礎知識習得",
+      "自費メニューの内容を正確に説明できる",
+      "SNS・口コミサイトの閲覧と院内共有",
+      "美容皮膚科のトレンド情報の把握",
+      "初診患者への丁寧なブランド体験の提供",
+      "リピーター患者への特別な声かけ",
       "クレーム事例の共有と再発防止",
-      "業務マニュアルの改善提案",
-      "電話対応スクリプトの整備",
     ],
     q3: [
       "日常的な電話の取り次ぎ",
@@ -165,11 +171,13 @@ const MATRIX: Record<string, { q1: string[]; q2: string[]; q3: string[]; q4: str
     ],
     q2: [
       "診療品質・技術の継続的向上",
-      "最新医学知識・ガイドラインの習得",
+      "最新医学・美容医療知識の習得",
       "スタッフへの医学的教育・指導",
-      "診療プロトコルの見直し・整備",
+      "美容皮膚科の新メニュー開発・検討",
+      "学会・美容医療研究会への参加と発表",
+      "自費診療ブランドの専門性強化",
+      "ビフォーアフター症例の蓄積・管理",
       "患者との長期的な信頼関係構築",
-      "学会・研究会への参加と発表",
       "地域医療連携の深化",
       "BCP・リスク管理体制の整備",
     ],
@@ -201,11 +209,14 @@ const MATRIX: Record<string, { q1: string[]; q2: string[]; q3: string[]; q4: str
       "組織文化・心理的安全性の醸成",
       "業務マニュアル・フローの整備",
       "4つの自信スコア向上施策の立案",
+      "美容皮膚科のマーケティング戦略立案",
+      "SNS運用方針・投稿ガイドラインの策定",
+      "口コミ・レビュー管理と改善策の実施",
+      "自費メニューの価格設定・改定の提案",
+      "患者ロイヤルティ向上施策の企画",
+      "スタッフのブランドアンバサダー育成",
       "採用・オンボーディング体制整備",
-      "多職種間の連携強化",
       "KPI設定とモニタリング体制",
-      "ヒヤリハット文化の定着推進",
-      "スタッフのキャリアパス設計",
     ],
     q3: [
       "定例承認・確認業務",
@@ -231,14 +242,17 @@ const MATRIX: Record<string, { q1: string[]; q2: string[]; q3: string[]; q4: str
     ],
     q2: [
       "中長期経営戦略・ビジョンの策定",
+      "美容皮膚科ブランドの確立・差別化戦略",
+      "自費診療メニューのポートフォリオ最適化",
+      "デジタルマーケティング戦略の方向性決定",
+      "SNS・MEO・広告戦略の承認",
+      "VIP患者・リピーター向け特別施策の決定",
+      "提携クリニック・エステとの連携検討",
       "医療の質・患者安全体制の強化",
       "スタッフの働き方改革・待遇改善",
-      "地域医療・他院との連携深化",
       "4つの自信を高める組織文化づくり",
-      "新規サービス・診療科の検討",
       "設備投資・DX推進の計画立案",
       "人材採用ブランディングの強化",
-      "収益構造の最適化と安定化",
     ],
     q3: [
       "定例の経営会議・スタッフ会議",
@@ -264,12 +278,13 @@ const MATRIX: Record<string, { q1: string[]; q2: string[]; q3: string[]; q4: str
     ],
     q2: [
       "法人全体のビジョン・使命の明確化",
+      "美容医療ブランドの法人全体戦略",
       "複数拠点・多角経営の戦略立案",
       "理事会・評議員会の運営と合意形成",
       "ガバナンス・コンプライアンス体制整備",
       "法人のブランド・社会的信頼の向上",
       "次世代リーダー・後継者の育成",
-      "医療・介護・福祉の連携モデル構築",
+      "医療・美容・ウェルネスの連携モデル構築",
       "地域社会への貢献・CSRの推進",
       "長期的な財務健全性の維持",
       "M&A・新規事業の戦略的検討",
@@ -293,10 +308,10 @@ export function MatrixPage() {
   const [role, setRole] = useState("nurse")
   const m = MATRIX[role]
   const cells = [
-    { key: "q1", title: "重要かつ緊急", sub: "今すぐやる", cls: "bg-rose-50 border-rose-200 text-rose-700", dot: "text-rose-400", items: m.q1 },
-    { key: "q2", title: "重要だが非緊急", sub: "計画してやる", cls: "bg-violet-50 border-violet-200 text-violet-700", dot: "text-violet-400", items: m.q2 },
-    { key: "q3", title: "緊急だが非重要", sub: "委任できる", cls: "bg-amber-50 border-amber-200 text-amber-700", dot: "text-amber-400", items: m.q3 },
-    { key: "q4", title: "非重要・非緊急", sub: "削減・排除", cls: "bg-slate-50 border-slate-200 text-slate-500", dot: "text-slate-400", items: m.q4 },
+    { key: "q1", quadrantLabel: "第1象限", title: "重要かつ緊急", sub: "今すぐやる", cls: "bg-rose-50 border-rose-200 text-rose-700", dot: "text-rose-400", items: m.q1 },
+    { key: "q2", quadrantLabel: "第2象限", title: "重要だが非緊急", sub: "計画してやる", cls: "bg-violet-50 border-violet-200 text-violet-700", dot: "text-violet-400", items: m.q2 },
+    { key: "q3", quadrantLabel: "第3象限", title: "緊急だが非重要", sub: "委任できる", cls: "bg-amber-50 border-amber-200 text-amber-700", dot: "text-amber-400", items: m.q3 },
+    { key: "q4", quadrantLabel: "第4象限", title: "非重要・非緊急", sub: "削減・排除", cls: "bg-slate-50 border-slate-200 text-slate-500", dot: "text-slate-400", items: m.q4 },
   ]
   return (
     <div className="p-6 max-w-3xl">
@@ -318,6 +333,7 @@ export function MatrixPage() {
       <div className="grid grid-cols-2 gap-3">
         {cells.map((c) => (
           <div key={c.key} className={`rounded-2xl p-4 border ${c.cls}`}>
+            <div className="text-[10px] font-bold opacity-70 mb-0.5" style={{ letterSpacing: "0.06em" }}>{c.quadrantLabel}</div>
             <div className="font-bold text-xs mb-0.5">{c.title}</div>
             <div className="text-[10px] opacity-60 mb-3">{c.sub}</div>
             <div className="space-y-1.5">
