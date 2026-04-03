@@ -30,24 +30,23 @@ const QUICK = [
 
 const INITIAL: Message = {
   role: "assistant",
-  content: `# こんにちは！ケアちゃんです 🌸
+  content: `# こんにちは！Air です 🌸
 
-南草津皮フ科専任**コーチング型**AIアシスタントです。
+南草津皮フ科 AIアシスタント Airです。
 
-私は「答えを教える」のではなく、**あなたが自分で考え、自分で答えを出し、行動にコミットできる**よう一緒に考えるコーチです。
-
----
-
-**こんな流れで進めます：**
-
-1. 🤔 **まず問いかけます** — 今どんな状況ですか？
-2. 💡 **選択肢を一緒に考えます** — A・B・C、どれが合いそう？
-3. ✅ **あなたが選んで決めます** — 自分でコミットする
-4. 🌟 **行動を称えます** — 小さな一歩を大切に
+業務のこと、患者対応、リスク管理、美容皮膚科のことなど、何でもお気軽にご相談ください。一緒に考えたり、必要な情報をお伝えしたりします。
 
 ---
 
-**今日はどんなことを一緒に考えますか？**
+**こんなことができます：**
+- 🤔 一緒に考える — 悩みの整理・壁打ち
+- 💡 選択肢を出す — アプローチの比較
+- 📋 情報を伝える — 手順・ポイントの確認
+- 💬 相談に乗る — あなたのペースで
+
+---
+
+**今日はどんなことを話しますか？**
 下のボタンから選ぶか、自由に話しかけてください 👇`,
 }
 
@@ -212,8 +211,8 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
                 fontSize: 18, flexShrink: 0,
               }}>🌸</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#3a2f5a" }}>ケアちゃん</div>
-                <div style={{ fontSize: 11, color: "#b0a8c8" }}>南草津皮フ科 AIアシスタント · Gemini 2.0 Flash</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#3a2f5a" }}>Air</div>
+                <div style={{ fontSize: 11, color: "#b0a8c8" }}>南草津皮フ科 AIアシスタント Air · Gemini 2.0 Flash</div>
               </div>
               <button onClick={reset} title="会話をリセット"
                 style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(124,101,204,0.2)", background: "#f5f2fd", color: "#7c65cc", fontSize: 12, cursor: "pointer" }}>
@@ -246,7 +245,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 11, fontWeight: 600, color: "#b0a8c8", marginBottom: 6 }}>
-                        {m.role === "assistant" ? "ケアちゃん" : "あなた"}
+                        {m.role === "assistant" ? "Air" : "あなた"}
                       </div>
                       {m.role === "user" ? (
                         <div style={{
