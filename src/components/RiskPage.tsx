@@ -209,12 +209,14 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
   )
 }
 
-export default function RiskPage() {
+export default function RiskPage({ userRole }: { userRole?: string }) {
   const [selected, setSelected] = useState<Risk | null>(null)
   const [filter, setFilter] = useState("ALL")
   const { riskVisibility } = useEditStore()
   const visibleRisks = RISKS.filter((r) => riskVisibility[r.id] !== false)
+  const hiddenRisks = RISKS.filter((r) => riskVisibility[r.id] === false)
   const filtered = filter === "ALL" ? visibleRisks : visibleRisks.filter((r) => r.level === filter)
+  const isAdminOrManager = userRole === "admin" || userRole === "manager"
 
   return (
     <div style={{ padding:24, maxWidth:800 }}>
@@ -254,6 +256,35 @@ export default function RiskPage() {
           </motion.button>
         ))}
       </div>
+
+      {/* 管理者専用：非表示リスク項目 */}
+      {isAdminOrManager && hiddenRisks.length > 0 && (
+        <div style={{ marginTop:24 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#7a6e96", marginBottom:10, display:"flex", alignItems:"center", gap:8 }}>
+            <span>🔒</span> 管理者のみ表示（スタッフ非表示項目）
+          </div>
+          <div style={{ background:"#fafafa", borderRadius:20, border:"2px dashed rgba(124,101,204,0.18)", overflow:"hidden" }}>
+            {hiddenRisks.map((r, idx) => (
+              <motion.button key={r.id}
+                initial={{ opacity:0, x:-6 }} animate={{ opacity:1, x:0 }} transition={{ delay:idx*0.04 }}
+                onClick={() => setSelected(r)}
+                style={{ width:"100%", display:"flex", alignItems:"center", gap:14, padding:"14px 20px", background:"transparent", border:"none", borderBottom:idx < hiddenRisks.length-1 ? "1px dashed rgba(124,101,204,0.12)" : "none", cursor:"pointer", textAlign:"left", transition:"background 0.15s", opacity:0.7 }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#f5f2fd"; e.currentTarget.style.opacity = "1" }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.opacity = "0.7" }}>
+                <span style={{ fontSize:11, fontWeight:700, color:"#c4bde0", width:24, fontFamily:"monospace", flexShrink:0 }}>A{idx+1}</span>
+                <div className={`w-10 h-10 rounded-xl ${ICON_BG[r.color]} flex items-center justify-center text-xl flex-shrink-0`} style={{ opacity:0.6 }}>{r.icon}</div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a", lineHeight:1.4 }}>{r.name}</div>
+                  <div style={{ fontSize:11, color:"#b0a8c8", marginTop:3 }}>{r.summary}</div>
+                </div>
+                <span style={{ fontSize:9, fontWeight:700, padding:"2px 8px", borderRadius:999, background:"#f3f4f6", color:"#9ca3af", border:"1px solid #e5e7eb", flexShrink:0, whiteSpace:"nowrap" }}>非表示（管理者のみ）</span>
+                <span style={{ ...LEVEL_STYLE[r.level], fontSize:10, padding:"3px 10px", borderRadius:999, flexShrink:0 }}>{r.level}</span>
+                <ChevronRight size={15} style={{ color:"#c4bde0", flexShrink:0 }} />
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <AnimatePresence>
         {selected && <RiskModal risk={selected} onClose={() => setSelected(null)} />}

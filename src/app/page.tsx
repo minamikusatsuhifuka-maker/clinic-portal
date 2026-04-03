@@ -231,7 +231,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.16 }}>
               {activePage === "home"       && <HomePage />}
-              {activePage === "risk"       && <RiskPage />}
+              {activePage === "risk"       && <RiskPage userRole={user.role} />}
               {activePage === "manual"     && <ManualPage />}
               {activePage === "matrix"     && <MatrixPage />}
               {activePage === "confidence" && <ConfidencePage />}
