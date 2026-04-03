@@ -12,6 +12,7 @@ import ManualPage from "@/components/ManualPage"
 import AdminPage from "@/components/AdminPage"
 import NearMissPage from "@/components/NearMissPage"
 import { MatrixPage, ConfidencePage } from "@/components/OtherPages"
+import AiAssistant from "@/components/AiAssistant"
 import { AnimatePresence, motion } from "framer-motion"
 
 export type UserRole = "staff" | "manager" | "admin"
@@ -250,6 +251,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
           </AnimatePresence>
         </main>
       </div>
+      <AiAssistant userRole={user.role} />
     </div>
   )
 }
