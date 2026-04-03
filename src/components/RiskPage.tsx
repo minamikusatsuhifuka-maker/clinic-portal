@@ -3,7 +3,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { RISKS, type Risk } from "@/data/risks"
 import { useAppStore } from "@/store/useAppStore"
-import { useEditStore } from "@/store/useEditStore"
+import { useEditStore, type EditableFlowStep } from "@/store/useEditStore"
 import { X, Send, ChevronRight, Phone, Pencil, Sparkles, CheckCircle2 } from "lucide-react"
 import AiAdviceBox from "@/components/AiAdviceBox"
 import EditContactModal from "@/components/EditContactModal"
@@ -20,12 +20,15 @@ const ICON_BG: Record<string, string> = {
 
 function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
   const { checkedItems, toggleCheck } = useAppStore()
-  const { riskContacts } = useEditStore()
+  const { riskContacts, riskFlows, updateRiskFlow, resetRiskFlow } = useEditStore()
   const [notified, setNotified] = useState(false)
   const [notifying, setNotifying] = useState(false)
   const [editingContact, setEditingContact] = useState(false)
 
   const contacts = riskContacts.find((rc) => rc.riskId === risk.id)?.contacts ?? risk.contacts
+  const flow = riskFlows[risk.id] ?? risk.flow
+  const [editingFlow, setEditingFlow] = useState(false)
+  const [editFlowSteps, setEditFlowSteps] = useState<EditableFlowStep[]>([])
   const checks = checkedItems[risk.id] ?? Array(risk.checklist.length).fill(false)
   const done = checks.filter(Boolean).length
   const progress = Math.round((done / risk.checklist.length) * 100)
@@ -127,18 +130,68 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
 
             {/* 対応フロー */}
             <div>
-              <h4 style={{ fontSize:13, fontWeight:700, color:"#3a2f5a", marginBottom:12 }}>📌 初動対応フロー</h4>
-              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                {risk.flow.map((step, i) => (
-                  <div key={i} style={{ display:"flex", gap:12 }}>
-                    <div style={{ width:28, height:28, borderRadius:"50%", background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, flexShrink:0, marginTop:2 }}>{i + 1}</div>
-                    <div>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a" }}>{step.title}</div>
-                      <div style={{ fontSize:12, color:"#7a6e96", marginTop:3, lineHeight:1.7 }}>{step.desc}</div>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+                <h4 style={{ fontSize:13, fontWeight:700, color:"#3a2f5a" }}>📌 初動対応フロー</h4>
+                <div style={{ display:"flex", gap:6 }}>
+                  {riskFlows[risk.id] && (
+                    <button onClick={() => { resetRiskFlow(risk.id); setEditingFlow(false) }}
+                      style={{ fontSize:11, padding:"4px 10px", borderRadius:8, border:"1px solid rgba(124,101,204,0.2)", background:"#fef2f2", color:"#f87171", cursor:"pointer" }}>
+                      リセット
+                    </button>
+                  )}
+                  <button onClick={() => { setEditFlowSteps(flow.map(s => ({ ...s }))); setEditingFlow(!editingFlow) }}
+                    style={{ display:"flex", alignItems:"center", gap:5, fontSize:11, color:"#7c65cc", border:"1px solid rgba(124,101,204,0.25)", background:"#f5f2fd", padding:"4px 10px", borderRadius:8, cursor:"pointer" }}>
+                    <Pencil size={11} />{editingFlow ? "完了" : "編集"}
+                  </button>
+                </div>
               </div>
+
+              {editingFlow ? (
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {editFlowSteps.map((step, i) => (
+                    <div key={i} style={{ background:"#f8f6fc", borderRadius:12, padding:12, border:"1px solid rgba(124,101,204,0.15)" }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+                        <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{i + 1}</div>
+                        <input value={step.title}
+                          onChange={e => { const s = [...editFlowSteps]; s[i] = { ...s[i], title: e.target.value }; setEditFlowSteps(s) }}
+                          style={{ flex:1, border:"1px solid rgba(124,101,204,0.2)", borderRadius:8, padding:"6px 10px", fontSize:12, fontWeight:600, color:"#3a2f5a", background:"#fff", outline:"none", fontFamily:"inherit" }} />
+                        <div style={{ display:"flex", gap:4 }}>
+                          <button onClick={() => { if(i > 0){ const s=[...editFlowSteps]; [s[i-1],s[i]]=[s[i],s[i-1]]; setEditFlowSteps(s) } }}
+                            style={{ width:24, height:24, borderRadius:6, border:"1px solid rgba(124,101,204,0.2)", background:"#fff", cursor:"pointer", fontSize:12, color:"#7c65cc" }}>↑</button>
+                          <button onClick={() => { if(i < editFlowSteps.length-1){ const s=[...editFlowSteps]; [s[i],s[i+1]]=[s[i+1],s[i]]; setEditFlowSteps(s) } }}
+                            style={{ width:24, height:24, borderRadius:6, border:"1px solid rgba(124,101,204,0.2)", background:"#fff", cursor:"pointer", fontSize:12, color:"#7c65cc" }}>↓</button>
+                          <button onClick={() => setEditFlowSteps(editFlowSteps.filter((_, j) => j !== i))}
+                            style={{ width:24, height:24, borderRadius:6, border:"1px solid rgba(239,68,68,0.2)", background:"#fef2f2", cursor:"pointer", fontSize:12, color:"#f87171" }}>×</button>
+                        </div>
+                      </div>
+                      <textarea value={step.desc}
+                        onChange={e => { const s = [...editFlowSteps]; s[i] = { ...s[i], desc: e.target.value }; setEditFlowSteps(s) }}
+                        rows={2}
+                        style={{ width:"100%", border:"1px solid rgba(124,101,204,0.2)", borderRadius:8, padding:"6px 10px", fontSize:12, color:"#7a6e96", background:"#fff", outline:"none", resize:"none", fontFamily:"inherit", lineHeight:1.6 }} />
+                    </div>
+                  ))}
+                  <button onClick={() => setEditFlowSteps([...editFlowSteps, { title:"新しいステップ", desc:"" }])}
+                    style={{ padding:"8px", borderRadius:10, border:"1.5px dashed rgba(124,101,204,0.3)", background:"transparent", color:"#a78bfa", fontSize:12, cursor:"pointer", fontWeight:600 }}>
+                    ＋ ステップを追加
+                  </button>
+                  <button onClick={() => { updateRiskFlow(risk.id, editFlowSteps); setEditingFlow(false) }}
+                    style={{ padding:"10px", borderRadius:12, background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", fontSize:13, fontWeight:700, border:"none", cursor:"pointer" }}>
+                    保存する
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                  {flow.map((step, i) => (
+                    <div key={i} style={{ display:"flex", gap:12 }}>
+                      <div style={{ width:28, height:28, borderRadius:"50%", background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, flexShrink:0, marginTop:2 }}>{i + 1}</div>
+                      <div>
+                        <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a" }}>{step.title}</div>
+                        <div style={{ fontSize:12, color:"#7a6e96", marginTop:3, lineHeight:1.7 }}>{step.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* 緊急連絡先 */}

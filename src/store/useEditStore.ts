@@ -22,16 +22,24 @@ export interface EditableRiskContact {
   contacts: ContactItem[]
 }
 
+export interface EditableFlowStep {
+  title: string
+  desc: string
+}
+
 interface EditStore {
   riskContacts: EditableRiskContact[]
   manuals: ManualItem[]
   riskVisibility: Record<number, boolean>
+  riskFlows: Record<number, EditableFlowStep[]>
   updateRiskContacts: (riskId: number, contacts: ContactItem[]) => void
   updateManual: (id: string, data: Partial<ManualItem>) => void
   addManual: (item: Omit<ManualItem, "id">) => void
   deleteManual: (id: string) => void
   toggleRiskVisibility: (riskId: number) => void
   setAllRiskVisibility: (visible: boolean) => void
+  updateRiskFlow: (riskId: number, steps: EditableFlowStep[]) => void
+  resetRiskFlow: (riskId: number) => void
 }
 
 const DEFAULT_CONTACTS: EditableRiskContact[] = RISKS.map((r) => ({
@@ -55,6 +63,7 @@ export const useEditStore = create<EditStore>()(
     (set) => ({
       riskContacts: DEFAULT_CONTACTS,
       riskVisibility: Object.fromEntries(RISKS.map((r) => [r.id, true])),
+      riskFlows: {},
       manuals: DEFAULT_MANUALS,
       updateRiskContacts: (riskId, contacts) =>
         set((state) => ({
@@ -74,6 +83,16 @@ export const useEditStore = create<EditStore>()(
         set((state) => ({
           manuals: state.manuals.filter((m) => m.id !== id),
         })),
+      updateRiskFlow: (riskId, steps) =>
+        set((state) => ({
+          riskFlows: { ...state.riskFlows, [riskId]: steps },
+        })),
+      resetRiskFlow: (riskId) =>
+        set((state) => {
+          const newFlows = { ...state.riskFlows }
+          delete newFlows[riskId]
+          return { riskFlows: newFlows }
+        }),
       toggleRiskVisibility: (riskId) =>
         set((state) => ({
           riskVisibility: {
