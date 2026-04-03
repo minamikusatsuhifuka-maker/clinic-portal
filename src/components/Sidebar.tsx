@@ -1,11 +1,13 @@
 "use client"
 import { motion } from "framer-motion"
 import { useAppStore } from "@/store/useAppStore"
+import { useEditStore } from "@/store/useEditStore"
+import { RISKS } from "@/data/risks"
 import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck } from "lucide-react"
 
 const NAV = [
   { id:"home",       icon:LayoutDashboard,   label:"ダッシュボード",   badge:null, alert:false },
-  { id:"risk",       icon:Shield,            label:"リスク管理",       badge:3,    alert:true  },
+  { id:"risk",       icon:Shield,            label:"リスク管理",       badge:null, alert:true  },
   { id:"manual",     icon:BookOpen,          label:"業務マニュアル",   badge:null, alert:false },
   { id:"matrix",     icon:Grid3X3,           label:"役割マトリクス",   badge:null, alert:false },
   { id:"confidence", icon:Star,              label:"4つの自信",        badge:null, alert:false },
@@ -22,6 +24,8 @@ const base:React.CSSProperties={width:"100%",display:"flex",alignItems:"center",
 
 export default function Sidebar() {
   const { activePage, setActivePage } = useAppStore()
+  const { riskVisibility } = useEditStore()
+  const riskBadge = RISKS.filter((r) => riskVisibility[r.id] !== false).length
   return (
     <aside style={{width:220,minWidth:220,background:"#fff",borderRight:"1px solid rgba(124,101,204,0.11)",height:"100vh",display:"flex",flexDirection:"column"}}>
       <div style={{padding:"20px 18px 16px",borderBottom:"1px solid rgba(124,101,204,0.09)"}}>
@@ -42,7 +46,7 @@ export default function Sidebar() {
               style={{...base,background:active?"#ede8fb":"transparent",border:active?"1px solid rgba(124,101,204,0.18)":"1px solid transparent",color:active?"#5f4ba8":"#7a6e96",fontWeight:active?600:400}}>
               <Icon size={15} style={{color:active?"#7c65cc":"#b0a8c8",flexShrink:0}}/>
               <span style={{flex:1,textAlign:"left"}}>{n.label}</span>
-              {n.badge&&<span style={{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:10,background:n.alert?"#fef2f2":"#edfbf4",color:n.alert?"#c0392b":"#166534",border:`1px solid ${n.alert?"#fca5a5":"#86efac"}`}}>{n.badge}</span>}
+              {(n.badge || n.id==="risk")&&<span style={{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:10,background:n.alert?"#fef2f2":"#edfbf4",color:n.alert?"#c0392b":"#166534",border:`1px solid ${n.alert?"#fca5a5":"#86efac"}`}}>{n.id==="risk"?riskBadge:n.badge}</span>}
             </motion.button>
           )
         })}

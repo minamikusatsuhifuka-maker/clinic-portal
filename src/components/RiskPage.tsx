@@ -243,7 +243,7 @@ export default function RiskPage() {
             style={{ width:"100%", display:"flex", alignItems:"center", gap:14, padding:"14px 20px", background:"transparent", border:"none", borderBottom:idx < filtered.length-1 ? "1px solid rgba(124,101,204,0.07)" : "none", cursor:"pointer", textAlign:"left", transition:"background 0.15s" }}
             onMouseEnter={e => (e.currentTarget.style.background = "#f8f6fc")}
             onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
-            <span style={{ fontSize:11, fontWeight:700, color:"#c4bde0", width:24, fontFamily:"monospace", flexShrink:0 }}>{String(r.id).padStart(2,"0")}</span>
+            <span style={{ fontSize:11, fontWeight:700, color:"#c4bde0", width:24, fontFamily:"monospace", flexShrink:0 }}>{String(idx+1).padStart(2,"0")}</span>
             <div className={`w-10 h-10 rounded-xl ${ICON_BG[r.color]} flex items-center justify-center text-xl flex-shrink-0`}>{r.icon}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a", lineHeight:1.4 }}>{r.name}</div>
