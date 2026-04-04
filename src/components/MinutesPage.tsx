@@ -89,13 +89,16 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
   const [staffRole, setStaffRole] = useState("staff")
 
   /* ── Refs ── */
-  const mrRef    = useRef<MediaRecorder | null>(null)
-  const srRef    = useRef<any>(null)
-  const msRef    = useRef<MediaStream | null>(null)
-  const acRef    = useRef<AudioContext | null>(null)
-  const anRef    = useRef<AnalyserNode | null>(null)
-  const laRef    = useRef<number | null>(null)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const mrRef       = useRef<MediaRecorder | null>(null)
+  const srRef       = useRef<any>(null)
+  const msRef       = useRef<MediaStream | null>(null)
+  const acRef       = useRef<AudioContext | null>(null)
+  const anRef       = useRef<AnalyserNode | null>(null)
+  const laRef       = useRef<number | null>(null)
+  const timerRef    = useRef<ReturnType<typeof setInterval> | null>(null)
+  const isRecRef    = useRef(false)
+  const whisperRef  = useRef<ReturnType<typeof setInterval> | null>(null)
+  const chunkBuf    = useRef<Blob[]>([])
 
   /* ── データ読み込み ── */
   const loadMinutes = useCallback(async () => {
@@ -142,77 +145,127 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
     acRef.current = null; anRef.current = null; setLvl(0)
   }
 
+  /* ── Whisperに10秒ごとに送信 ── */
+  const sendToWhisper = async () => {
+    if (chunkBuf.current.length === 0) return
+    const chunks = [...chunkBuf.current]
+    chunkBuf.current = []
+    const mimeType = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "audio/webm"
+    const blob = new Blob(chunks, { type: mimeType })
+    if (blob.size < 1000) return
+    try {
+      const form = new FormData()
+      form.append("audio", blob, `chunk.${mimeType === "audio/mp4" ? "mp4" : "webm"}`)
+      const res = await fetch("/api/transcribe", { method: "POST", body: form })
+      const data = await res.json()
+      if (data.ok && data.text?.trim()) {
+        setInp(p => p + data.text.trim() + "\n")
+        setInterim("")
+      }
+    } catch (e) {
+      console.error("Whisper error:", e)
+    }
+  }
+
   /* ── 録音 ── */
   const startRec = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       msRef.current = stream
       startLvl(stream)
+      isRecRef.current = true
+      chunkBuf.current = []
 
-      const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-      if (SR) {
-        const sr = new SR()
-        sr.lang = "ja-JP"; sr.continuous = true; sr.interimResults = true
-        sr.onresult = (e: any) => {
-          let fin = "", inter = ""
-          for (let i = e.resultIndex; i < e.results.length; i++) {
-            if (e.results[i].isFinal) fin += e.results[i][0].transcript
-            else inter += e.results[i][0].transcript
-          }
-          if (fin) setInp(p => p + fin + "\n")
-          setInterim(inter)
-        }
-        sr.start(); srRef.current = sr
+      // MediaRecorder（10秒ごとにWhisperへ送信）
+      const mimeType = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "audio/webm"
+      const mr = new MediaRecorder(stream, { mimeType })
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunkBuf.current.push(e.data)
       }
-
-      const mr = new MediaRecorder(stream)
       mr.start(1000)
       mrRef.current = mr
+
+      // 10秒ごとにWhisperへ送信
+      whisperRef.current = setInterval(sendToWhisper, 10000)
+
+      // Web Speech API（暫定リアルタイム表示用）
+      const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      if (SR) {
+        const startSR = () => {
+          if (!isRecRef.current) return
+          const sr = new SR()
+          sr.lang = "ja-JP"; sr.continuous = true; sr.interimResults = true
+          sr.onresult = (e: any) => {
+            let inter = ""
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+              if (!e.results[i].isFinal) inter += e.results[i][0].transcript
+            }
+            setInterim(inter)
+          }
+          sr.onerror = (e: any) => { if (e.error !== "no-speech") console.error("SR:", e.error) }
+          sr.onend = () => { if (isRecRef.current) try { startSR() } catch {} }
+          sr.start(); srRef.current = sr
+        }
+        startSR()
+      }
 
       setRecSt("recording")
       setElapsed(0)
       timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000)
-      setStatus("録音中...")
+      setStatus("録音中（Whisper書き起こし：10秒ごと）")
     } catch {
       setStatus("マイクの使用が許可されていません")
     }
   }
 
   const stopRec = () => {
+    isRecRef.current = false
     srRef.current?.stop(); srRef.current = null
     mrRef.current?.stop(); mrRef.current = null
     msRef.current?.getTracks().forEach(t => t.stop()); msRef.current = null
     stopLvl()
     if (timerRef.current) clearInterval(timerRef.current)
+    if (whisperRef.current) clearInterval(whisperRef.current)
+    sendToWhisper()
     setRecSt("inactive"); setInterim(""); setStatus("")
   }
 
   const pauseRec = () => {
+    isRecRef.current = false
     srRef.current?.stop(); srRef.current = null
     mrRef.current?.pause()
     if (timerRef.current) clearInterval(timerRef.current)
+    if (whisperRef.current) clearInterval(whisperRef.current)
+    sendToWhisper()
     setRecSt("paused"); setStatus("一時停止中")
   }
 
   const resumeRec = () => {
+    isRecRef.current = true
+    chunkBuf.current = []
     mrRef.current?.resume()
+    whisperRef.current = setInterval(sendToWhisper, 10000)
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (SR) {
-      const sr = new SR()
-      sr.lang = "ja-JP"; sr.continuous = true; sr.interimResults = true
-      sr.onresult = (e: any) => {
-        let fin = "", inter = ""
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          if (e.results[i].isFinal) fin += e.results[i][0].transcript
-          else inter += e.results[i][0].transcript
+      const startSR = () => {
+        if (!isRecRef.current) return
+        const sr = new SR()
+        sr.lang = "ja-JP"; sr.continuous = true; sr.interimResults = true
+        sr.onresult = (e: any) => {
+          let inter = ""
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (!e.results[i].isFinal) inter += e.results[i][0].transcript
+          }
+          setInterim(inter)
         }
-        if (fin) setInp(p => p + fin + "\n")
-        setInterim(inter)
+        sr.onerror = (e: any) => { if (e.error !== "no-speech") console.error("SR:", e.error) }
+        sr.onend = () => { if (isRecRef.current) try { startSR() } catch {} }
+        sr.start(); srRef.current = sr
       }
-      sr.start(); srRef.current = sr
+      startSR()
     }
     timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000)
-    setRecSt("recording"); setStatus("録音中...")
+    setRecSt("recording"); setStatus("録音中（Whisper書き起こし：10秒ごと）")
   }
 
   /* ── 議事録生成 ── */
