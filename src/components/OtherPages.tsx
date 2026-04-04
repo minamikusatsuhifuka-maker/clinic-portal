@@ -560,8 +560,8 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
     <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20, overflowX: "hidden" }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, width: "100%" }}>
         {scores.map((s) => (
-          <div key={s.label} className={`${s.bg} ${s.border} border rounded-2xl p-4`} style={{ minWidth: 0, overflow: "hidden" }}>
-            <div className="text-xl mb-2">{s.icon}</div>
+          <div key={s.label} className={`${s.bg} ${s.border} border rounded-2xl`} style={{ minWidth: 0, overflow: "visible", padding: "16px 16px 12px 16px" }}>
+            <div style={{ fontSize: 28, marginBottom: 8, lineHeight: 1 }}>{s.icon}</div>
             <div className={`text-[11px] font-semibold ${s.txt} mb-2 leading-tight`}>{s.label}</div>
             <div className={`text-3xl font-bold ${s.txt} leading-none`}>
               {s.val}<span className="text-sm font-normal opacity-60">点</span>
