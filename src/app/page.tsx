@@ -272,8 +272,8 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 }
 
 /* ───── ユーザー情報付きサイドバー ───── */
-import { useSettingsStore, FONTS } from "@/store/useSettingsStore"
-import type { FontChoice } from "@/store/useSettingsStore"
+import { useSettingsStore, FONTS, FONT_SIZES } from "@/store/useSettingsStore"
+import type { FontChoice, FontSize } from "@/store/useSettingsStore"
 import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun } from "lucide-react"
 
 const NAV = [
@@ -298,35 +298,46 @@ const LINKS = [
 
 function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
   const { activePage, setActivePage } = useAppStore()
-  const { font, darkMode } = useSettingsStore()
+  const { font, fontSize, darkMode } = useSettingsStore()
   const { riskVisibility } = useEditStore()
   const riskBadge = RISKS.filter((r) => riskVisibility[r.id] !== false).length
+  const dk = darkMode
+  const sbBg = dk ? "#1e2230" : "#ffffff"
+  const sbBorder = dk ? "0.5px solid rgba(255,255,255,0.08)" : "0.5px solid rgba(26,30,46,0.1)"
+  const sbDivider = dk ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(26,30,46,0.06)"
+  const sbText = dk ? "#f8f6f2" : "#1e2230"
+  const sbMuted = dk ? "rgba(245,242,237,0.5)" : "#6b7280"
+  const sbLabel = dk ? "rgba(245,242,237,0.35)" : "#9ca3af"
+  const sbInactive = dk ? "rgba(245,242,237,0.55)" : "#6b7280"
+  const sbHover = dk ? "rgba(255,255,255,0.06)" : "#f0ede8"
   const base: React.CSSProperties = {
     width: "100%", display: "flex", alignItems: "center", gap: 9,
     padding: "9px 10px", borderRadius: 10, marginBottom: 2,
     fontSize: 13, cursor: "pointer", border: "1px solid transparent", background: "transparent",
   }
   return (
-    <aside style={{ width: 220, minWidth: 220, background: "#1e2230", borderRight: "none", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+    <aside style={{ width: 220, minWidth: 220, background: sbBg, borderRight: sbBorder, height: "100vh", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "20px 18px 16px", borderBottom: sbDivider }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#b8975a,#d4b87a)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏥</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#f8f6f2" }}>CarePortal</div>
-            <div style={{ fontSize: 10, color: "rgba(245,242,237,0.5)", marginTop: 1 }}>南草津皮フ科</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: sbText }}>CarePortal</div>
+            <div style={{ fontSize: 10, color: sbMuted, marginTop: 1 }}>南草津皮フ科</div>
           </div>
         </div>
       </div>
       <nav style={{ flex: 1, padding: "10px", overflowY: "auto" }}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(245,242,237,0.35)", padding: "6px 8px 4px", letterSpacing: "0.1em" }}>MENU</div>
+        <div style={{ fontSize: 9, fontWeight: 700, color: sbLabel, padding: "6px 8px 4px", letterSpacing: "0.1em" }}>MENU</div>
         {NAV.map(n => {
           const Icon = n.icon
           const active = activePage === n.id
           if (n.id === "admin" && user.role === "staff") return null
           return (
             <button key={n.id} onClick={() => setActivePage(n.id)}
-              style={{ ...base, background: active ? "#ede8fb" : "transparent", border: active ? "1px solid rgba(124,101,204,0.18)" : "1px solid transparent", color: active ? "#5f4ba8" : "#7a6e96", fontWeight: active ? 600 : 400 }}>
-              <Icon size={15} style={{ color: active ? "#7c65cc" : "#b0a8c8", flexShrink: 0 }} />
+              style={{ ...base, background: active ? (dk ? "rgba(184,151,90,0.2)" : "#f0ede8") : "transparent", borderLeft: active ? "2px solid #b8975a" : "2px solid transparent", color: active ? (dk ? "#f8f6f2" : "#1e2230") : sbInactive, fontWeight: active ? 600 : 400 }}
+              onMouseEnter={e => { if (!active) e.currentTarget.style.background = sbHover }}
+              onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent" }}>
+              <Icon size={15} style={{ color: active ? "#b8975a" : sbMuted, flexShrink: 0 }} />
               <span style={{ flex: 1, textAlign: "left" }}>{n.label}</span>
               {(n.badge || n.id === "risk") && (
                 <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 10, background: n.alert ? "#fef2f2" : "#edfbf4", color: n.alert ? "#c0392b" : "#166534", border: `1px solid ${n.alert ? "#fca5a5" : "#86efac"}` }}>
@@ -336,36 +347,48 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
             </button>
           )
         })}
-        <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(245,242,237,0.35)", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>外部リンク</div>
+        <div style={{ fontSize: 9, fontWeight: 700, color: sbLabel, padding: "12px 8px 4px", letterSpacing: "0.1em" }}>外部リンク</div>
         {LINKS.map(l => (
           <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer"
-            style={{ ...base, textDecoration: "none", color: "rgba(245,242,237,0.55)" }}>
+            style={{ ...base, textDecoration: "none", color: sbInactive }}>
             <span style={{ fontSize: 15 }}>{l.emoji}</span>
             <span style={{ flex: 1 }}>{l.label}</span>
-            <ExternalLink size={10} style={{ color: "rgba(245,242,237,0.4)" }} />
+            <ExternalLink size={10} style={{ color: sbMuted }} />
           </a>
         ))}
-        <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(245,242,237,0.35)", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>設定</div>
+        <div style={{ fontSize: 9, fontWeight: 700, color: sbLabel, padding: "12px 8px 4px", letterSpacing: "0.1em" }}>設定</div>
         <div style={{ padding: "6px 8px 8px" }}>
-          <div style={{ fontSize: 10, color: "rgba(245,242,237,0.4)", marginBottom: 6 }}>フォント</div>
+          <div style={{ fontSize: 10, color: sbMuted, marginBottom: 6 }}>フォント</div>
           {(Object.entries(FONTS) as [FontChoice, typeof FONTS[FontChoice]][]).map(([key, f]) => (
             <button key={key}
               onClick={() => useSettingsStore.getState().setFont(key)}
-              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderRadius: 8, border: "none", background: font === key ? "rgba(184,151,90,0.2)" : "transparent", color: font === key ? "#f8f6f2" : "rgba(245,242,237,0.5)", fontSize: 12, fontWeight: font === key ? 600 : 400, cursor: "pointer", marginBottom: 2, fontFamily: f.value }}>
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderRadius: 8, border: "none", background: font === key ? (dk ? "rgba(184,151,90,0.2)" : "#f0ede8") : "transparent", color: font === key ? (dk ? "#f8f6f2" : "#1e2230") : sbInactive, fontSize: 12, fontWeight: font === key ? 600 : 400, cursor: "pointer", marginBottom: 2, fontFamily: f.value }}>
               <span>{f.label}</span>
               {font === key && <span style={{ fontSize: 10, color: "#b8975a" }}>✓</span>}
             </button>
           ))}
         </div>
-        <div style={{ padding: "6px 8px 4px" }}>
+        <div style={{ padding: "4px 8px 8px" }}>
+          <div style={{ fontSize: 10, color: sbMuted, marginBottom: 6 }}>文字サイズ</div>
+          <div style={{ display: "flex", gap: 4 }}>
+            {(Object.entries(FONT_SIZES) as [FontSize, typeof FONT_SIZES[FontSize]][]).map(([key, s]) => (
+              <button key={key}
+                onClick={() => useSettingsStore.getState().setFontSize(key)}
+                style={{ flex: 1, padding: "5px 0", borderRadius: 8, border: "none", background: fontSize === key ? (dk ? "rgba(184,151,90,0.2)" : "#f0ede8") : "transparent", color: fontSize === key ? (dk ? "#f8f6f2" : "#1e2230") : sbInactive, fontSize: 11, fontWeight: fontSize === key ? 600 : 400, cursor: "pointer" }}>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ padding: "4px 8px 4px" }}>
           <button onClick={() => useSettingsStore.getState().toggleDarkMode()}
-            style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "7px 8px", borderRadius: 8, border: "none", background: darkMode ? "rgba(184,151,90,0.2)" : "transparent", color: "rgba(245,242,237,0.55)", fontSize: 12, cursor: "pointer" }}>
-            {darkMode ? <Sun size={13} style={{ color: "#b8975a" }} /> : <Moon size={13} style={{ color: "rgba(245,242,237,0.4)" }} />}
-            <span>{darkMode ? "ライトモード" : "ダークモード"}</span>
+            style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "7px 8px", borderRadius: 8, border: "none", background: dk ? "rgba(184,151,90,0.2)" : "transparent", color: sbInactive, fontSize: 12, cursor: "pointer" }}>
+            {dk ? <Sun size={13} style={{ color: "#b8975a" }} /> : <Moon size={13} style={{ color: sbMuted }} />}
+            <span>{dk ? "ライトモード" : "ダークモード"}</span>
           </button>
         </div>
       </nav>
-      <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{ padding: "12px 14px", borderTop: sbDivider, display: "flex", alignItems: "center", gap: 10 }}>
         {user.photoURL ? (
           <img src={user.photoURL} alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
         ) : (
@@ -374,15 +397,15 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
           </div>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: "#f8f6f2", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
-          <div style={{ fontSize: 10, color: "rgba(245,242,237,0.45)", marginTop: 1 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: sbText, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
+          <div style={{ fontSize: 10, color: sbMuted, marginTop: 1 }}>
             {user.role === "admin" ? "👑 管理者" : user.role === "manager" ? "📋 マネージャー" : "一般スタッフ"}
           </div>
         </div>
         <button onClick={onLogout} title="ログアウト"
-          style={{ width: 26, height: 26, borderRadius: 8, background: "rgba(255,255,255,0.08)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(245,242,237,0.4)", flexShrink: 0 }}
+          style={{ width: 26, height: 26, borderRadius: 8, background: dk ? "rgba(255,255,255,0.08)" : "#f0ede8", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: sbMuted, flexShrink: 0 }}
           onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
-          onMouseLeave={e => (e.currentTarget.style.color = "rgba(245,242,237,0.4)")}>
+          onMouseLeave={e => (e.currentTarget.style.color = dk ? "rgba(245,242,237,0.4)" : "#6b7280")}>
           <LogOut size={12} />
         </button>
       </div>

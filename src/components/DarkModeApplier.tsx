@@ -1,13 +1,18 @@
 "use client"
 import { useEffect } from "react"
-import { useSettingsStore, FONTS } from "@/store/useSettingsStore"
+import { useSettingsStore, FONTS, FONT_SIZES } from "@/store/useSettingsStore"
 
 export default function DarkModeApplier() {
-  const { font, darkMode } = useSettingsStore()
+  const { font, fontSize, darkMode } = useSettingsStore()
 
   useEffect(() => {
     document.documentElement.style.setProperty("--app-font", FONTS[font].value)
   }, [font])
+
+  useEffect(() => {
+    document.documentElement.style.setProperty("--app-font-size", FONT_SIZES[fontSize].value)
+    document.body.style.fontSize = FONT_SIZES[fontSize].value
+  }, [fontSize])
 
   useEffect(() => {
     const root = document.documentElement

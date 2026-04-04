@@ -382,7 +382,7 @@ export function MatrixPage() {
     { key: "q4", quadrantLabel: "第4象限", title: "非重要・非緊急", sub: "削減・排除", cls: "bg-slate-50 border-slate-200 text-slate-500", dot: "text-slate-400", items: m.q4 },
   ]
   return (
-    <div className="p-6" style={{ maxWidth: 900 }}>
+    <div style={{ padding: 24 }}>
       <div className="flex gap-2 mb-5 flex-wrap">
         {[
           { id:"nurse",       label:"看護師"    },
