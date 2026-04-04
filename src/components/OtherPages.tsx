@@ -573,16 +573,17 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
         {scores.map((s) => (
-          <div key={s.label} className="bg-white rounded-2xl border border-violet-100 shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-violet-50">
-              <h4 className="font-semibold text-violet-800 text-sm">{s.icon} {s.label}向上施策</h4>
+          <div key={s.label} style={{ background: "var(--surface-bg)", borderRadius: 14, border: "0.5px solid var(--border-color)", overflow: "visible" }}>
+            <div style={{ padding: "14px 16px 10px", borderBottom: "0.5px solid var(--border-color)", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 18 }}>{s.icon}</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>{s.label}向上施策</span>
             </div>
-            <div className="p-4 space-y-2">
+            <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 6 }}>
               {s.actions.map((a) => (
-                <div key={a} className="flex items-start gap-2 text-sm text-violet-700">
-                  <span className={`text-[10px] mt-0.5 flex-shrink-0 ${s.txt}`}>▸</span>{a}
+                <div key={a} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: "var(--text-primary)", lineHeight: 1.6 }}>
+                  <span style={{ fontSize: 10, marginTop: 4, flexShrink: 0, color: "var(--text-secondary)" }}>▸</span>{a}
                 </div>
               ))}
             </div>
