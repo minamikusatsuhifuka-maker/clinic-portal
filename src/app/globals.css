@@ -19,9 +19,11 @@ body {
   color: var(--text-primary);
   font-family: var(--app-font, 'Noto Sans JP', -apple-system, 'Hiragino Sans', sans-serif);
   -webkit-font-smoothing: antialiased;
-  font-size: 14px;
+  font-size: var(--app-font-size, 14px);
   line-height: 1.7;
 }
+
+html.dark * { color: inherit; }
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }

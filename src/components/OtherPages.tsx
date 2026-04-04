@@ -557,10 +557,10 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
       actions:["1on1面談の定期実施","スキルマップの作成と可視化","成果を称える表彰制度"] },
   ]
   return (
-    <div className="p-6 space-y-5 max-w-4xl">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ maxWidth: "100%" }}>
+    <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ width: "100%", boxSizing: "border-box" }}>
         {scores.map((s) => (
-          <div key={s.label} className={`${s.bg} ${s.border} border rounded-2xl p-4`}>
+          <div key={s.label} className={`${s.bg} ${s.border} border rounded-2xl p-4`} style={{ minWidth: 0, overflow: "hidden" }}>
             <div className="text-xl mb-2">{s.icon}</div>
             <div className={`text-[11px] font-semibold ${s.txt} mb-2 leading-tight`}>{s.label}</div>
             <div className={`text-3xl font-bold ${s.txt} leading-none`}>
@@ -604,7 +604,7 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
                 {section.actions.map((action, ai) => (
                   <div key={ai} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
                     <div style={{ width:5, height:5, borderRadius:"50%", background:section.color, marginTop:8, flexShrink:0 }} />
-                    <p style={{ fontSize:13, color:"#2d2640", margin:0, lineHeight:1.75 }}>{action}</p>
+                    <p style={{ fontSize:13, color:"var(--text-primary)", margin:0, lineHeight:1.75 }}>{action}</p>
                   </div>
                 ))}
               </div>
@@ -625,7 +625,7 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
                 {section.actions.map((action, ai) => (
                   <div key={ai} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
                     <div style={{ width:5, height:5, borderRadius:"50%", background:section.color, marginTop:8, flexShrink:0 }} />
-                    <p style={{ fontSize:13, color:"#2d2640", margin:0, lineHeight:1.75 }}>{action}</p>
+                    <p style={{ fontSize:13, color:"var(--text-primary)", margin:0, lineHeight:1.75 }}>{action}</p>
                   </div>
                 ))}
               </div>

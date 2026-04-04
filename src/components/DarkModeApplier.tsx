@@ -10,7 +10,7 @@ export default function DarkModeApplier() {
   }, [font])
 
   useEffect(() => {
-    document.documentElement.style.setProperty("--app-font-size", FONT_SIZES[fontSize].value)
+    document.documentElement.style.fontSize = FONT_SIZES[fontSize].value
     document.body.style.fontSize = FONT_SIZES[fontSize].value
   }, [fontSize])
 
@@ -20,11 +20,11 @@ export default function DarkModeApplier() {
       root.style.setProperty("--page-bg", "#111318")
       root.style.setProperty("--surface-bg", "#1e2230")
       root.style.setProperty("--subtle-bg", "#252836")
-      root.style.setProperty("--text-primary", "#e8e4dc")
-      root.style.setProperty("--text-secondary", "#9a9aaa")
+      root.style.setProperty("--text-primary", "#f0ede8")
+      root.style.setProperty("--text-secondary", "#b0adb8")
       root.style.setProperty("--border-color", "rgba(255,255,255,0.1)")
       document.body.style.background = "#111318"
-      document.body.style.color = "#e8e4dc"
+      document.body.style.color = "#f0ede8"
     } else {
       root.style.setProperty("--page-bg", "#f8f6f2")
       root.style.setProperty("--surface-bg", "#ffffff")
