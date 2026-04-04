@@ -390,7 +390,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
       <AnimatePresence>
         {status && (
           <motion.div initial={{ opacity:0,y:-4 }} animate={{ opacity:1,y:0 }} exit={{ opacity:0 }}
-            style={{ marginBottom: 14, padding: "9px 14px", borderRadius: 10, background: "#f5f2fd", fontSize: 12, color: "#4e429a" }}>
+            style={{ marginBottom: 14, padding: "9px 14px", borderRadius: 10, background: "#f0ede8", fontSize: 12, color: "#4e429a" }}>
             {status}
           </motion.div>
         )}
@@ -450,7 +450,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
 
             {/* タイトル */}
             <input value={title} onChange={e => setTitle(e.target.value)} placeholder="議事録タイトル（例：4月スタッフ会議）"
-              style={{ width:"100%",border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f8f6fc",outline:"none",marginBottom:10,fontFamily:"inherit" }} />
+              style={{ width:"100%",border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f0ede8",outline:"none",marginBottom:10,fontFamily:"inherit" }} />
 
             {/* 書き起こしテキスト */}
             <div style={{ position: "relative" }}>
@@ -467,7 +467,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
             {/* アクション */}
             <div style={{ display:"flex",gap:8,marginTop:10,flexWrap:"wrap" }}>
               <button onClick={fixTypos} disabled={typoLd || !inp.trim()}
-                style={{ display:"flex",alignItems:"center",gap:6,padding:"8px 14px",borderRadius:10,border:"1px solid rgba(100,80,180,0.2)",background:"#f5f2fd",color:"#4e429a",fontSize:12,cursor:"pointer",opacity:typoLd||!inp.trim()?0.5:1 }}>
+                style={{ display:"flex",alignItems:"center",gap:6,padding:"8px 14px",borderRadius:10,border:"1px solid rgba(100,80,180,0.2)",background:"#f0ede8",color:"#4e429a",fontSize:12,cursor:"pointer",opacity:typoLd||!inp.trim()?0.5:1 }}>
                 {typoLd ? <Loader2 size={13} style={{animation:"spin 1s linear infinite"}} /> : <RefreshCw size={13} />}
                 誤字修正
               </button>
@@ -503,7 +503,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
           <div style={{ ...card, padding: 20 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "#2d2640", marginBottom: 12 }}>✏️ テキストから議事録を作成</div>
             <input value={manTitle} onChange={e => setManTitle(e.target.value)} placeholder="タイトル"
-              style={{ width:"100%",border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f8f6fc",outline:"none",marginBottom:8,fontFamily:"inherit" }} />
+              style={{ width:"100%",border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f0ede8",outline:"none",marginBottom:8,fontFamily:"inherit" }} />
             <textarea value={manInp} onChange={e => setManInp(e.target.value)} rows={5}
               placeholder="会議メモ・議事メモを貼り付けてください"
               style={{ width:"100%",border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"10px 12px",fontSize:13,color:"#1e1a2e",background:"#fafafe",outline:"none",resize:"vertical",fontFamily:"inherit",lineHeight:1.75 }} />
@@ -532,7 +532,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
                     await genMinutes(texts, "統合議事録")
                     setSel([]); setMergeLd(false)
                   }} disabled={mergeLd}
-                    style={{ fontSize:11,padding:"5px 12px",borderRadius:8,border:"1px solid rgba(100,80,180,0.3)",background:"#f5f2fd",color:"#4e429a",cursor:"pointer" }}>
+                    style={{ fontSize:11,padding:"5px 12px",borderRadius:8,border:"1px solid rgba(100,80,180,0.3)",background:"#f0ede8",color:"#4e429a",cursor:"pointer" }}>
                     {mergeLd ? <Loader2 size={11} style={{animation:"spin 1s linear infinite"}} /> : `${sel.length}件を統合`}
                   </button>
                 )}
@@ -563,7 +563,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
                     {openId === m.id && (
                       <motion.div initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} style={{overflow:"hidden"}}>
                         <div style={{ padding:"0 18px 16px" }}>
-                          <pre style={{ fontSize:12,color:"#2d2640",lineHeight:1.85,whiteSpace:"pre-wrap",background:"#f8f6fc",padding:14,borderRadius:12,fontFamily:"inherit",margin:0 }}>
+                          <pre style={{ fontSize:12,color:"#2d2640",lineHeight:1.85,whiteSpace:"pre-wrap",background:"#f0ede8",padding:14,borderRadius:12,fontFamily:"inherit",margin:0 }}>
                             {m.output_text || m.input_text}
                           </pre>
                         </div>
@@ -603,13 +603,13 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
             <input value={newTitle} onChange={e => setNewTitle(e.target.value)}
               onKeyDown={e => e.key === "Enter" && addTask()}
               placeholder="タスクを追加... (Enterで追加)"
-              style={{ flex:1,minWidth:180,border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f8f6fc",outline:"none",fontFamily:"inherit" }} />
+              style={{ flex:1,minWidth:180,border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f0ede8",outline:"none",fontFamily:"inherit" }} />
             <select value={newRole} onChange={e => setNewRole(e.target.value)}
-              style={{ border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 10px",fontSize:12,color:"#1e1a2e",background:"#f8f6fc",outline:"none" }}>
+              style={{ border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 10px",fontSize:12,color:"#1e1a2e",background:"#f0ede8",outline:"none" }}>
               {Object.entries(ROLE_COLORS).map(([r,rc]) => <option key={r} value={r}>{rc.label}</option>)}
             </select>
             <select value={newCat} onChange={e => setNewCat(e.target.value)}
-              style={{ border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 10px",fontSize:12,color:"#1e1a2e",background:"#f8f6fc",outline:"none" }}>
+              style={{ border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 10px",fontSize:12,color:"#1e1a2e",background:"#f0ede8",outline:"none" }}>
               {TASK_CATS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
             </select>
             <button onClick={addTask}
@@ -681,7 +681,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
                       <div style={{ display:"flex",gap:5,marginTop:4,flexWrap:"wrap" }}>
                         <span style={{ fontSize:10,padding:"1px 6px",borderRadius:999,background:rc.bg,border:`1px solid ${rc.border}`,color:rc.text }}>{rc.label}</span>
                         <span style={{ fontSize:10,padding:"1px 6px",borderRadius:999,background:qd.bg,color:qd.color }}>{qd.label}</span>
-                        <span style={{ fontSize:10,padding:"1px 6px",borderRadius:999,background:"#f5f2fd",color:"#4e429a" }}>{TASK_CATS.find(c=>c.id===t.category)?.label}</span>
+                        <span style={{ fontSize:10,padding:"1px 6px",borderRadius:999,background:"#f0ede8",color:"#4e429a" }}>{TASK_CATS.find(c=>c.id===t.category)?.label}</span>
                         {t.due_date && <span style={{ fontSize:10,color:"#8a82a8" }}>期限: {toJST(t.due_date)}</span>}
                         {t.assignee && <span style={{ fontSize:10,color:"#8a82a8" }}>担当: {t.assignee}</span>}
                       </div>
@@ -713,7 +713,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
                       return (
                         <div key={t.id}>
                           {showDate && <div style={{ fontSize:12,fontWeight:700,color:"#4e429a",padding:"10px 0 5px" }}>{toJST(t.due_date)}</div>}
-                          <div style={{ display:"flex",gap:10,alignItems:"center",padding:"8px 12px",background:"#f8f6fc",borderRadius:10,marginBottom:3 }}>
+                          <div style={{ display:"flex",gap:10,alignItems:"center",padding:"8px 12px",background:"#f0ede8",borderRadius:10,marginBottom:3 }}>
                             <input type="checkbox" checked={t.done} onChange={e => toggleTask(t.id, e.target.checked)} />
                             <div style={{ fontSize:13,color:"#1e1a2e",flex:1,lineHeight:1.5 }}>{t.title}</div>
                             <span style={{ fontSize:10,padding:"1px 6px",borderRadius:999,background:rc.bg,border:`1px solid ${rc.border}`,color:rc.text,flexShrink:0 }}>{rc.label}</span>
@@ -730,7 +730,7 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
                         {noDue.map(t => {
                           const rc = ROLE_COLORS[t.role_level] || ROLE_COLORS.staff
                           return (
-                            <div key={t.id} style={{ display:"flex",gap:10,alignItems:"center",padding:"8px 12px",background:"#f8f6fc",borderRadius:10,marginBottom:3 }}>
+                            <div key={t.id} style={{ display:"flex",gap:10,alignItems:"center",padding:"8px 12px",background:"#f0ede8",borderRadius:10,marginBottom:3 }}>
                               <input type="checkbox" checked={t.done} onChange={e => toggleTask(t.id, e.target.checked)} />
                               <div style={{ fontSize:13,color:"#1e1a2e",flex:1 }}>{t.title}</div>
                               <span style={{ fontSize:10,padding:"1px 6px",borderRadius:999,background:rc.bg,border:`1px solid ${rc.border}`,color:rc.text,flexShrink:0 }}>{rc.label}</span>
@@ -757,9 +757,9 @@ export default function MinutesPage({ userRole = "staff" }: { userRole?: string 
             <input value={staffName} onChange={e => setStaffName(e.target.value)}
               onKeyDown={e => e.key === "Enter" && addStaff()}
               placeholder="スタッフ名（Enterで追加）"
-              style={{ flex:1,minWidth:140,border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f8f6fc",outline:"none",fontFamily:"inherit" }} />
+              style={{ flex:1,minWidth:140,border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 12px",fontSize:13,color:"#1e1a2e",background:"#f0ede8",outline:"none",fontFamily:"inherit" }} />
             <select value={staffRole} onChange={e => setStaffRole(e.target.value)}
-              style={{ border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 10px",fontSize:12,color:"#1e1a2e",background:"#f8f6fc",outline:"none" }}>
+              style={{ border:"1px solid rgba(100,80,180,0.2)",borderRadius:10,padding:"8px 10px",fontSize:12,color:"#1e1a2e",background:"#f0ede8",outline:"none" }}>
               {Object.entries(ROLE_COLORS).map(([r,rc]) => <option key={r} value={r}>{rc.label}</option>)}
             </select>
             <button onClick={addStaff}

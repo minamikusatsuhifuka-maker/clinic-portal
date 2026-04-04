@@ -382,7 +382,7 @@ export function MatrixPage() {
     { key: "q4", quadrantLabel: "第4象限", title: "非重要・非緊急", sub: "削減・排除", cls: "bg-slate-50 border-slate-200 text-slate-500", dot: "text-slate-400", items: m.q4 },
   ]
   return (
-    <div className="p-6 max-w-3xl">
+    <div className="p-6" style={{ maxWidth: 900 }}>
       <div className="flex gap-2 mb-5 flex-wrap">
         {[
           { id:"nurse",       label:"看護師"    },
@@ -592,7 +592,7 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
       {/* 役職別セクション */}
       {isManager ? (
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f5f2fd", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
+          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f0ede8", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
             👑 管理者・マネージャー専用：4つの自信を組織に根づかせる施策
           </div>
           {MANAGER_ACTIONS.map((section, si) => (
@@ -613,7 +613,7 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
         </div>
       ) : (
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f5f2fd", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
+          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f0ede8", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
             🌱 スタッフ向け：4つの自信を育む毎日の行動と考え方
           </div>
           {STAFF_ACTIONS.map((section, si) => (

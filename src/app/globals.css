@@ -4,9 +4,9 @@
 :root {
   --bg-page:    #f8f6f2;
   --bg-surface: #ffffff;
-  --bg-subtle:  #edeae4;
+  --bg-subtle:  #f0ede8;
   --navy:       #1e2230;
-  --muted:      #7a7e8e;
+  --muted:      #6b7280;
   --border:     rgba(30,34,48,0.1);
   --gold:       #b8975a;
 }
@@ -28,18 +28,17 @@ body {
 
 button { transition: all 0.15s ease; }
 input, textarea, select { font-family: inherit; color: #1e2230; }
-::placeholder { color: #7a7e8e; opacity: 0.7; }
+::placeholder { color: #6b7280; opacity: 0.7; }
 
 /* ダークモード */
-.dark body {
-  background: #13151f !important;
-  color: #e8e4dc !important;
+html.dark body {
+  background: #111318 !important;
+  color: #e8e6e0 !important;
 }
 
-.dark input, .dark textarea, .dark select {
-  color: #e8e4dc !important;
+html.dark input, html.dark textarea, html.dark select {
+  color: #e8e6e0 !important;
 }
 
-.dark ::placeholder { color: #6b6e7a; }
-
-.dark ::-webkit-scrollbar-thumb { background: rgba(232,228,220,0.15); }
+html.dark ::placeholder { color: #6b6e7a; }
+html.dark ::-webkit-scrollbar-thumb { background: rgba(232,228,220,0.15); }

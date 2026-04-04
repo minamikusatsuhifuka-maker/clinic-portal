@@ -97,7 +97,7 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
                   <span style={{ fontSize:20, flexShrink:0 }}>🌸</span>
                   <div>
                     <div style={{ fontSize:11, fontWeight:700, color:"#7c65cc", marginBottom:4, letterSpacing:"0.04em" }}>新人スタッフへ</div>
-                    <div style={{ fontSize:13, color:"#3a2f5a", lineHeight:1.7 }}>{risk.newStaffTips}</div>
+                    <div style={{ fontSize:13, color:"#1e2230", lineHeight:1.7 }}>{risk.newStaffTips}</div>
                   </div>
                 </div>
               </div>
@@ -131,7 +131,7 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
             {/* 対応フロー */}
             <div>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-                <h4 style={{ fontSize:13, fontWeight:700, color:"#3a2f5a" }}>📌 初動対応フロー</h4>
+                <h4 style={{ fontSize:13, fontWeight:700, color:"#1e2230" }}>📌 初動対応フロー</h4>
                 <div style={{ display:"flex", gap:6 }}>
                   {riskFlows[risk.id] && (
                     <button onClick={() => { resetRiskFlow(risk.id); setEditingFlow(false) }}
@@ -140,7 +140,7 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
                     </button>
                   )}
                   <button onClick={() => { setEditFlowSteps(flow.map(s => ({ ...s }))); setEditingFlow(!editingFlow) }}
-                    style={{ display:"flex", alignItems:"center", gap:5, fontSize:11, color:"#7c65cc", border:"1px solid rgba(124,101,204,0.25)", background:"#f5f2fd", padding:"4px 10px", borderRadius:8, cursor:"pointer" }}>
+                    style={{ display:"flex", alignItems:"center", gap:5, fontSize:11, color:"#7c65cc", border:"1px solid rgba(124,101,204,0.25)", background:"#f0ede8", padding:"4px 10px", borderRadius:8, cursor:"pointer" }}>
                     <Pencil size={11} />{editingFlow ? "完了" : "編集"}
                   </button>
                 </div>
@@ -149,12 +149,12 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
               {editingFlow ? (
                 <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                   {editFlowSteps.map((step, i) => (
-                    <div key={i} style={{ background:"#f8f6fc", borderRadius:12, padding:12, border:"1px solid rgba(124,101,204,0.15)" }}>
+                    <div key={i} style={{ background:"#f0ede8", borderRadius:12, padding:12, border:"1px solid rgba(124,101,204,0.15)" }}>
                       <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                         <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{i + 1}</div>
                         <input value={step.title}
                           onChange={e => { const s = [...editFlowSteps]; s[i] = { ...s[i], title: e.target.value }; setEditFlowSteps(s) }}
-                          style={{ flex:1, border:"1px solid rgba(124,101,204,0.2)", borderRadius:8, padding:"6px 10px", fontSize:12, fontWeight:600, color:"#3a2f5a", background:"#fff", outline:"none", fontFamily:"inherit" }} />
+                          style={{ flex:1, border:"1px solid rgba(124,101,204,0.2)", borderRadius:8, padding:"6px 10px", fontSize:12, fontWeight:600, color:"#1e2230", background:"#fff", outline:"none", fontFamily:"inherit" }} />
                         <div style={{ display:"flex", gap:4 }}>
                           <button onClick={() => { if(i > 0){ const s=[...editFlowSteps]; [s[i-1],s[i]]=[s[i],s[i-1]]; setEditFlowSteps(s) } }}
                             style={{ width:24, height:24, borderRadius:6, border:"1px solid rgba(124,101,204,0.2)", background:"#fff", cursor:"pointer", fontSize:12, color:"#7c65cc" }}>↑</button>
@@ -167,7 +167,7 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
                       <textarea value={step.desc}
                         onChange={e => { const s = [...editFlowSteps]; s[i] = { ...s[i], desc: e.target.value }; setEditFlowSteps(s) }}
                         rows={2}
-                        style={{ width:"100%", border:"1px solid rgba(124,101,204,0.2)", borderRadius:8, padding:"6px 10px", fontSize:12, color:"#7a6e96", background:"#fff", outline:"none", resize:"none", fontFamily:"inherit", lineHeight:1.6 }} />
+                        style={{ width:"100%", border:"1px solid rgba(124,101,204,0.2)", borderRadius:8, padding:"6px 10px", fontSize:12, color:"#6b7280", background:"#fff", outline:"none", resize:"none", fontFamily:"inherit", lineHeight:1.6 }} />
                     </div>
                   ))}
                   <button onClick={() => setEditFlowSteps([...editFlowSteps, { title:"新しいステップ", desc:"" }])}
@@ -185,8 +185,8 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
                     <div key={i} style={{ display:"flex", gap:12 }}>
                       <div style={{ width:28, height:28, borderRadius:"50%", background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, flexShrink:0, marginTop:2 }}>{i + 1}</div>
                       <div>
-                        <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a" }}>{step.title}</div>
-                        <div style={{ fontSize:12, color:"#7a6e96", marginTop:3, lineHeight:1.7 }}>{step.desc}</div>
+                        <div style={{ fontSize:13, fontWeight:600, color:"#1e2230" }}>{step.title}</div>
+                        <div style={{ fontSize:12, color:"#6b7280", marginTop:3, lineHeight:1.7 }}>{step.desc}</div>
                       </div>
                     </div>
                   ))}
@@ -197,24 +197,24 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
             {/* 緊急連絡先 */}
             <div>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
-                <h4 style={{ fontSize:13, fontWeight:700, color:"#3a2f5a" }}>📞 緊急連絡先</h4>
+                <h4 style={{ fontSize:13, fontWeight:700, color:"#1e2230" }}>📞 緊急連絡先</h4>
                 <button onClick={() => setEditingContact(true)}
-                  style={{ display:"flex", alignItems:"center", gap:5, fontSize:11, color:"#7c65cc", border:"1px solid rgba(124,101,204,0.25)", background:"#f5f2fd", padding:"4px 10px", borderRadius:8, cursor:"pointer" }}>
+                  style={{ display:"flex", alignItems:"center", gap:5, fontSize:11, color:"#7c65cc", border:"1px solid rgba(124,101,204,0.25)", background:"#f0ede8", padding:"4px 10px", borderRadius:8, cursor:"pointer" }}>
                   <Pencil size={11} />編集
                 </button>
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
                 {contacts.map((c, i) => (
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"#f8f6fc", borderRadius:12, padding:"10px 14px" }}>
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"#f0ede8", borderRadius:12, padding:"10px 14px" }}>
                     <span style={{ fontSize:18, flexShrink:0 }}>{c.icon}</span>
-                    <div style={{ flex:1, fontSize:12, fontWeight:600, color:"#3a2f5a" }}>{c.name}</div>
+                    <div style={{ flex:1, fontSize:12, fontWeight:600, color:"#1e2230" }}>{c.name}</div>
                     {c.phone !== "未定" ? (
                       <a href={`tel:${c.phone}`}
                         style={{ display:"flex", alignItems:"center", gap:6, background:"white", border:"1px solid rgba(124,101,204,0.2)", color:"#7c65cc", fontSize:12, fontWeight:600, padding:"6px 12px", borderRadius:10, textDecoration:"none" }}>
                         <Phone size={11} />{c.phone}
                       </a>
                     ) : (
-                      <span style={{ fontSize:11, color:"#b0a8c8", background:"white", border:"1px solid rgba(124,101,204,0.15)", padding:"6px 12px", borderRadius:10 }}>後日設定</span>
+                      <span style={{ fontSize:11, color:"#6b7280", background:"white", border:"1px solid rgba(124,101,204,0.15)", padding:"6px 12px", borderRadius:10 }}>後日設定</span>
                     )}
                   </div>
                 ))}
@@ -227,7 +227,7 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
             {/* チェックリスト */}
             <div>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
-                <h4 style={{ fontSize:13, fontWeight:700, color:"#3a2f5a" }}>☑ 初動チェックリスト</h4>
+                <h4 style={{ fontSize:13, fontWeight:700, color:"#1e2230" }}>☑ 初動チェックリスト</h4>
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                   <div style={{ width:80, height:6, background:"#f0ecfa", borderRadius:3, overflow:"hidden" }}>
                     <div style={{ width:`${progress}%`, height:"100%", background:"linear-gradient(90deg,#a78bfa,#f472b6)", borderRadius:3, transition:"width 0.3s" }} />
@@ -301,8 +301,8 @@ export default function RiskPage({ userRole }: { userRole?: string }) {
             <span style={{ fontSize:11, fontWeight:700, color:"#c4bde0", width:24, fontFamily:"monospace", flexShrink:0 }}>{String(idx+1).padStart(2,"0")}</span>
             <div className={`w-10 h-10 rounded-xl ${ICON_BG[r.color]} flex items-center justify-center text-xl flex-shrink-0`}>{r.icon}</div>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a", lineHeight:1.4 }}>{r.name}</div>
-              <div style={{ fontSize:11, color:"#b0a8c8", marginTop:3 }}>{r.summary}</div>
+              <div style={{ fontSize:13, fontWeight:600, color:"#1e2230", lineHeight:1.4 }}>{r.name}</div>
+              <div style={{ fontSize:11, color:"#6b7280", marginTop:3 }}>{r.summary}</div>
             </div>
             <span style={{ ...LEVEL_STYLE[r.level], fontSize:10, padding:"3px 10px", borderRadius:999, flexShrink:0 }}>{r.level}</span>
             <ChevronRight size={15} style={{ color:"#c4bde0", flexShrink:0 }} />
@@ -313,7 +313,7 @@ export default function RiskPage({ userRole }: { userRole?: string }) {
       {/* 管理者専用：非表示リスク項目 */}
       {isAdminOrManager && hiddenRisks.length > 0 && (
         <div style={{ marginTop:24 }}>
-          <div style={{ fontSize:13, fontWeight:700, color:"#7a6e96", marginBottom:10, display:"flex", alignItems:"center", gap:8 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#6b7280", marginBottom:10, display:"flex", alignItems:"center", gap:8 }}>
             <span>🔒</span> 管理者のみ表示（スタッフ非表示項目）
           </div>
           <div style={{ background:"#fafafa", borderRadius:20, border:"2px dashed rgba(124,101,204,0.18)", overflow:"hidden" }}>
@@ -327,8 +327,8 @@ export default function RiskPage({ userRole }: { userRole?: string }) {
                 <span style={{ fontSize:11, fontWeight:700, color:"#c4bde0", width:24, fontFamily:"monospace", flexShrink:0 }}>A{idx+1}</span>
                 <div className={`w-10 h-10 rounded-xl ${ICON_BG[r.color]} flex items-center justify-center text-xl flex-shrink-0`} style={{ opacity:0.6 }}>{r.icon}</div>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a", lineHeight:1.4 }}>{r.name}</div>
-                  <div style={{ fontSize:11, color:"#b0a8c8", marginTop:3 }}>{r.summary}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#1e2230", lineHeight:1.4 }}>{r.name}</div>
+                  <div style={{ fontSize:11, color:"#6b7280", marginTop:3 }}>{r.summary}</div>
                 </div>
                 <span style={{ fontSize:9, fontWeight:700, padding:"2px 8px", borderRadius:999, background:"#f3f4f6", color:"#9ca3af", border:"1px solid #e5e7eb", flexShrink:0, whiteSpace:"nowrap" }}>非表示（管理者のみ）</span>
                 <span style={{ ...LEVEL_STYLE[r.level], fontSize:10, padding:"3px 10px", borderRadius:999, flexShrink:0 }}>{r.level}</span>

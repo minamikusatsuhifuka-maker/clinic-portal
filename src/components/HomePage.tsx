@@ -17,8 +17,8 @@ export default function HomePage() {
     <motion.div variants={cont} initial="hidden" animate="show" style={{padding:24,maxWidth:900,display:"flex",flexDirection:"column",gap:14}}>
       <motion.div variants={item} style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
         <div>
-          <h1 style={{fontSize:20,fontWeight:700,color:"#3a2f5a"}}>おはようございます 🌸</h1>
-          <p style={{fontSize:12,color:"#b0a8c8",marginTop:3}}>{dateStr}</p>
+          <h1 style={{fontSize:20,fontWeight:700,color:"#1e2230"}}>おはようございます 🌸</h1>
+          <p style={{fontSize:12,color:"#6b7280",marginTop:3}}>{dateStr}</p>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:6,background:"#edfbf4",border:"1px solid #86efac",padding:"6px 14px",borderRadius:999,fontSize:11,fontWeight:600,color:"#166634"}}>
           <span style={{width:7,height:7,borderRadius:"50%",background:"#22c55e",display:"inline-block"}}/>Chatwork 連携中
@@ -33,8 +33,8 @@ export default function HomePage() {
             <div style={{ width:36, height:36, borderRadius:"50%", background:"linear-gradient(135deg,#fbbf24,#f59e0b)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>👑</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:11, color:"#b45309", fontWeight:700, marginBottom:2 }}>院長メッセージ · {latestMsg.principle}</div>
-              <div style={{ fontSize:13, fontWeight:600, color:"#3a2f5a" }}>{latestMsg.title}</div>
-              <div style={{ fontSize:12, color:"#7a6e96", marginTop:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{latestMsg.body.split("\n")[0]}</div>
+              <div style={{ fontSize:13, fontWeight:600, color:"#1e2230" }}>{latestMsg.title}</div>
+              <div style={{ fontSize:12, color:"#6b7280", marginTop:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{latestMsg.body.split("\n")[0]}</div>
             </div>
           </div>
         </motion.div>
@@ -60,8 +60,8 @@ export default function HomePage() {
         ].map(s=>(
           <motion.button key={s.label} whileHover={{scale:1.02,y:-2}} whileTap={{scale:0.98}} onClick={()=>setActivePage(s.page)} style={{...card,textAlign:"left",cursor:"pointer",border:"1px solid rgba(124,101,204,0.11)"}}>
             <div style={{width:38,height:38,borderRadius:10,background:s.grad,marginBottom:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:19}}>{s.emoji}</div>
-            <div style={{fontSize:11,color:"#b0a8c8",marginBottom:4}}>{s.label}</div>
-            <div style={{fontSize:26,fontWeight:700,color:"#3a2f5a",lineHeight:1}}>{s.val}<span style={{fontSize:12,fontWeight:400,color:"#b0a8c8",marginLeft:4}}>{s.unit}</span></div>
+            <div style={{fontSize:11,color:"#6b7280",marginBottom:4}}>{s.label}</div>
+            <div style={{fontSize:26,fontWeight:700,color:"#1e2230",lineHeight:1}}>{s.val}<span style={{fontSize:12,fontWeight:400,color:"#6b7280",marginLeft:4}}>{s.unit}</span></div>
           </motion.button>
         ))}
       </motion.div>
@@ -69,7 +69,7 @@ export default function HomePage() {
       <motion.div variants={item} style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
         <div style={card}>
           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12,paddingBottom:10,borderBottom:"1px solid rgba(124,101,204,0.08)"}}>
-            <CheckCircle2 size={14} style={{color:"#a78bfa"}}/><span style={{fontSize:13,fontWeight:600,color:"#3a2f5a",flex:1}}>本日のチェックリスト</span><span style={{fontSize:11,color:"#b0a8c8"}}>4/7</span>
+            <CheckCircle2 size={14} style={{color:"#a78bfa"}}/><span style={{fontSize:13,fontWeight:600,color:"#1e2230",flex:1}}>本日のチェックリスト</span><span style={{fontSize:11,color:"#6b7280"}}>4/7</span>
           </div>
           {["開院前 安全確認","感染対策備品の補充確認","患者情報の受け渡しチェック","AED動作確認・記録"].map((t,i)=>(
             <div key={t} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:i<3?"1px solid rgba(124,101,204,0.06)":"none"}}>
@@ -82,7 +82,7 @@ export default function HomePage() {
         </div>
         <div style={card}>
           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12,paddingBottom:10,borderBottom:"1px solid rgba(124,101,204,0.08)"}}>
-            <Bell size={14} style={{color:"#a78bfa"}}/><span style={{fontSize:13,fontWeight:600,color:"#3a2f5a"}}>Chatwork 最近の通知</span>
+            <Bell size={14} style={{color:"#a78bfa"}}/><span style={{fontSize:13,fontWeight:600,color:"#1e2230"}}>Chatwork 最近の通知</span>
           </div>
           {[
             {emoji:"⚠️",title:"インシデント報告",body:"3階処置室でヒヤリハットが提出されました",time:"10分前",bg:"#fffbeb",border:"#fde68a"},
@@ -92,10 +92,10 @@ export default function HomePage() {
             <div key={n.title} style={{background:n.bg,border:`1px solid ${n.border}`,borderRadius:10,padding:"9px 12px",marginBottom:7,display:"flex",gap:10}}>
               <span style={{fontSize:15,flexShrink:0}}>{n.emoji}</span>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:12,fontWeight:600,color:"#3a2f5a"}}>{n.title}</div>
-                <div style={{fontSize:11,color:"#7a6e96",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{n.body}</div>
+                <div style={{fontSize:12,fontWeight:600,color:"#1e2230"}}>{n.title}</div>
+                <div style={{fontSize:11,color:"#6b7280",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{n.body}</div>
               </div>
-              <span style={{fontSize:10,color:"#b0a8c8",flexShrink:0}}>{n.time}</span>
+              <span style={{fontSize:10,color:"#6b7280",flexShrink:0}}>{n.time}</span>
             </div>
           ))}
         </div>

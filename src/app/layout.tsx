@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next"
-import FontApplier from "@/components/FontApplier"
 import DarkModeApplier from "@/components/DarkModeApplier"
 import "./globals.css"
 
@@ -18,7 +17,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body><FontApplier /><DarkModeApplier />{children}</body>
+      <body><DarkModeApplier />{children}</body>
     </html>
   )
 }

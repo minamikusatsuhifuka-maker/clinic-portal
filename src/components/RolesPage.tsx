@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 
 const card: React.CSSProperties = {
   background: "#fff", borderRadius: 16,
-  border: "1px solid rgba(124,101,204,0.11)",
+  border: "0.5px solid rgba(30,34,48,0.1)",
   boxShadow: "0 1px 4px rgba(90,60,160,0.05)",
 }
 
@@ -411,7 +411,7 @@ function Section({ title, items, color, type }: {
       {items.map((item, i) => (
         <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: i < items.length - 1 ? 6 : 0 }}>
           <div style={{ width: 5, height: 5, borderRadius: "50%", background: dotColor, marginTop: 8, flexShrink: 0 }} />
-          <p style={{ fontSize: 13, color: "#3a2f5a", margin: 0, lineHeight: 1.7 }}>{item}</p>
+          <p style={{ fontSize: 13, color: "#1e2230", margin: 0, lineHeight: 1.7 }}>{item}</p>
         </div>
       ))}
     </div>
@@ -428,10 +428,10 @@ function RoleCard({ role }: { role: Role }) {
       }}>
         <div style={{ width: 44, height: 44, borderRadius: "50%", background: role.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{role.emoji}</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#3a2f5a" }}>{role.title}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#1e2230" }}>{role.title}</div>
           <div style={{ fontSize: 12, color: role.color, marginTop: 2 }}>{role.subtitle}</div>
         </div>
-        {open ? <ChevronUp size={18} style={{ color: "#b0a8c8", flexShrink: 0 }} /> : <ChevronDown size={18} style={{ color: "#b0a8c8", flexShrink: 0 }} />}
+        {open ? <ChevronUp size={18} style={{ color: "#6b7280", flexShrink: 0 }} /> : <ChevronDown size={18} style={{ color: "#6b7280", flexShrink: 0 }} />}
       </button>
 
       <AnimatePresence>
@@ -442,37 +442,37 @@ function RoleCard({ role }: { role: Role }) {
 
               {/* コア業務 */}
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#7a6e96", marginBottom: 10 }}>📌 コア業務</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", marginBottom: 10 }}>📌 コア業務</div>
                 {role.coreWork.map((item, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 6 }}>
                     <div style={{ width: 5, height: 5, borderRadius: "50%", background: role.color, marginTop: 8, flexShrink: 0 }} />
-                    <p style={{ fontSize: 13, color: "#3a2f5a", margin: 0, lineHeight: 1.7 }}>{item}</p>
+                    <p style={{ fontSize: 13, color: "#1e2230", margin: 0, lineHeight: 1.7 }}>{item}</p>
                   </div>
                 ))}
               </div>
 
               {/* エキスパートの条件 */}
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#7a6e96", marginBottom: 10 }}>⭐ エキスパートの条件</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", marginBottom: 10 }}>⭐ エキスパートの条件</div>
                 {role.expertConditions.map((item, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 6 }}>
                     <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#f59e0b", marginTop: 8, flexShrink: 0 }} />
-                    <p style={{ fontSize: 13, color: "#3a2f5a", margin: 0, lineHeight: 1.7 }}>{item}</p>
+                    <p style={{ fontSize: 13, color: "#1e2230", margin: 0, lineHeight: 1.7 }}>{item}</p>
                   </div>
                 ))}
               </div>
 
               {/* 診療補助業務 */}
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#7a6e96", marginBottom: 10 }}>🤝 診療補助業務（医師・看護師の指示のもと）</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", marginBottom: 10 }}>🤝 診療補助業務（医師・看護師の指示のもと）</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {role.assistWork.map((section, si) => (
-                    <div key={si} style={{ background: "#f8f6fc", borderRadius: 12, padding: "12px 14px" }}>
+                    <div key={si} style={{ background: "#f0ede8", borderRadius: 12, padding: "12px 14px" }}>
                       <div style={{ fontSize: 11, fontWeight: 700, color: role.color, marginBottom: 8 }}>{section.section}</div>
                       {section.items.map((item, i) => (
                         <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: i < section.items.length - 1 ? 5 : 0 }}>
                           <div style={{ width: 5, height: 5, borderRadius: "50%", background: role.color, marginTop: 8, flexShrink: 0 }} />
-                          <p style={{ fontSize: 12, color: "#3a2f5a", margin: 0, lineHeight: 1.7 }}>{item}</p>
+                          <p style={{ fontSize: 12, color: "#1e2230", margin: 0, lineHeight: 1.7 }}>{item}</p>
                         </div>
                       ))}
                     </div>
@@ -482,7 +482,7 @@ function RoleCard({ role }: { role: Role }) {
 
               {/* やってはいけないこと */}
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#7a6e96", marginBottom: 10 }}>🚫 やってはいけないこと</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", marginBottom: 10 }}>🚫 やってはいけないこと</div>
                 <div style={{ background: "#fff0f0", border: "1px solid #fca5a5", borderRadius: 12, padding: "12px 14px" }}>
                   {role.prohibited.map((item, i) => (
                     <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: i < role.prohibited.length - 1 ? 6 : 0 }}>
@@ -545,7 +545,7 @@ export default function RolesPage() {
       {/* 役職別ガイド */}
       {tab === "roles" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ fontSize: 12, color: "#b0a8c8", marginBottom: 4 }}>各職種をクリックして詳細を確認してください</div>
+          <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4 }}>各職種をクリックして詳細を確認してください</div>
           {ROLES.map(role => <RoleCard key={role.id} role={role} />)}
         </div>
       )}
@@ -555,7 +555,7 @@ export default function RolesPage() {
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ ...card, padding: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#3a2f5a", marginBottom: 16 }}>🩸 血液・採血関連ガイドライン（非資格者向け）</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#1e2230", marginBottom: 16 }}>🩸 血液・採血関連ガイドライン（非資格者向け）</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <Section title="絶対禁止" items={BLOOD_RULES.prohibited} color="#ef4444" type="prohibited" />
               <Section title="条件付き" items={BLOOD_RULES.conditional} color="#f59e0b" type="conditional" />
@@ -579,7 +579,7 @@ export default function RolesPage() {
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ ...card, padding: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#3a2f5a", marginBottom: 16 }}>🧤 清潔操作ガイドライン（非資格者向け）</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#1e2230", marginBottom: 16 }}>🧤 清潔操作ガイドライン（非資格者向け）</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <Section title="絶対禁止" items={CLEAN_RULES.prohibited} color="#ef4444" type="prohibited" />
               <Section title="条件付き" items={CLEAN_RULES.conditional} color="#f59e0b" type="conditional" />
