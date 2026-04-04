@@ -43,6 +43,7 @@ interface AchievementState {
   deleteLifeGoal: (id: string) => void
   addGratitudeCard: (c: Omit<GratitudeCard, "id" | "createdAt" | "likes" | "likedBy">) => void
   likeGratitudeCard: (id: string, userName: string) => void
+  updateDirectorMessage: (id: string, data: Partial<Pick<DirectorMessage, "title" | "body" | "principle">>) => void
   addDirectorMessage: (m: Omit<DirectorMessage, "id" | "createdAt" | "likes" | "likedBy">) => void
   likeDirectorMessage: (id: string, userName: string) => void
   deleteDirectorMessage: (id: string) => void
@@ -258,6 +259,12 @@ export const useAchievementStore = create<AchievementState>()(
             : c
         ),
       })),
+      updateDirectorMessage: (id, data) =>
+        set((s) => ({
+          directorMessages: s.directorMessages.map((m) =>
+            m.id === id ? { ...m, ...data } : m
+          ),
+        })),
       addDirectorMessage: (m) => set((s) => ({
         directorMessages: [{ ...m, id: Date.now().toString(), createdAt: new Date().toISOString(), likes: 0, likedBy: [] }, ...s.directorMessages],
       })),
