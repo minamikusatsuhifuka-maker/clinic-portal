@@ -274,7 +274,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 /* ───── ユーザー情報付きサイドバー ───── */
 import { useSettingsStore, FONTS } from "@/store/useSettingsStore"
 import type { FontChoice } from "@/store/useSettingsStore"
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -298,7 +298,7 @@ const LINKS = [
 
 function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
   const { activePage, setActivePage } = useAppStore()
-  const { font } = useSettingsStore()
+  const { font, darkMode } = useSettingsStore()
   const { riskVisibility } = useEditStore()
   const riskBadge = RISKS.filter((r) => riskVisibility[r.id] !== false).length
   const base: React.CSSProperties = {
@@ -307,12 +307,12 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
     fontSize: 13, cursor: "pointer", border: "1px solid transparent", background: "transparent",
   }
   return (
-    <aside style={{ width: 220, minWidth: 220, background: "#1a1e2e", borderRight: "none", height: "100vh", display: "flex", flexDirection: "column" }}>
+    <aside style={{ width: 220, minWidth: 220, background: "#1e2230", borderRight: "none", height: "100vh", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#b8975a,#d4b87a)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏥</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#f5f2ed" }}>CarePortal</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#f8f6f2" }}>CarePortal</div>
             <div style={{ fontSize: 10, color: "rgba(245,242,237,0.5)", marginTop: 1 }}>南草津皮フ科</div>
           </div>
         </div>
@@ -351,11 +351,18 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
           {(Object.entries(FONTS) as [FontChoice, typeof FONTS[FontChoice]][]).map(([key, f]) => (
             <button key={key}
               onClick={() => useSettingsStore.getState().setFont(key)}
-              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderRadius: 8, border: "none", background: font === key ? "rgba(184,151,90,0.2)" : "transparent", color: font === key ? "#f5f2ed" : "rgba(245,242,237,0.5)", fontSize: 12, fontWeight: font === key ? 600 : 400, cursor: "pointer", marginBottom: 2, fontFamily: f.value }}>
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderRadius: 8, border: "none", background: font === key ? "rgba(184,151,90,0.2)" : "transparent", color: font === key ? "#f8f6f2" : "rgba(245,242,237,0.5)", fontSize: 12, fontWeight: font === key ? 600 : 400, cursor: "pointer", marginBottom: 2, fontFamily: f.value }}>
               <span>{f.label}</span>
               {font === key && <span style={{ fontSize: 10, color: "#b8975a" }}>✓</span>}
             </button>
           ))}
+        </div>
+        <div style={{ padding: "6px 8px 4px" }}>
+          <button onClick={() => useSettingsStore.getState().toggleDarkMode()}
+            style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "7px 8px", borderRadius: 8, border: "none", background: darkMode ? "rgba(184,151,90,0.2)" : "transparent", color: "rgba(245,242,237,0.55)", fontSize: 12, cursor: "pointer" }}>
+            {darkMode ? <Sun size={13} style={{ color: "#b8975a" }} /> : <Moon size={13} style={{ color: "rgba(245,242,237,0.4)" }} />}
+            <span>{darkMode ? "ライトモード" : "ダークモード"}</span>
+          </button>
         </div>
       </nav>
       <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
@@ -367,7 +374,7 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
           </div>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: "#f5f2ed", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#f8f6f2", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
           <div style={{ fontSize: 10, color: "rgba(245,242,237,0.45)", marginTop: 1 }}>
             {user.role === "admin" ? "👑 管理者" : user.role === "manager" ? "📋 マネージャー" : "一般スタッフ"}
           </div>

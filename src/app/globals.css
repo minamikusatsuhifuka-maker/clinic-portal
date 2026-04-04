@@ -2,20 +2,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=Murecho:wght@300;400;500&family=BIZ+UDGothic:wght@400;700&display=swap');
 
 :root {
-  --bg-page:    #f5f2ed;
+  --bg-page:    #f8f6f2;
   --bg-surface: #ffffff;
   --bg-subtle:  #edeae4;
-  --navy:       #1a1e2e;
+  --navy:       #1e2230;
   --muted:      #7a7e8e;
-  --border:     rgba(26,30,46,0.1);
+  --border:     rgba(30,34,48,0.1);
   --gold:       #b8975a;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #f5f2ed;
-  color: #1a1e2e;
+  background: #f8f6f2;
+  color: #1e2230;
   font-family: var(--app-font, 'Noto Sans JP', -apple-system, 'Hiragino Sans', sans-serif);
   -webkit-font-smoothing: antialiased;
   font-size: 14px;
@@ -24,8 +24,22 @@ body {
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(26,30,46,0.15); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: rgba(30,34,48,0.15); border-radius: 2px; }
 
 button { transition: all 0.15s ease; }
-input, textarea, select { font-family: inherit; color: #1a1e2e; }
+input, textarea, select { font-family: inherit; color: #1e2230; }
 ::placeholder { color: #7a7e8e; opacity: 0.7; }
+
+/* ダークモード */
+.dark body {
+  background: #13151f !important;
+  color: #e8e4dc !important;
+}
+
+.dark input, .dark textarea, .dark select {
+  color: #e8e4dc !important;
+}
+
+.dark ::placeholder { color: #6b6e7a; }
+
+.dark ::-webkit-scrollbar-thumb { background: rgba(232,228,220,0.15); }

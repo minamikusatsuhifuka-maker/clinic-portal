@@ -14,6 +14,8 @@ export const FONTS: Record<FontChoice, { label: string; value: string; descripti
 interface SettingsState {
   font: FontChoice
   setFont: (f: FontChoice) => void
+  darkMode: boolean
+  toggleDarkMode: () => void
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -21,6 +23,8 @@ export const useSettingsStore = create<SettingsState>()(
     (set) => ({
       font: "system",
       setFont: (font) => set({ font }),
+      darkMode: false,
+      toggleDarkMode: () => set((s) => ({ darkMode: !s.darkMode })),
     }),
     { name: "care-portal-settings" }
   )
