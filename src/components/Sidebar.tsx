@@ -27,7 +27,7 @@ export default function Sidebar() {
   const { riskVisibility } = useEditStore()
   const riskBadge = RISKS.filter((r) => riskVisibility[r.id] !== false).length
   return (
-    <aside style={{width:220,minWidth:220,background:"#fff",borderRight:"1px solid rgba(124,101,204,0.11)",height:"100vh",display:"flex",flexDirection:"column"}}>
+    <aside style={{width:220,minWidth:220,background:"var(--surface-bg)",borderRight:"1px solid rgba(124,101,204,0.11)",height:"100vh",display:"flex",flexDirection:"column"}}>
       <div style={{padding:"20px 18px 16px",borderBottom:"1px solid rgba(124,101,204,0.09)"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#c4b5fd,#f9a8d4)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🏥</div>

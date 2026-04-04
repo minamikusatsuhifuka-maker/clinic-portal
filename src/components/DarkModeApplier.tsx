@@ -1,27 +1,32 @@
 "use client"
 import { useEffect } from "react"
-import { useSettingsStore } from "@/store/useSettingsStore"
+import { useSettingsStore, FONTS } from "@/store/useSettingsStore"
 
 export default function DarkModeApplier() {
   const { font, darkMode } = useSettingsStore()
 
   useEffect(() => {
-    document.documentElement.style.setProperty("--app-font",
-      font === "system" ? "-apple-system, 'Hiragino Sans', sans-serif" :
-      font === "noto" ? "'Noto Sans JP', sans-serif" :
-      font === "zen" ? "'Zen Kaku Gothic New', sans-serif" :
-      font === "murecho" ? "'Murecho', sans-serif" :
-      "'BIZ UDGothic', sans-serif"
-    )
+    document.documentElement.style.setProperty("--app-font", FONTS[font].value)
   }, [font])
 
   useEffect(() => {
+    const root = document.documentElement
     if (darkMode) {
-      document.documentElement.classList.add("dark")
+      root.style.setProperty("--page-bg", "#111318")
+      root.style.setProperty("--surface-bg", "#1e2230")
+      root.style.setProperty("--subtle-bg", "#252836")
+      root.style.setProperty("--text-primary", "#e8e4dc")
+      root.style.setProperty("--text-secondary", "#9a9aaa")
+      root.style.setProperty("--border-color", "rgba(255,255,255,0.1)")
       document.body.style.background = "#111318"
-      document.body.style.color = "#e8e6e0"
+      document.body.style.color = "#e8e4dc"
     } else {
-      document.documentElement.classList.remove("dark")
+      root.style.setProperty("--page-bg", "#f8f6f2")
+      root.style.setProperty("--surface-bg", "#ffffff")
+      root.style.setProperty("--subtle-bg", "#f0ede8")
+      root.style.setProperty("--text-primary", "#1e2230")
+      root.style.setProperty("--text-secondary", "#6b7280")
+      root.style.setProperty("--border-color", "rgba(26,30,46,0.1)")
       document.body.style.background = "#f8f6f2"
       document.body.style.color = "#1e2230"
     }

@@ -77,11 +77,11 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #f8f6fc 0%, #fce4ec 100%)",
+      background: "var(--page-bg)",
       display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
     }}>
       <div style={{
-        background: "#fff", borderRadius: 28,
+        background: "var(--surface-bg)", borderRadius: 28,
         boxShadow: "0 8px 48px rgba(90,60,160,0.12)",
         padding: "44px 40px", width: "100%", maxWidth: 400, textAlign: "center",
       }}>
@@ -111,7 +111,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
                 width: "100%", display: "flex", alignItems: "center",
                 justifyContent: "center", gap: 10, padding: "13px 20px",
                 borderRadius: 14, border: "1px solid rgba(124,101,204,0.22)",
-                background: "#fff", fontSize: 14, fontWeight: 600,
+                background: "var(--surface-bg)", fontSize: 14, fontWeight: 600,
                 color: "rgba(245,242,237,0.65)", cursor: "pointer", marginBottom: 8,
                 boxShadow: "0 2px 8px rgba(90,60,160,0.07)",
                 opacity: googleLoading ? 0.7 : 1,
@@ -202,22 +202,22 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
   const isAdminOrManager = user.role === "admin" || user.role === "manager"
 
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#f8f6fc" }}>
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "var(--page-bg)" }}>
       <SidebarWithUser user={user} onLogout={onLogout} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {/* トップバー */}
         <header style={{
-          height: 52, background: "#fff",
-          borderBottom: "1px solid rgba(124,101,204,0.1)",
+          height: 52, background: "var(--surface-bg)",
+          borderBottom: "0.5px solid var(--border-color)",
           display: "flex", alignItems: "center",
           padding: "0 24px", gap: 10, flexShrink: 0,
-          boxShadow: "0 1px 3px rgba(90,60,160,0.04)",
+          boxShadow: "none",
         }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#3a2f5a", flex: 1 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", flex: 1 }}>
             {TITLES[activePage]}
           </h2>
           {user.role === "admin" && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: "linear-gradient(135deg,#ede8fb,#fce4ec)", border: "1px solid rgba(167,139,250,0.28)", color: "#5f4ba8" }}>
+            <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: "var(--subtle-bg)", border: "0.5px solid var(--border-color)", color: "#b8975a" }}>
               👑 管理者
             </span>
           )}

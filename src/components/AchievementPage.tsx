@@ -5,8 +5,8 @@ import { useAchievementStore, type LifeGoal } from "@/store/useAchievementStore"
 import { Plus, X, Heart, Trash2, Edit3, Check, ChevronDown, ChevronUp } from "lucide-react"
 
 const card: React.CSSProperties = {
-  background: "#fff", borderRadius: 16,
-  border: "0.5px solid rgba(30,34,48,0.1)",
+  background: "var(--surface-bg)", borderRadius: 16,
+  border: "0.5px solid var(--border-color)",
   boxShadow: "0 1px 4px rgba(90,60,160,0.05)",
 }
 
@@ -32,8 +32,8 @@ const PRINCIPLES = [
 ]
 const ROLES = ["看護師", "マルチタスク", "医師", "マネージャー", "院長"]
 const inp: React.CSSProperties = {
-  width: "100%", border: "0.5px solid rgba(30,34,48,0.12)", borderRadius: 10,
-  padding: "9px 12px", fontSize: 13, color: "#1e2230", background: "#f0ede8",
+  width: "100%", border: "0.5px solid var(--border-color)", borderRadius: 10,
+  padding: "9px 12px", fontSize: 13, color: "var(--text-primary)", background: "var(--subtle-bg)",
   outline: "none", fontFamily: "inherit",
 }
 
@@ -56,12 +56,12 @@ function LifeGoalForm({ onClose }: { onClose: () => void }) {
       <motion.div initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
         style={{ ...card, width: "100%", maxWidth: 500, maxHeight: "90vh", overflowY: "auto" }}>
         <div style={{ padding: "18px 20px", borderBottom: "1px solid rgba(124,101,204,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#1e2230" }}>🎯 人生目標を設定する</div>
-          <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0ede8", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#9b87e4" }}><X size={14} /></button>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>🎯 人生目標を設定する</div>
+          <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--subtle-bg)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#9b87e4" }}><X size={14} /></button>
         </div>
         <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 6 }}>人生の領域</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>人生の領域</label>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               {(Object.entries(AREAS) as [LifeGoal["area"], typeof AREAS[keyof typeof AREAS]][]).map(([key, a]) => (
                 <button key={key} onClick={() => setForm(p => ({ ...p, area: key }))}
@@ -73,7 +73,7 @@ function LifeGoalForm({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 6 }}>期間</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>期間</label>
             <div style={{ display: "flex", gap: 8 }}>
               {(Object.entries(TIMEFRAMES) as [LifeGoal["timeframe"], string][]).map(([key, label]) => (
                 <button key={key} onClick={() => setForm(p => ({ ...p, timeframe: key }))}
@@ -84,15 +84,15 @@ function LifeGoalForm({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>目標（具体的・測定可能・期限付きで）</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>目標（具体的・測定可能・期限付きで）</label>
             <textarea style={{ ...inp, resize: "none" }} rows={2} value={form.goal} onChange={e => setForm(p => ({ ...p, goal: e.target.value }))} placeholder="例：3年後に美容皮膚科の専門資格を取得し、カウンセリング担当として活躍する" />
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>なぜこの目標を達成したいのか（WHY）</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>なぜこの目標を達成したいのか（WHY）</label>
             <textarea style={{ ...inp, resize: "none" }} rows={2} value={form.why} onChange={e => setForm(p => ({ ...p, why: e.target.value }))} placeholder="例：患者さんに自信を持ってアドバイスできる存在になりたいから。" />
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>そのために今できること（最初の一歩）</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>そのために今できること（最初の一歩）</label>
             <input style={inp} value={form.action} onChange={e => setForm(p => ({ ...p, action: e.target.value }))} placeholder="例：今週中に資格の情報を調べる" />
           </div>
           <button onClick={save} style={{ width: "100%", padding: 12, borderRadius: 12, background: "linear-gradient(135deg,#a78bfa,#f472b6)", color: "white", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>
@@ -119,16 +119,16 @@ function GratitudeForm({ onClose, myName }: { onClose: () => void; myName: strin
       <motion.div initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
         style={{ ...card, width: "100%", maxWidth: 460, maxHeight: "90vh", overflowY: "auto" }}>
         <div style={{ padding: "18px 20px", borderBottom: "1px solid rgba(124,101,204,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#1e2230" }}>💌 感謝カードを贈る</div>
-          <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0ede8", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#9b87e4" }}><X size={14} /></button>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>💌 感謝カードを贈る</div>
+          <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--subtle-bg)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#9b87e4" }}><X size={14} /></button>
         </div>
         <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <div><label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>贈る相手の名前</label><input style={inp} value={form.toName} onChange={e => setForm(p => ({ ...p, toName: e.target.value }))} placeholder="田中 花子" /></div>
-            <div><label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>職種</label><select style={inp} value={form.toRole} onChange={e => setForm(p => ({ ...p, toRole: e.target.value }))}>{ROLES.map(r => <option key={r}>{r}</option>)}</select></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>贈る相手の名前</label><input style={inp} value={form.toName} onChange={e => setForm(p => ({ ...p, toName: e.target.value }))} placeholder="田中 花子" /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>職種</label><select style={inp} value={form.toRole} onChange={e => setForm(p => ({ ...p, toRole: e.target.value }))}>{ROLES.map(r => <option key={r}>{r}</option>)}</select></div>
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>感謝のメッセージ</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>感謝のメッセージ</label>
             <textarea style={{ ...inp, resize: "none" }} rows={4} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="いつも助けてくれてありがとう。先日〇〇のとき、一緒に対応してくれたおかげで安心できました。" />
           </div>
           <button onClick={save} style={{ width: "100%", padding: 12, borderRadius: 12, background: "linear-gradient(135deg,#f472b6,#fb923c)", color: "white", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>
@@ -155,17 +155,17 @@ function DirectorMessageForm({ onClose }: { onClose: () => void }) {
       <motion.div initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
         style={{ ...card, width: "100%", maxWidth: 500, maxHeight: "90vh", overflowY: "auto" }}>
         <div style={{ padding: "18px 20px", borderBottom: "1px solid rgba(124,101,204,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#1e2230" }}>✍️ 院長メッセージを投稿</div>
-          <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "#f0ede8", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#9b87e4" }}><X size={14} /></button>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>✍️ 院長メッセージを投稿</div>
+          <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--subtle-bg)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#9b87e4" }}><X size={14} /></button>
         </div>
         <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>タイトル</label><input style={inp} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="今週の言葉" /></div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>関連する原理原則</label>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>タイトル</label><input style={inp} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="今週の言葉" /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>関連する原理原則</label>
             <select style={inp} value={form.principle} onChange={e => setForm(p => ({ ...p, principle: e.target.value }))}>
               {PRINCIPLES.map(p => <option key={p}>{p}</option>)}
             </select>
           </div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>メッセージ</label><textarea style={{ ...inp, resize: "none" }} rows={6} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} placeholder="スタッフへの想い・気づき・学びを自由に..." /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>メッセージ</label><textarea style={{ ...inp, resize: "none" }} rows={6} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} placeholder="スタッフへの想い・気づき・学びを自由に..." /></div>
           <button onClick={save} style={{ width: "100%", padding: 12, borderRadius: 12, background: "linear-gradient(135deg,#fbbf24,#f59e0b)", color: "white", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>
             ✍️ 投稿する
           </button>
@@ -222,27 +222,27 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
               {editingMsgId === m.id ? (
                 /* 編集モード */
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1e2230", marginBottom: 4 }}>✏️ メッセージを編集</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", marginBottom: 4 }}>✏️ メッセージを編集</div>
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>タイトル</label>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 4 }}>タイトル</label>
                     <input value={editMsgForm.title} onChange={e => setEditMsgForm(p => ({ ...p, title: e.target.value }))}
-                      style={{ width: "100%", border: "0.5px solid rgba(30,34,48,0.12)", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: "#1e2230", background: "#f0ede8", outline: "none", fontFamily: "inherit" }} />
+                      style={{ width: "100%", border: "0.5px solid var(--border-color)", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: "var(--text-primary)", background: "var(--subtle-bg)", outline: "none", fontFamily: "inherit" }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>原理原則</label>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 4 }}>原理原則</label>
                     <select value={editMsgForm.principle} onChange={e => setEditMsgForm(p => ({ ...p, principle: e.target.value }))}
-                      style={{ width: "100%", border: "0.5px solid rgba(30,34,48,0.12)", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: "#1e2230", background: "#f0ede8", outline: "none", fontFamily: "inherit" }}>
+                      style={{ width: "100%", border: "0.5px solid var(--border-color)", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: "var(--text-primary)", background: "var(--subtle-bg)", outline: "none", fontFamily: "inherit" }}>
                       {PRINCIPLES.map(p => <option key={p}>{p}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>メッセージ本文</label>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", display: "block", marginBottom: 4 }}>メッセージ本文</label>
                     <textarea value={editMsgForm.body} onChange={e => setEditMsgForm(p => ({ ...p, body: e.target.value }))}
-                      rows={8} style={{ width: "100%", border: "0.5px solid rgba(30,34,48,0.12)", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: "#1e2230", background: "#f0ede8", outline: "none", resize: "vertical", fontFamily: "inherit", lineHeight: 1.7 }} />
+                      rows={8} style={{ width: "100%", border: "0.5px solid var(--border-color)", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: "var(--text-primary)", background: "var(--subtle-bg)", outline: "none", resize: "vertical", fontFamily: "inherit", lineHeight: 1.7 }} />
                   </div>
                   <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
                     <button onClick={() => setEditingMsgId(null)}
-                      style={{ padding: "8px 16px", borderRadius: 10, border: "0.5px solid rgba(30,34,48,0.12)", background: "transparent", color: "#6b7280", fontSize: 12, cursor: "pointer" }}>
+                      style={{ padding: "8px 16px", borderRadius: 10, border: "0.5px solid var(--border-color)", background: "transparent", color: "var(--text-secondary)", fontSize: 12, cursor: "pointer" }}>
                       キャンセル
                     </button>
                     <button onClick={() => { updateDirectorMessage(m.id, editMsgForm); setEditingMsgId(null) }}
@@ -283,7 +283,7 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
                   {/* アコーディオン展開 */}
                   {expandedMsgId === m.id && (
                     <div>
-                      <p style={{ fontSize: 14, color: "#1e2230", lineHeight: 1.95, whiteSpace: "pre-wrap", marginBottom: 14 }}>{m.body}</p>
+                      <p style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.95, whiteSpace: "pre-wrap", marginBottom: 14 }}>{m.body}</p>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                         <button onClick={() => likeDirectorMessage(m.id, userName)}
                           style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, border: `1px solid ${m.likedBy.includes(userName) ? "#c084fc" : "rgba(124,101,204,0.2)"}`, background: m.likedBy.includes(userName) ? "#f5f2fd" : "transparent", color: m.likedBy.includes(userName) ? "#7c65cc" : "#9ca3af", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
@@ -321,11 +321,11 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
                     <div key={g.id} style={{ background: area.bg, borderRadius: 12, padding: "12px 14px", border: `1px solid ${area.color}33` }}>
                       <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
                         <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "rgba(255,255,255,0.7)", color: area.color, flexShrink: 0 }}>{TIMEFRAMES[g.timeframe]}</span>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: "#1e2230", flex: 1, margin: 0, lineHeight: 1.5 }}>{g.goal}</p>
-                        <button onClick={() => deleteLifeGoal(g.id)} style={{ width: 24, height: 24, borderRadius: 8, background: "rgba(255,255,255,0.6)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280", flexShrink: 0 }}><Trash2 size={11} /></button>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", flex: 1, margin: 0, lineHeight: 1.5 }}>{g.goal}</p>
+                        <button onClick={() => deleteLifeGoal(g.id)} style={{ width: 24, height: 24, borderRadius: 8, background: "rgba(255,255,255,0.6)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)", flexShrink: 0 }}><Trash2 size={11} /></button>
                       </div>
-                      {g.why && <p style={{ fontSize: 12, color: "#6b7280", margin: "0 0 8px", lineHeight: 1.6 }}>WHY: {g.why}</p>}
-                      {g.action && <p style={{ fontSize: 12, color: "#6b7280", margin: "0 0 10px", lineHeight: 1.6 }}>最初の一歩: {g.action}</p>}
+                      {g.why && <p style={{ fontSize: 12, color: "var(--text-secondary)", margin: "0 0 8px", lineHeight: 1.6 }}>WHY: {g.why}</p>}
+                      {g.action && <p style={{ fontSize: 12, color: "var(--text-secondary)", margin: "0 0 10px", lineHeight: 1.6 }}>最初の一歩: {g.action}</p>}
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <div style={{ flex: 1, height: 6, background: "rgba(255,255,255,0.6)", borderRadius: 3, overflow: "hidden" }}>
                           <motion.div initial={{ width: 0 }} animate={{ width: `${g.progress}%` }} transition={{ duration: 0.8 }}
@@ -344,8 +344,8 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
           {lifeGoals.length === 0 && (
             <div style={{ ...card, padding: 48, textAlign: "center" }}>
               <div style={{ fontSize: 36, marginBottom: 12 }}>🎯</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#6b7280", marginBottom: 6 }}>人生目標がまだ設定されていません</div>
-              <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.7 }}>仕事・家族・健康・財務・趣味の5領域で<br />1年後・3年後・10年後の目標を設定しましょう</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 6 }}>人生目標がまだ設定されていません</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.7 }}>仕事・家族・健康・財務・趣味の5領域で<br />1年後・3年後・10年後の目標を設定しましょう</div>
             </div>
           )}
         </div>
@@ -354,7 +354,7 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
       {tab === "gratitude" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-            <div style={{ fontSize: 12, color: "#6b7280" }}>今月 {gratitudeCards.filter(c => new Date(c.createdAt).getMonth() === new Date().getMonth()).length} 枚の感謝カードが贈られました</div>
+            <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>今月 {gratitudeCards.filter(c => new Date(c.createdAt).getMonth() === new Date().getMonth()).length} 枚の感謝カードが贈られました</div>
             <button onClick={() => setShowGratitudeForm(true)}
               style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg,#f472b6,#fb923c)", color: "white", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer", boxShadow: "0 2px 8px rgba(244,114,182,0.35)" }}>
               <Plus size={14} />感謝カードを贈る
@@ -363,8 +363,8 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
           {gratitudeCards.length === 0 ? (
             <div style={{ ...card, padding: 48, textAlign: "center" }}>
               <div style={{ fontSize: 36, marginBottom: 12 }}>💌</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#6b7280", marginBottom: 6 }}>まだ感謝カードがありません</div>
-              <div style={{ fontSize: 12, color: "#6b7280" }}>チームメンバーへの感謝を言葉にして届けましょう</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 6 }}>まだ感謝カードがありません</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>チームメンバーへの感謝を言葉にして届けましょう</div>
             </div>
           ) : gratitudeCards.map((c, i) => (
             <motion.div key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
@@ -372,18 +372,18 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#f9a8d4,#f472b6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>💌</div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#1e2230" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
                     <span style={{ color: "#f472b6" }}>{c.toName}</span>
-                    <span style={{ color: "#6b7280", fontSize: 11 }}> さん（{c.toRole}）へ</span>
+                    <span style={{ color: "var(--text-secondary)", fontSize: 11 }}> さん（{c.toRole}）へ</span>
                   </div>
-                  <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>{c.fromName} · {new Date(c.createdAt).toLocaleDateString("ja-JP", { month: "long", day: "numeric" })}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 2 }}>{c.fromName} · {new Date(c.createdAt).toLocaleDateString("ja-JP", { month: "long", day: "numeric" })}</div>
                 </div>
                 <button onClick={() => likeGratitudeCard(c.id, userName)}
                   style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 12px", borderRadius: 999, border: `1px solid ${c.likedBy.includes(userName) ? "#f472b6" : "rgba(124,101,204,0.2)"}`, background: c.likedBy.includes(userName) ? "#fdf2f8" : "transparent", color: c.likedBy.includes(userName) ? "#f472b6" : "#b0a8c8", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
                   <Heart size={12} fill={c.likedBy.includes(userName) ? "#f472b6" : "none"} /> {c.likes > 0 ? c.likes : ""}
                 </button>
               </div>
-              <p style={{ fontSize: 13, color: "#1e2230", lineHeight: 1.75, margin: 0, whiteSpace: "pre-wrap" }}>{c.message}</p>
+              <p style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.75, margin: 0, whiteSpace: "pre-wrap" }}>{c.message}</p>
             </motion.div>
           ))}
         </div>

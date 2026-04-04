@@ -592,11 +592,11 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
       {/* 役職別セクション */}
       {isManager ? (
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f0ede8", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
+          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"var(--subtle-bg)", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
             👑 管理者・マネージャー専用：4つの自信を組織に根づかせる施策
           </div>
           {MANAGER_ACTIONS.map((section, si) => (
-            <div key={si} style={{ background:"#fff", borderRadius:14, border:"1px solid rgba(124,101,204,0.12)", overflow:"hidden" }}>
+            <div key={si} style={{ background:"var(--surface-bg)", borderRadius:14, border:"1px solid rgba(124,101,204,0.12)", overflow:"hidden" }}>
               <div style={{ padding:"12px 16px", background:section.bg, borderBottom:`1px solid ${section.color}22` }}>
                 <div style={{ fontSize:12, fontWeight:600, color:section.color }}>{section.category}</div>
               </div>
@@ -613,11 +613,11 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
         </div>
       ) : (
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f0ede8", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
+          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"var(--subtle-bg)", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
             🌱 スタッフ向け：4つの自信を育む毎日の行動と考え方
           </div>
           {STAFF_ACTIONS.map((section, si) => (
-            <div key={si} style={{ background:"#fff", borderRadius:14, border:"1px solid rgba(124,101,204,0.12)", overflow:"hidden" }}>
+            <div key={si} style={{ background:"var(--surface-bg)", borderRadius:14, border:"1px solid rgba(124,101,204,0.12)", overflow:"hidden" }}>
               <div style={{ padding:"12px 16px", background:section.bg, borderBottom:`1px solid ${section.color}22` }}>
                 <div style={{ fontSize:12, fontWeight:600, color:section.color }}>{section.category}</div>
               </div>

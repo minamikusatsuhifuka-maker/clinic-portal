@@ -196,7 +196,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
 
             {/* ヘッダー */}
             <div style={{
-              background: "#fff",
+              background: "var(--surface-bg)",
               borderBottom: "1px solid rgba(167,139,250,0.15)",
               padding: "0 24px",
               height: 56,
@@ -260,7 +260,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
                         </div>
                       ) : (
                         <div style={{
-                          background: "#fff",
+                          background: "var(--surface-bg)",
                           border: "1px solid rgba(167,139,250,0.15)",
                           borderRadius: "4px 18px 18px 18px",
                           padding: "16px 20px",
@@ -297,7 +297,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
                 {loading && messages[messages.length - 1]?.content === "" && (
                   <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                     <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#a78bfa,#f472b6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>🌸</div>
-                    <div style={{ background: "#fff", border: "1px solid rgba(167,139,250,0.15)", borderRadius: "4px 18px 18px 18px", padding: "14px 20px", display: "flex", gap: 5, alignItems: "center" }}>
+                    <div style={{ background: "var(--surface-bg)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: "4px 18px 18px 18px", padding: "14px 20px", display: "flex", gap: 5, alignItems: "center" }}>
                       {[0,1,2].map(i => (
                         <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: "#a78bfa", animation: `bounce 1.2s ${i*0.2}s infinite` }} />
                       ))}
@@ -313,7 +313,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
               {showScrollBtn && (
                 <motion.button initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
                   onClick={() => scrollToBottom()}
-                  style={{ position: "absolute", bottom: 120, right: 32, width: 36, height: 36, borderRadius: "50%", background: "#fff", border: "1px solid rgba(167,139,250,0.3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(90,60,160,0.12)", color: "#7c65cc", zIndex: 10 }}>
+                  style={{ position: "absolute", bottom: 120, right: 32, width: 36, height: 36, borderRadius: "50%", background: "var(--surface-bg)", border: "1px solid rgba(167,139,250,0.3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(90,60,160,0.12)", color: "#7c65cc", zIndex: 10 }}>
                   <ChevronDown size={18} />
                 </motion.button>
               )}
@@ -325,7 +325,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {QUICK.map((q) => (
                     <button key={q} onClick={() => send(q)}
-                      style={{ fontSize: 12, padding: "7px 14px", borderRadius: 999, border: "1px solid rgba(167,139,250,0.3)", background: "#fff", color: "#7c65cc", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s" }}
+                      style={{ fontSize: 12, padding: "7px 14px", borderRadius: 999, border: "1px solid rgba(167,139,250,0.3)", background: "var(--surface-bg)", color: "#7c65cc", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s" }}
                       onMouseEnter={e => { e.currentTarget.style.background = "#f5f2fd"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.6)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.3)" }}>
                       {q}
@@ -337,7 +337,7 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
 
             {/* 入力エリア */}
             <div style={{
-              background: "#fff",
+              background: "var(--surface-bg)",
               borderTop: "1px solid rgba(167,139,250,0.12)",
               padding: "16px 24px",
               flexShrink: 0,

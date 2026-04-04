@@ -35,14 +35,14 @@ export default function NearMissPage() {
     finally { setAiLoading(false) }
   }
 
-  const card: React.CSSProperties = { background:"#fff", borderRadius:16, border:"1px solid rgba(124,101,204,0.11)", boxShadow:"0 1px 4px rgba(90,60,160,0.05)" }
+  const card: React.CSSProperties = { background:"var(--surface-bg)", borderRadius:16, border:"1px solid rgba(124,101,204,0.11)", boxShadow:"0 1px 4px rgba(90,60,160,0.05)" }
 
   return (
     <div style={{ padding:24, maxWidth:720 }}>
       {/* ヘッダー */}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16, flexWrap:"wrap", gap:10 }}>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <p style={{ fontSize:12, color:"#6b7280" }}>匿名で投稿できます。管理者のみ個人情報を確認できます。</p>
+          <p style={{ fontSize:12, color:"var(--text-secondary)" }}>匿名で投稿できます。管理者のみ個人情報を確認できます。</p>
           {mode === "firestore" && (
             <span style={{ fontSize:10, fontWeight:600, padding:"2px 8px", borderRadius:999, background:"#edfbf4", border:"1px solid #86efac", color:"#166534" }}>🔥 Firestore同期中</span>
           )}
@@ -61,8 +61,8 @@ export default function NearMissPage() {
               <Sparkles size={16} style={{ color:"white" }} />
             </div>
             <div>
-              <div style={{ fontSize:13, fontWeight:600, color:"#1e2230" }}>Gemini AI パターン分析</div>
-              <div style={{ fontSize:11, color:"#6b7280" }}>蓄積された事例から改善提案を生成</div>
+              <div style={{ fontSize:13, fontWeight:600, color:"var(--text-primary)" }}>Gemini AI パターン分析</div>
+              <div style={{ fontSize:11, color:"var(--text-secondary)" }}>蓄積された事例から改善提案を生成</div>
             </div>
           </div>
           <button onClick={analyze} disabled={aiLoading || nearMisses.length === 0}
@@ -72,7 +72,7 @@ export default function NearMissPage() {
         </div>
         {aiResult && (
           <motion.div initial={{ opacity:0, y:4 }} animate={{ opacity:1, y:0 }}
-            style={{ background:"rgba(255,255,255,0.8)", borderRadius:12, padding:12, marginTop:12, fontSize:12, color:"#1e2230", lineHeight:1.7, whiteSpace:"pre-wrap", border:"1px solid rgba(124,101,204,0.15)" }}>
+            style={{ background:"rgba(255,255,255,0.8)", borderRadius:12, padding:12, marginTop:12, fontSize:12, color:"var(--text-primary)", lineHeight:1.7, whiteSpace:"pre-wrap", border:"1px solid rgba(124,101,204,0.15)" }}>
             {aiResult}
           </motion.div>
         )}
@@ -84,29 +84,29 @@ export default function NearMissPage() {
           <motion.div initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:"auto" }} exit={{ opacity:0, height:0 }}
             style={{ ...card, marginBottom:14, overflow:"hidden" }}>
             <div style={{ padding:"14px 18px", borderBottom:"1px solid rgba(124,101,204,0.09)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-              <span style={{ fontSize:13, fontWeight:600, color:"#1e2230" }}>✏️ 気づきを投稿</span>
-              <button onClick={() => setOpen(false)} style={{ width:28, height:28, borderRadius:"50%", background:"#f0ede8", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#9b87e4" }}>
+              <span style={{ fontSize:13, fontWeight:600, color:"var(--text-primary)" }}>✏️ 気づきを投稿</span>
+              <button onClick={() => setOpen(false)} style={{ width:28, height:28, borderRadius:"50%", background:"var(--subtle-bg)", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#9b87e4" }}>
                 <X size={13} />
               </button>
             </div>
             <div style={{ padding:18, display:"flex", flexDirection:"column", gap:12 }}>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:"#6b7280", display:"block", marginBottom:6 }}>カテゴリ</label>
+                <label style={{ fontSize:11, fontWeight:600, color:"var(--text-secondary)", display:"block", marginBottom:6 }}>カテゴリ</label>
                 <select value={tag} onChange={e => setTag(e.target.value)}
-                  style={{ width:"100%", border:"1px solid rgba(124,101,204,0.2)", borderRadius:10, padding:"9px 12px", fontSize:13, color:"#1e2230", background:"#f0ede8", outline:"none", fontFamily:"inherit" }}>
+                  style={{ width:"100%", border:"1px solid rgba(124,101,204,0.2)", borderRadius:10, padding:"9px 12px", fontSize:13, color:"var(--text-primary)", background:"var(--subtle-bg)", outline:"none", fontFamily:"inherit" }}>
                   <option value="">選択してください</option>
                   {["薬剤","患者確認","転倒リスク","感染対策","設備・環境","コミュニケーション","その他"].map(t => <option key={t}>{t}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:"#6b7280", display:"block", marginBottom:6 }}>内容</label>
+                <label style={{ fontSize:11, fontWeight:600, color:"var(--text-secondary)", display:"block", marginBottom:6 }}>内容</label>
                 <textarea value={body} onChange={e => setBody(e.target.value)} rows={3}
                   placeholder="何が起きたか、気づいたことを自由に書いてください。改善提案も歓迎します。"
-                  style={{ width:"100%", border:"1px solid rgba(124,101,204,0.2)", borderRadius:10, padding:"9px 12px", fontSize:13, color:"#1e2230", background:"#f0ede8", outline:"none", resize:"none", fontFamily:"inherit", lineHeight:1.6 }} />
+                  style={{ width:"100%", border:"1px solid rgba(124,101,204,0.2)", borderRadius:10, padding:"9px 12px", fontSize:13, color:"var(--text-primary)", background:"var(--subtle-bg)", outline:"none", resize:"none", fontFamily:"inherit", lineHeight:1.6 }} />
               </div>
               <div style={{ display:"flex", gap:8, justifyContent:"flex-end" }}>
                 <button onClick={() => setOpen(false)}
-                  style={{ padding:"8px 16px", borderRadius:10, border:"1px solid rgba(124,101,204,0.2)", background:"transparent", color:"#6b7280", fontSize:12, cursor:"pointer" }}>
+                  style={{ padding:"8px 16px", borderRadius:10, border:"1px solid rgba(124,101,204,0.2)", background:"transparent", color:"var(--text-secondary)", fontSize:12, cursor:"pointer" }}>
                   キャンセル
                 </button>
                 <button onClick={submit} disabled={!body.trim() || submitting}
@@ -121,7 +121,7 @@ export default function NearMissPage() {
 
       {/* 読み込み中 */}
       {loading && (
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", padding:40, gap:8, color:"#6b7280" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", padding:40, gap:8, color:"var(--text-secondary)" }}>
           <Loader2 size={16} style={{ animation:"spin 1s linear infinite" }} />
           <span style={{ fontSize:13 }}>データを読み込んでいます...</span>
         </div>
@@ -134,11 +134,11 @@ export default function NearMissPage() {
             style={{ ...card, padding:16, borderLeft:"4px solid #fbbf24" }}>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
               <span style={{ fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:999, background:"#fffbeb", border:"1px solid #fde68a", color:"#b45309" }}>{nm.tag}</span>
-              <span style={{ fontSize:10, color:"#6b7280" }}>{nm.time}</span>
+              <span style={{ fontSize:10, color:"var(--text-secondary)" }}>{nm.time}</span>
             </div>
-            <p style={{ fontSize:13, color:"#1e2230", lineHeight:1.6 }}>{nm.body}</p>
+            <p style={{ fontSize:13, color:"var(--text-primary)", lineHeight:1.6 }}>{nm.body}</p>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:10, paddingTop:8, borderTop:"1px solid rgba(124,101,204,0.07)" }}>
-              <span style={{ fontSize:11, color:"#6b7280" }}>{nm.role} · 匿名</span>
+              <span style={{ fontSize:11, color:"var(--text-secondary)" }}>{nm.role} · 匿名</span>
               <button onClick={() => upvoteNearMiss(nm.id)}
                 style={{ display:"flex", alignItems:"center", gap:5, fontSize:12, fontWeight:600, color:"#f59e0b", background:"transparent", border:"none", cursor:"pointer" }}>
                 <ThumbsUp size={12} />▲ {nm.upvotes}

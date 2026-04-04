@@ -6,7 +6,7 @@ import { useEditStore } from "@/store/useEditStore"
 import { RISKS } from "@/data/risks"
 import { Users, FileText, MessageSquareHeart, TrendingUp, ChevronRight, X, Star, Check } from "lucide-react"
 
-const card:React.CSSProperties={background:"#fff",borderRadius:16,border:"1px solid rgba(124,101,204,0.11)",boxShadow:"0 1px 4px rgba(90,60,160,0.05)"}
+const card:React.CSSProperties={background:"var(--surface-bg)",borderRadius:16,border:"1px solid rgba(124,101,204,0.11)",boxShadow:"0 1px 4px rgba(90,60,160,0.05)"}
 const LEVEL_S:Record<string,React.CSSProperties>={
   CRITICAL:{background:"#ef4444",color:"white",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:999},
   HIGH:    {background:"#f59e0b",color:"white",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:999},
@@ -41,45 +41,45 @@ function StaffModal({staff,onClose}:{staff:typeof STAFF[0],onClose:()=>void}){
     <div style={{position:"fixed",inset:0,zIndex:60,display:"flex",alignItems:"center",justifyContent:"center",padding:16,background:"rgba(0,0,0,0.4)",backdropFilter:"blur(4px)"}}
       onClick={e=>{if(e.target===e.currentTarget)onClose()}}>
       <motion.div initial={{scale:0.94,opacity:0}} animate={{scale:1,opacity:1}} exit={{scale:0.94,opacity:0}}
-        style={{background:"#fff",borderRadius:24,boxShadow:"0 8px 40px rgba(60,30,120,0.13)",width:"100%",maxWidth:400,overflow:"hidden"}}>
+        style={{background:"var(--surface-bg)",borderRadius:24,boxShadow:"0 8px 40px rgba(60,30,120,0.13)",width:"100%",maxWidth:400,overflow:"hidden"}}>
         <div style={{padding:"20px 22px",borderBottom:"1px solid rgba(124,101,204,0.1)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{width:44,height:44,borderRadius:"50%",background:"linear-gradient(135deg,#c4b5fd,#f9a8d4)",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:16,fontWeight:700}}>{staff.avatar}</div>
             <div>
-              <div style={{fontSize:15,fontWeight:700,color:"#1e2230"}}>{staff.name}</div>
-              <div style={{fontSize:11,color:"#6b7280",marginTop:2}}>{staff.role}</div>
+              <div style={{fontSize:15,fontWeight:700,color:"var(--text-primary)"}}>{staff.name}</div>
+              <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>{staff.role}</div>
             </div>
           </div>
-          <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",background:"#f0ede8",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"#9b87e4"}}>
+          <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",background:"var(--subtle-bg)",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"#9b87e4"}}>
             <X size={14}/>
           </button>
         </div>
         <div style={{padding:"20px 22px",display:"flex",flexDirection:"column",gap:16}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
             {[{l:"チェック完了",v:staff.checks,u:"件"},{l:"ヒヤリハット",v:staff.nearmiss,u:"件"},{l:"自信スコア",v:staff.score,u:"点"}].map(s=>(
-              <div key={s.l} style={{background:"#f0ede8",borderRadius:12,padding:"10px 12px",textAlign:"center"}}>
-                <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>{s.l}</div>
-                <div style={{fontSize:22,fontWeight:700,color:"#1e2230"}}>{s.v}<span style={{fontSize:11,color:"#6b7280",marginLeft:2}}>{s.u}</span></div>
+              <div key={s.l} style={{background:"var(--subtle-bg)",borderRadius:12,padding:"10px 12px",textAlign:"center"}}>
+                <div style={{fontSize:10,color:"var(--text-secondary)",marginBottom:4}}>{s.l}</div>
+                <div style={{fontSize:22,fontWeight:700,color:"var(--text-primary)"}}>{s.v}<span style={{fontSize:11,color:"var(--text-secondary)",marginLeft:2}}>{s.u}</span></div>
               </div>
             ))}
           </div>
           <div>
-            <div style={{fontSize:12,fontWeight:600,color:"#1e2230",marginBottom:10}}>4つの自信スコア</div>
+            <div style={{fontSize:12,fontWeight:600,color:"var(--text-primary)",marginBottom:10}}>4つの自信スコア</div>
             {conf.map((c,i)=>(
               <div key={c.l} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-                <div style={{fontSize:11,color:"#6b7280",width:56,flexShrink:0}}>{c.l}</div>
+                <div style={{fontSize:11,color:"var(--text-secondary)",width:56,flexShrink:0}}>{c.l}</div>
                 <div style={{flex:1,height:6,background:"#f0ecfa",borderRadius:3,overflow:"hidden"}}>
                   <motion.div initial={{width:0}} animate={{width:`${c.v}%`}} transition={{duration:0.8,delay:i*0.1}}
                     style={{height:"100%",borderRadius:3,background:CONF_GRADS[i]}}/>
                 </div>
-                <div style={{fontSize:11,fontWeight:600,color:"#6b7280",width:28,textAlign:"right"}}>{c.v}</div>
+                <div style={{fontSize:11,fontWeight:600,color:"var(--text-secondary)",width:28,textAlign:"right"}}>{c.v}</div>
               </div>
             ))}
           </div>
           <div>
-            <div style={{fontSize:12,fontWeight:600,color:"#1e2230",marginBottom:8}}>マネージャーメモ</div>
+            <div style={{fontSize:12,fontWeight:600,color:"var(--text-primary)",marginBottom:8}}>マネージャーメモ</div>
             <textarea rows={3} placeholder="スタッフへのメモ・フォローアップ事項を記入..."
-              style={{width:"100%",border:"1px solid rgba(124,101,204,0.18)",borderRadius:12,padding:"10px 12px",fontSize:12,color:"#1e2230",background:"#f0ede8",resize:"none",outline:"none",fontFamily:"inherit"}}/>
+              style={{width:"100%",border:"1px solid rgba(124,101,204,0.18)",borderRadius:12,padding:"10px 12px",fontSize:12,color:"var(--text-primary)",background:"var(--subtle-bg)",resize:"none",outline:"none",fontFamily:"inherit"}}/>
           </div>
           <button style={{width:"100%",padding:"11px",borderRadius:14,background:"linear-gradient(135deg,#a78bfa,#f9a8d4)",color:"white",fontWeight:600,fontSize:13,border:"none",cursor:"pointer"}}>
             保存する
@@ -109,8 +109,8 @@ export default function AdminPage() {
       <div style={{background:"linear-gradient(135deg,#ede8fb,#fce4ec)",border:"1px solid rgba(167,139,250,0.25)",borderRadius:16,padding:"16px 20px",marginBottom:20,display:"flex",alignItems:"center",gap:12}}>
         <div style={{width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#a78bfa,#f472b6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>👑</div>
         <div>
-          <div style={{fontSize:15,fontWeight:700,color:"#1e2230"}}>管理者ダッシュボード</div>
-          <div style={{fontSize:11,color:"#6b7280",marginTop:2}}>院長・マネージャー専用 — スタッフ管理・リスク状況・ヒヤリハット全件確認</div>
+          <div style={{fontSize:15,fontWeight:700,color:"var(--text-primary)"}}>管理者ダッシュボード</div>
+          <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>院長・マネージャー専用 — スタッフ管理・リスク状況・ヒヤリハット全件確認</div>
         </div>
       </div>
 
@@ -134,34 +134,34 @@ export default function AdminPage() {
             ].map(s=>(
               <div key={s.label} style={{...card,padding:16}}>
                 <div style={{fontSize:22,marginBottom:8}}>{s.emoji}</div>
-                <div style={{fontSize:11,color:"#6b7280",marginBottom:4}}>{s.label}</div>
-                <div style={{fontSize:28,fontWeight:700,color:s.color}}>{s.val}<span style={{fontSize:12,color:"#6b7280",marginLeft:3}}>{s.unit}</span></div>
+                <div style={{fontSize:11,color:"var(--text-secondary)",marginBottom:4}}>{s.label}</div>
+                <div style={{fontSize:28,fontWeight:700,color:s.color}}>{s.val}<span style={{fontSize:12,color:"var(--text-secondary)",marginLeft:3}}>{s.unit}</span></div>
               </div>
             ))}
           </div>
           <div style={{...card,padding:20}}>
-            <div style={{fontSize:13,fontWeight:600,color:"#1e2230",marginBottom:14}}>⭐ クリニック全体の自信スコア</div>
+            <div style={{fontSize:13,fontWeight:600,color:"var(--text-primary)",marginBottom:14}}>⭐ クリニック全体の自信スコア</div>
             {CONF_LABELS.map((l,i)=>(
               <div key={l} style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
-                <div style={{fontSize:12,color:"#6b7280",width:96,flexShrink:0}}>{l}</div>
+                <div style={{fontSize:12,color:"var(--text-secondary)",width:96,flexShrink:0}}>{l}</div>
                 <div style={{flex:1,height:8,background:"#f0ecfa",borderRadius:4,overflow:"hidden"}}>
                   <motion.div initial={{width:0}} animate={{width:`${CONF_VALS[i]}%`}} transition={{duration:0.9,delay:i*0.1}}
                     style={{height:"100%",borderRadius:4,background:CONF_GRADS[i]}}/>
                 </div>
-                <div style={{fontSize:12,fontWeight:600,color:"#1e2230",width:32,textAlign:"right"}}>{CONF_VALS[i]}</div>
+                <div style={{fontSize:12,fontWeight:600,color:"var(--text-primary)",width:32,textAlign:"right"}}>{CONF_VALS[i]}</div>
               </div>
             ))}
           </div>
           <div style={{...card,padding:0,overflow:"hidden"}}>
             <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(124,101,204,0.09)"}}>
-              <div style={{fontSize:13,fontWeight:600,color:"#1e2230"}}>💬 最新ヒヤリハット（全スタッフ）</div>
+              <div style={{fontSize:13,fontWeight:600,color:"var(--text-primary)"}}>💬 最新ヒヤリハット（全スタッフ）</div>
             </div>
             {nearMisses.slice(0,3).map((nm,i)=>(
               <div key={nm.id} style={{padding:"12px 18px",borderBottom:i<2?"1px solid rgba(124,101,204,0.07)":"none",display:"flex",gap:12,alignItems:"flex-start"}}>
                 <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:999,background:"#fffbeb",border:"1px solid #fde68a",color:"#b45309",flexShrink:0,marginTop:2}}>{nm.tag}</span>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:13,color:"#1e2230"}}>{nm.body}</div>
-                  <div style={{fontSize:11,color:"#6b7280",marginTop:4}}>▲ {nm.upvotes} · {nm.role} · {nm.time}</div>
+                  <div style={{fontSize:13,color:"var(--text-primary)"}}>{nm.body}</div>
+                  <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:4}}>▲ {nm.upvotes} · {nm.role} · {nm.time}</div>
                 </div>
               </div>
             ))}
@@ -172,29 +172,29 @@ export default function AdminPage() {
       {tab==="staff" && (
         <motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} style={{...card,padding:0,overflow:"hidden"}}>
           <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(124,101,204,0.09)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <div style={{fontSize:13,fontWeight:600,color:"#1e2230"}}>👥 スタッフ一覧</div>
-            <div style={{fontSize:11,color:"#6b7280"}}>全 {STAFF.length} 名</div>
+            <div style={{fontSize:13,fontWeight:600,color:"var(--text-primary)"}}>👥 スタッフ一覧</div>
+            <div style={{fontSize:11,color:"var(--text-secondary)"}}>全 {STAFF.length} 名</div>
           </div>
           {STAFF.map((s,i)=>(
             <motion.button key={s.id} whileHover={{background:"#faf8ff"}} onClick={()=>setSelectedStaff(s)}
               style={{width:"100%",display:"flex",alignItems:"center",padding:"12px 18px",gap:14,borderBottom:i<STAFF.length-1?"1px solid rgba(124,101,204,0.07)":"none",background:"transparent",border:"none",cursor:"pointer",textAlign:"left"}}>
               <div style={{width:38,height:38,borderRadius:"50%",background:s.status==="active"?"linear-gradient(135deg,#c4b5fd,#f9a8d4)":"#e5e7eb",display:"flex",alignItems:"center",justifyContent:"center",color:s.status==="active"?"white":"#9ca3af",fontSize:14,fontWeight:700,flexShrink:0}}>{s.avatar}</div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:13,fontWeight:600,color:"#1e2230"}}>{s.name}</div>
-                <div style={{fontSize:11,color:"#6b7280",marginTop:1}}>{s.role}</div>
+                <div style={{fontSize:13,fontWeight:600,color:"var(--text-primary)"}}>{s.name}</div>
+                <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:1}}>{s.role}</div>
               </div>
               <div style={{display:"flex",gap:10,alignItems:"center"}}>
                 <div style={{textAlign:"center"}}>
-                  <div style={{fontSize:16,fontWeight:700,color:"#1e2230"}}>{s.checks}</div>
-                  <div style={{fontSize:9,color:"#6b7280"}}>チェック</div>
+                  <div style={{fontSize:16,fontWeight:700,color:"var(--text-primary)"}}>{s.checks}</div>
+                  <div style={{fontSize:9,color:"var(--text-secondary)"}}>チェック</div>
                 </div>
                 <div style={{textAlign:"center"}}>
                   <div style={{fontSize:16,fontWeight:700,color:s.nearmiss>0?"#f59e0b":"#22c55e"}}>{s.nearmiss}</div>
-                  <div style={{fontSize:9,color:"#6b7280"}}>ヒヤリ</div>
+                  <div style={{fontSize:9,color:"var(--text-secondary)"}}>ヒヤリ</div>
                 </div>
                 <div style={{textAlign:"center"}}>
                   <div style={{fontSize:16,fontWeight:700,color:"#7c65cc"}}>{s.score}</div>
-                  <div style={{fontSize:9,color:"#6b7280"}}>自信スコア</div>
+                  <div style={{fontSize:9,color:"var(--text-secondary)"}}>自信スコア</div>
                 </div>
                 <div style={{width:8,height:8,borderRadius:"50%",background:s.status==="active"?"#22c55e":"#d1d5db",flexShrink:0}}/>
               </div>
@@ -207,12 +207,12 @@ export default function AdminPage() {
       {tab==="risk" && (
         <motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} style={{...card,padding:0,overflow:"hidden"}}>
           <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(124,101,204,0.09)"}}>
-            <div style={{fontSize:13,fontWeight:600,color:"#1e2230"}}>🛡️ リスク対応状況</div>
+            <div style={{fontSize:13,fontWeight:600,color:"var(--text-primary)"}}>🛡️ リスク対応状況</div>
           </div>
           {RISK_SUMMARY.map((r,i)=>(
             <div key={r.id} style={{padding:"13px 18px",borderBottom:i<RISK_SUMMARY.length-1?"1px solid rgba(124,101,204,0.07)":"none",display:"flex",alignItems:"center",gap:12}}>
-              <span style={{fontSize:11,fontWeight:700,color:"#6b7280",width:24,fontFamily:"monospace",flexShrink:0}}>{String(r.id).padStart(2,"0")}</span>
-              <div style={{flex:1,fontSize:13,color:"#1e2230"}}>{r.name}</div>
+              <span style={{fontSize:11,fontWeight:700,color:"var(--text-secondary)",width:24,fontFamily:"monospace",flexShrink:0}}>{String(r.id).padStart(2,"0")}</span>
+              <div style={{flex:1,fontSize:13,color:"var(--text-primary)"}}>{r.name}</div>
               <span style={LEVEL_S[r.level]}>{r.level}</span>
               <span style={{fontSize:11,color:r.lastChecked==="未対応"?"#ef4444":"#b0a8c8",fontWeight:r.lastChecked==="未対応"?700:400,flexShrink:0}}>{r.lastChecked}</span>
             </div>
@@ -224,8 +224,8 @@ export default function AdminPage() {
         <motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{...card,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <div>
-              <div style={{fontSize:14,fontWeight:700,color:"#1e2230"}}>⚙️ リスク項目の表示・非表示設定</div>
-              <div style={{fontSize:12,color:"#6b7280",marginTop:4}}>非表示にした項目はスタッフのリスク管理画面に表示されません</div>
+              <div style={{fontSize:14,fontWeight:700,color:"var(--text-primary)"}}>⚙️ リスク項目の表示・非表示設定</div>
+              <div style={{fontSize:12,color:"var(--text-secondary)",marginTop:4}}>非表示にした項目はスタッフのリスク管理画面に表示されません</div>
             </div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={()=>setAllRiskVisibility(true)}
@@ -252,8 +252,8 @@ export default function AdminPage() {
                   <span style={{fontSize:11,fontWeight:700,color:"#c4bde0",width:24,fontFamily:"monospace",flexShrink:0}}>{String(r.id).padStart(2,"0")}</span>
                   <span style={{fontSize:20,flexShrink:0}}>{r.icon}</span>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:13,fontWeight:600,color:"#1e2230",lineHeight:1.4}}>{r.name}</div>
-                    <div style={{fontSize:11,color:"#6b7280",marginTop:2}}>{r.summary}</div>
+                    <div style={{fontSize:13,fontWeight:600,color:"var(--text-primary)",lineHeight:1.4}}>{r.name}</div>
+                    <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>{r.summary}</div>
                   </div>
                   <span style={{background:levelColor.bg,color:levelColor.text,fontSize:10,fontWeight:700,padding:"2px 10px",borderRadius:999,flexShrink:0}}>{r.level}</span>
                   <button onClick={()=>toggleRiskVisibility(r.id)}
@@ -291,24 +291,24 @@ export default function AdminPage() {
         <motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} style={{display:"flex",flexDirection:"column",gap:10}}>
           <div style={{...card,padding:"14px 18px",display:"flex",alignItems:"center",gap:10}}>
             <MessageSquareHeart size={16} style={{color:"#a78bfa"}}/>
-            <div style={{fontSize:13,fontWeight:600,color:"#1e2230",flex:1}}>全ヒヤリハット（管理者は投稿者情報を確認できます）</div>
-            <span style={{fontSize:11,color:"#6b7280"}}>{nearMisses.length} 件</span>
+            <div style={{fontSize:13,fontWeight:600,color:"var(--text-primary)",flex:1}}>全ヒヤリハット（管理者は投稿者情報を確認できます）</div>
+            <span style={{fontSize:11,color:"var(--text-secondary)"}}>{nearMisses.length} 件</span>
           </div>
           {nearMisses.map((nm,i)=>(
             <motion.div key={nm.id} initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{delay:i*0.04}}
               style={{...card,padding:16,borderLeft:"4px solid #fbbf24"}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
                 <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:999,background:"#fffbeb",border:"1px solid #fde68a",color:"#b45309"}}>{nm.tag}</span>
-                <span style={{fontSize:10,color:"#6b7280"}}>{nm.time}</span>
+                <span style={{fontSize:10,color:"var(--text-secondary)"}}>{nm.time}</span>
               </div>
-              <div style={{fontSize:13,color:"#1e2230",lineHeight:1.6,marginBottom:10}}>{nm.body}</div>
+              <div style={{fontSize:13,color:"var(--text-primary)",lineHeight:1.6,marginBottom:10}}>{nm.body}</div>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",paddingTop:8,borderTop:"1px solid rgba(124,101,204,0.08)"}}>
-                <div style={{fontSize:11,color:"#6b7280"}}>
-                  <span style={{background:"#f0ede8",padding:"2px 8px",borderRadius:999,marginRight:6}}>{nm.role}</span>
-                  <span style={{color:"#6b7280"}}>{nm.anonymous?"匿名投稿":"記名投稿"}</span>
+                <div style={{fontSize:11,color:"var(--text-secondary)"}}>
+                  <span style={{background:"var(--subtle-bg)",padding:"2px 8px",borderRadius:999,marginRight:6}}>{nm.role}</span>
+                  <span style={{color:"var(--text-secondary)"}}>{nm.anonymous?"匿名投稿":"記名投稿"}</span>
                 </div>
                 <div style={{display:"flex",gap:6}}>
-                  <button style={{fontSize:11,padding:"4px 10px",borderRadius:999,border:"1px solid rgba(124,101,204,0.2)",background:"#f0ede8",color:"#7c65cc",cursor:"pointer"}}>対応済みにする</button>
+                  <button style={{fontSize:11,padding:"4px 10px",borderRadius:999,border:"1px solid rgba(124,101,204,0.2)",background:"var(--subtle-bg)",color:"#7c65cc",cursor:"pointer"}}>対応済みにする</button>
                   <span style={{fontSize:11,color:"#f59e0b",fontWeight:600}}>▲ {nm.upvotes}</span>
                 </div>
               </div>
