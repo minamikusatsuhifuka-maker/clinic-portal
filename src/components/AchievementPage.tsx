@@ -193,21 +193,29 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
     { id: "gratitude",label: "感謝・承認",      emoji: "💌" },
   ] as const
 
+  const showTabs = !defaultTab || defaultTab === "director" && false
+  const showDirector = defaultTab === "director" || tab === "director"
+  const showGoals = defaultTab === "goals" || tab === "goals"
+  const showGratitude = defaultTab === "goals" || tab === "gratitude"
+
   return (
     <div style={{ padding: 24, maxWidth: 800 }}>
-      <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 999, fontSize: 12, fontWeight: tab === t.id ? 700 : 400, cursor: "pointer", border: "none",
-              background: tab === t.id ? "linear-gradient(135deg,#a78bfa,#f472b6)" : "#fff",
-              color: tab === t.id ? "white" : "#7a6e96",
-              boxShadow: tab === t.id ? "0 2px 8px rgba(167,139,250,0.35)" : "0 1px 3px rgba(90,60,160,0.08)" }}>
-            {t.emoji} {t.label}
-          </button>
-        ))}
-      </div>
+      {/* タブUI: defaultTabが未指定の場合のみ表示 */}
+      {!defaultTab && (
+        <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 999, fontSize: 12, fontWeight: tab === t.id ? 700 : 400, cursor: "pointer", border: "none",
+                background: tab === t.id ? "#1e2230" : "var(--surface-bg)",
+                color: tab === t.id ? "white" : "var(--text-secondary)",
+                boxShadow: "none" }}>
+              {t.emoji} {t.label}
+            </button>
+          ))}
+        </div>
+      )}
 
-      {tab === "director" && (
+      {showDirector && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {isAdmin && (
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -300,7 +308,11 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
         </div>
       )}
 
-      {tab === "goals" && (
+      {showGoals && defaultTab === "goals" && (
+        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 16 }}>🎯 人生目標</div>
+      )}
+
+      {showGoals && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button onClick={() => setShowGoalForm(true)}
@@ -352,7 +364,11 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
         </div>
       )}
 
-      {tab === "gratitude" && (
+      {showGratitude && defaultTab === "goals" && (
+        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginTop: 24, marginBottom: 16 }}>💝 感謝・承認カード</div>
+      )}
+
+      {showGratitude && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
             <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>今月 {gratitudeCards.filter(c => new Date(c.createdAt).getMonth() === new Date().getMonth()).length} 枚の感謝カードが贈られました</div>
