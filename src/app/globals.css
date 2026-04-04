@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Murecho:wght@400;500;700&family=BIZ+UDGothic:wght@400;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -84,22 +85,23 @@
   --sidebar-accent-foreground: #5f4ba8;
   --sidebar-border: rgba(124,101,204,0.11);
   --sidebar-ring: #7c65cc;
-  --bg-page: #f8f6fc;
+  --bg-page: #f2f0f7;
   --bg-surface: #ffffff;
-  --bg-subtle: #f3f0fa;
-  --violet-50: #f5f2fd;
-  --violet-100: #ede8fb;
-  --violet-200: #d9d0f7;
-  --violet-400: #9b87e4;
-  --violet-500: #7c65cc;
-  --violet-600: #5f4ba8;
-  --text-primary: #3a2f5a;
-  --text-secondary: #7a6e96;
-  --text-muted: #b0a8c8;
-  --border-soft: rgba(124,101,204,0.11);
-  --border-medium: rgba(124,101,204,0.2);
-  --shadow-sm: 0 1px 4px rgba(90,60,160,0.06);
-  --shadow-md: 0 4px 16px rgba(90,60,160,0.09);
+  --bg-subtle: #ebe8f4;
+  --violet-50: #f0edfb;
+  --violet-100: #e2dcf7;
+  --violet-200: #c8bfef;
+  --violet-400: #8b7dd4;
+  --violet-500: #6b5cb8;
+  --violet-600: #4e429a;
+  --violet-700: #352e70;
+  --text-primary: #1e1a2e;
+  --text-secondary: #4a4060;
+  --text-muted: #8a82a8;
+  --border-soft: rgba(100,80,180,0.13);
+  --border-medium: rgba(100,80,180,0.22);
+  --shadow-sm: 0 1px 3px rgba(60,40,120,0.08);
+  --shadow-md: 0 3px 12px rgba(60,40,120,0.1);
 }
 
 @layer base {
@@ -112,10 +114,10 @@
   body {
     background: var(--bg-page);
     color: var(--text-primary);
-    font-family: -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+    font-family: var(--app-font, -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif);
     -webkit-font-smoothing: antialiased;
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.65;
   }
   html {
     @apply font-sans;

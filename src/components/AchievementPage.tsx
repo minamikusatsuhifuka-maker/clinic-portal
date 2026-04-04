@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAchievementStore, type LifeGoal } from "@/store/useAchievementStore"
-import { Plus, X, Heart, Trash2, Edit3, Check } from "lucide-react"
+import { Plus, X, Heart, Trash2, Edit3, Check, ChevronDown, ChevronUp } from "lucide-react"
 
 const card: React.CSSProperties = {
   background: "#fff", borderRadius: 16,
@@ -180,6 +180,7 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
   const [tab, setTab] = useState<"director" | "goals" | "gratitude">("director")
   const [showGoalForm, setShowGoalForm] = useState(false)
   const [editingMsgId, setEditingMsgId] = useState<string | null>(null)
+  const [expandedMsgId, setExpandedMsgId] = useState<string | null>(null)
   const [editMsgForm, setEditMsgForm] = useState({ title: '', body: '', principle: '' })
   const [showGratitudeForm, setShowGratitudeForm] = useState(false)
   const [showDirectorForm, setShowDirectorForm] = useState(false)
@@ -255,13 +256,17 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
                 <>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 14 }}>
                     <div style={{ width: 44, height: 44, borderRadius: "50%", background: "linear-gradient(135deg,#fbbf24,#f59e0b)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>👑</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#3a2f5a", marginBottom: 4 }}>{m.title}</div>
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: "#fffbeb", border: "1px solid #fde68a", color: "#b45309" }}>{m.principle}</span>
-                        <span style={{ fontSize: 11, color: "#b0a8c8" }}>楠葉院長 · {new Date(m.createdAt).toLocaleDateString("ja-JP", { month: "long", day: "numeric" })}</span>
+                    <button onClick={() => setExpandedMsgId(expandedMsgId === m.id ? null : m.id)}
+                      style={{ flex: 1, background: "transparent", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: "#2d2640", marginBottom: 4 }}>{m.title}</div>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                        <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: "#fef9ef", border: "1px solid #e8d5a0", color: "#8a6a20" }}>{m.principle}</span>
+                        <span style={{ fontSize: 11, color: "#9ca3af" }}>楠葉院長 · {new Date(m.createdAt).toLocaleDateString("ja-JP", { month: "long", day: "numeric" })}</span>
+                        {expandedMsgId === m.id
+                          ? <ChevronUp size={14} style={{ color: "#9ca3af", marginLeft: "auto" }} />
+                          : <ChevronDown size={14} style={{ color: "#9ca3af", marginLeft: "auto" }} />}
                       </div>
-                    </div>
+                    </button>
                     {isAdmin && (
                       <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                         <button onClick={() => { setEditMsgForm({ title: m.title, body: m.body, principle: m.principle }); setEditingMsgId(m.id) }}
@@ -275,13 +280,18 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
                       </div>
                     )}
                   </div>
-                  <p style={{ fontSize: 14, color: "#3a2f5a", lineHeight: 1.85, whiteSpace: "pre-wrap", marginBottom: 14 }}>{m.body}</p>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                    <button onClick={() => likeDirectorMessage(m.id, userName)}
-                      style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, border: `1px solid ${m.likedBy.includes(userName) ? "#f472b6" : "rgba(124,101,204,0.2)"}`, background: m.likedBy.includes(userName) ? "#fdf2f8" : "transparent", color: m.likedBy.includes(userName) ? "#f472b6" : "#b0a8c8", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
-                      <Heart size={13} fill={m.likedBy.includes(userName) ? "#f472b6" : "none"} /> {m.likes > 0 ? m.likes : ""} いいね
-                    </button>
-                  </div>
+                  {/* アコーディオン展開 */}
+                  {expandedMsgId === m.id && (
+                    <div>
+                      <p style={{ fontSize: 14, color: "#3a2f5a", lineHeight: 1.95, whiteSpace: "pre-wrap", marginBottom: 14 }}>{m.body}</p>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                        <button onClick={() => likeDirectorMessage(m.id, userName)}
+                          style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, border: `1px solid ${m.likedBy.includes(userName) ? "#c084fc" : "rgba(124,101,204,0.2)"}`, background: m.likedBy.includes(userName) ? "#f5f2fd" : "transparent", color: m.likedBy.includes(userName) ? "#7c65cc" : "#9ca3af", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
+                          <Heart size={13} fill={m.likedBy.includes(userName) ? "#7c65cc" : "none"} /> {m.likes > 0 ? m.likes : ""} いいね
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
             </motion.div>

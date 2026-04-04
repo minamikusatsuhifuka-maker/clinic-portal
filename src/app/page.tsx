@@ -243,7 +243,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "risk"       && <RiskPage userRole={user.role} />}
               {activePage === "manual"     && <ManualPage />}
               {activePage === "matrix"     && <MatrixPage />}
-              {activePage === "confidence" && <ConfidencePage />}
+              {activePage === "confidence" && <ConfidencePage userRole={user.role} />}
               {activePage === "nearmiss"   && <NearMissPage />}
               {activePage === "achievement" && <AchievementPage userRole={user.role} userName={user.name} />}
               {activePage === "insight"     && <InsightPage userRole={user.role} userName={user.name} />}
@@ -269,6 +269,8 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 }
 
 /* ───── ユーザー情報付きサイドバー ───── */
+import { useSettingsStore, FONTS } from "@/store/useSettingsStore"
+import type { FontChoice } from "@/store/useSettingsStore"
 import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users } from "lucide-react"
 
 const NAV = [
@@ -292,6 +294,7 @@ const LINKS = [
 
 function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
   const { activePage, setActivePage } = useAppStore()
+  const { font } = useSettingsStore()
   const { riskVisibility } = useEditStore()
   const riskBadge = RISKS.filter((r) => riskVisibility[r.id] !== false).length
   const base: React.CSSProperties = {
@@ -339,8 +342,17 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
           </a>
         ))}
         <div style={{ fontSize: 9, fontWeight: 700, color: "#c4bde0", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>設定</div>
-        <button style={{ ...base, color: "#7a6e96" }}><Settings size={14} style={{ color: "#c4bde0" }} />システム設定</button>
-        <button style={{ ...base, color: "#7a6e96" }}><Bell size={14} style={{ color: "#c4bde0" }} />通知設定</button>
+        <div style={{ padding: "6px 8px 8px" }}>
+          <div style={{ fontSize: 10, color: "#9ca3af", marginBottom: 6 }}>フォント</div>
+          {(Object.entries(FONTS) as [FontChoice, typeof FONTS[FontChoice]][]).map(([key, f]) => (
+            <button key={key}
+              onClick={() => useSettingsStore.getState().setFont(key)}
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderRadius: 8, border: "none", background: font === key ? "#e8e4f5" : "transparent", color: font === key ? "#4e429a" : "#6b6080", fontSize: 12, fontWeight: font === key ? 600 : 400, cursor: "pointer", marginBottom: 2, fontFamily: f.value }}>
+              <span>{f.label}</span>
+              {font === key && <span style={{ fontSize: 10, color: "#6b5cb8" }}>✓</span>}
+            </button>
+          ))}
+        </div>
       </nav>
       <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(124,101,204,0.09)", display: "flex", alignItems: "center", gap: 10 }}>
         {user.photoURL ? (

@@ -421,7 +421,116 @@ export function MatrixPage() {
 }
 
 /* ---- 4つの自信 ---- */
-export function ConfidencePage() {
+const STAFF_ACTIONS: { category: string; color: string; bg: string; actions: string[] }[] = [
+  {
+    category: "会社への自信を育む行動",
+    color: "#5f4ba8", bg: "#f5f2fd",
+    actions: [
+      "クリニックのミッション・ビジョンを自分の言葉で説明できるようになる",
+      "院長メッセージを毎週読み、自分の仕事との接点を考える",
+      "「南草津皮フ科で働いていることが誇らしい」と感じられる瞬間を日記に記録する",
+      "患者さんから「ありがとう」と言われた言葉を書き留める習慣をつくる",
+      "クリニックの強み・他院との違いを3つ言えるようになる",
+      "新しいスタッフや患者さんに、クリニックの良さを自然に伝えられるようにする",
+    ],
+  },
+  {
+    category: "職業への自信を育む行動",
+    color: "#0f6e56", bg: "#e1f5ee",
+    actions: [
+      "担当する処置・施術の手順を完全に理解し、自信を持って実施できるようになる",
+      "自分の職種に関連する資格取得・研修参加を年1回以上行う",
+      "「この仕事をしていて良かった」と思えた瞬間を月1回振り返る",
+      "先輩から技術を学ぶだけでなく、後輩に教えることで自分の理解を深める",
+      "患者さんから指名・感謝された経験を自分の強みとして認識する",
+      "5年後の自分のキャリアイメージを具体的に描いてみる",
+      "今の仕事が社会にどんな価値を与えているか、言語化してみる",
+    ],
+  },
+  {
+    category: "商品への自信を育む行動",
+    color: "#854f0b", bg: "#faeeda",
+    actions: [
+      "自分が担当する施術・サービスの仕組みと効果を、患者さんに説明できるレベルで理解する",
+      "美容皮膚科の最新トレンドを月1回チェックし、院内で共有する",
+      "自費メニューの料金・内容・他院との違いを正確に説明できるようにする",
+      "「この施術を受けて本当に良かった」という患者さんの言葉を大切にする",
+      "自分自身が施術を体験することで、患者さんの気持ちをより深く理解する",
+      "施術後の患者さんの変化（表情・自信）を観察し、仕事の意義を感じる",
+    ],
+  },
+  {
+    category: "自分への自信を育む行動",
+    color: "#993556", bg: "#fdf2f8",
+    actions: [
+      "毎日寝る前に「今日うまくできたこと」を1つ書き出す（小さなことでよい）",
+      "失敗したときは「どうすれば良くなるか」を考え、自分を責めすぎない",
+      "「私にはできない」という言葉を「どうすればできるか」に置き換える習慣をつける",
+      "自分の強みを3つ書き出し、定期的に見直す",
+      "Airに悩みを相談し、自分の考えを言語化する習慣をつくる",
+      "コーチング記録でコミットメントを設定し、小さな約束を守り続ける",
+      "感謝カードを送ること・受け取ることで、自己肯定感を育てる",
+      "「他人と比べる」ではなく「昨日の自分と比べる」視点を持つ",
+      "身体の健康（睡眠・食事・運動）が自信の土台であることを意識する",
+    ],
+  },
+]
+
+const MANAGER_ACTIONS: { category: string; color: string; bg: string; actions: string[] }[] = [
+  {
+    category: "会社への自信向上施策（マネージャー・管理者向け）",
+    color: "#5f4ba8", bg: "#f5f2fd",
+    actions: [
+      "クリニックのMVV（ミッション・ビジョン・バリュー）を全スタッフに浸透させる仕組みを設計する",
+      "院長メッセージをもとに朝礼テーマを設定し、チームの理念理解を深める",
+      "「このクリニックで働いて良かった」とスタッフが思える職場環境を整備する",
+      "スタッフ満足度調査を実施し、結果をもとに職場改善を行う",
+      "SNS・MEO・口コミ管理でクリニックブランドを強化し、スタッフの誇りにつなげる",
+      "採用ブランディングで「このクリニックで働きたい」人材を引き寄せる",
+      "院内表彰制度を設け、貢献したスタッフを称える文化をつくる",
+    ],
+  },
+  {
+    category: "職業への自信向上施策（マネージャー・管理者向け）",
+    color: "#0f6e56", bg: "#e1f5ee",
+    actions: [
+      "各スタッフの強みを把握し、それを活かせる業務配置・役割設計を行う",
+      "外部研修・資格取得の費用補助制度を整備し、専門性向上を支援する",
+      "OJT・メンター制度を設計し、新人が安心して成長できる環境を整える",
+      "スタッフのキャリアパスを明文化し、3〜5年後の成長イメージを共有する",
+      "定期的な1on1面談でスタッフの仕事への意欲・悩みを把握する",
+      "「この仕事の社会的意義」を定期的にチームで語り合う機会をつくる",
+    ],
+  },
+  {
+    category: "商品への自信向上施策（マネージャー・管理者向け）",
+    color: "#854f0b", bg: "#faeeda",
+    actions: [
+      "全スタッフが自費メニューを自信を持って説明できる勉強会を月1回開催する",
+      "施術体験機会（モデル施術）をスタッフに提供し、商品理解を深める",
+      "患者満足度データを分析し、サービス品質の改善施策を立案する",
+      "競合クリニックの調査を定期実施し、自院の強みを再定義する",
+      "ビフォーアフター症例の蓄積と共有で、チームの成功体験を増やす",
+      "新メニュー導入時は全スタッフへの研修を義務化し、自信を持って提案できる状態にする",
+    ],
+  },
+  {
+    category: "自分への自信向上施策（マネージャー・管理者向け）",
+    color: "#993556", bg: "#fdf2f8",
+    actions: [
+      "心理的安全性の高い職場文化を意識的につくる（失敗を責めない・相談しやすい環境）",
+      "スタッフの成長・努力を具体的に承認・称賛する習慣を持つ",
+      "コーチング記録を活用し、スタッフのコミットメントをチームで見守る",
+      "感謝カード文化を推進し、承認し合えるチームをつくる",
+      "4つの自信スコアを月次でモニタリングし、低下しているスタッフを早期発見する",
+      "Airをスタッフが気兼ねなく使えるよう推奨し、内省・対話の習慣を広げる",
+      "メンタルヘルスへの配慮を忘れず、必要に応じて産業医・専門家につなげる体制を整える",
+    ],
+  },
+]
+
+export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
+  const isManager = userRole === "admin" || userRole === "manager"
   const scores = [
     { label:"会社への自信", icon:"🏥", val:72, grad:"from-sky-400 to-blue-400", bg:"bg-sky-50", border:"border-sky-200", txt:"text-sky-700",
       actions:["月次の経営方針共有ミーティング","患者の声・感謝の手紙の共有","ミッション・ビジョンの明文化"] },
@@ -465,6 +574,50 @@ export function ConfidencePage() {
           </div>
         ))}
       </div>
+      {/* 役職別セクション */}
+      {isManager ? (
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f5f2fd", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
+            👑 管理者・マネージャー専用：4つの自信を組織に根づかせる施策
+          </div>
+          {MANAGER_ACTIONS.map((section, si) => (
+            <div key={si} style={{ background:"#fff", borderRadius:14, border:"1px solid rgba(124,101,204,0.12)", overflow:"hidden" }}>
+              <div style={{ padding:"12px 16px", background:section.bg, borderBottom:`1px solid ${section.color}22` }}>
+                <div style={{ fontSize:12, fontWeight:600, color:section.color }}>{section.category}</div>
+              </div>
+              <div style={{ padding:"12px 16px", display:"flex", flexDirection:"column", gap:6 }}>
+                {section.actions.map((action, ai) => (
+                  <div key={ai} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+                    <div style={{ width:5, height:5, borderRadius:"50%", background:section.color, marginTop:8, flexShrink:0 }} />
+                    <p style={{ fontSize:13, color:"#2d2640", margin:0, lineHeight:1.75 }}>{action}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          <div style={{ fontSize:13, fontWeight:600, color:"#4a4060", padding:"10px 14px", background:"#f5f2fd", borderRadius:12, border:"1px solid rgba(124,101,204,0.2)" }}>
+            🌱 スタッフ向け：4つの自信を育む毎日の行動と考え方
+          </div>
+          {STAFF_ACTIONS.map((section, si) => (
+            <div key={si} style={{ background:"#fff", borderRadius:14, border:"1px solid rgba(124,101,204,0.12)", overflow:"hidden" }}>
+              <div style={{ padding:"12px 16px", background:section.bg, borderBottom:`1px solid ${section.color}22` }}>
+                <div style={{ fontSize:12, fontWeight:600, color:section.color }}>{section.category}</div>
+              </div>
+              <div style={{ padding:"12px 16px", display:"flex", flexDirection:"column", gap:6 }}>
+                {section.actions.map((action, ai) => (
+                  <div key={ai} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+                    <div style={{ width:5, height:5, borderRadius:"50%", background:section.color, marginTop:8, flexShrink:0 }} />
+                    <p style={{ fontSize:13, color:"#2d2640", margin:0, lineHeight:1.75 }}>{action}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
