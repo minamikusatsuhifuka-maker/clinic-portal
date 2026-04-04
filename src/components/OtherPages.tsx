@@ -557,8 +557,8 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
       actions:["1on1面談の定期実施","スキルマップの作成と可視化","成果を称える表彰制度"] },
   ]
   return (
-    <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ width: "100%", boxSizing: "border-box" }}>
+    <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20, overflowX: "hidden" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, width: "100%" }}>
         {scores.map((s) => (
           <div key={s.label} className={`${s.bg} ${s.border} border rounded-2xl p-4`} style={{ minWidth: 0, overflow: "hidden" }}>
             <div className="text-xl mb-2">{s.icon}</div>
