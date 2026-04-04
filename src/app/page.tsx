@@ -88,7 +88,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
         {/* ロゴ */}
         <div style={{
           width: 68, height: 68, borderRadius: 20,
-          background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)",
+          background: "linear-gradient(135deg,#b8975a,#d4b87a)",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 34, margin: "0 auto 20px",
           boxShadow: "0 4px 20px rgba(167,139,250,0.4)",
@@ -112,7 +112,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
                 justifyContent: "center", gap: 10, padding: "13px 20px",
                 borderRadius: 14, border: "1px solid rgba(124,101,204,0.22)",
                 background: "#fff", fontSize: 14, fontWeight: 600,
-                color: "#3a2f5a", cursor: "pointer", marginBottom: 8,
+                color: "rgba(245,242,237,0.65)", cursor: "pointer", marginBottom: 8,
                 boxShadow: "0 2px 8px rgba(90,60,160,0.07)",
                 opacity: googleLoading ? 0.7 : 1,
               }}>
@@ -256,7 +256,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
                 isAdminOrManager ? <AdminPage /> : (
                   <div style={{ padding: 60, textAlign: "center" }}>
                     <div style={{ fontSize: 40, marginBottom: 14 }}>🔒</div>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#7a6e96" }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "rgba(245,242,237,0.55)" }}>
                       管理者・マネージャーのみアクセスできます
                     </div>
                   </div>
@@ -307,18 +307,18 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
     fontSize: 13, cursor: "pointer", border: "1px solid transparent", background: "transparent",
   }
   return (
-    <aside style={{ width: 220, minWidth: 220, background: "#fff", borderRight: "1px solid rgba(124,101,204,0.11)", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid rgba(124,101,204,0.09)" }}>
+    <aside style={{ width: 220, minWidth: 220, background: "#1a1e2e", borderRight: "none", height: "100vh", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏥</div>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#b8975a,#d4b87a)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏥</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#3a2f5a" }}>CarePortal</div>
-            <div style={{ fontSize: 10, color: "#b0a8c8", marginTop: 1 }}>南草津皮フ科</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#f5f2ed" }}>CarePortal</div>
+            <div style={{ fontSize: 10, color: "rgba(245,242,237,0.5)", marginTop: 1 }}>南草津皮フ科</div>
           </div>
         </div>
       </div>
       <nav style={{ flex: 1, padding: "10px", overflowY: "auto" }}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: "#c4bde0", padding: "6px 8px 4px", letterSpacing: "0.1em" }}>MENU</div>
+        <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(245,242,237,0.35)", padding: "6px 8px 4px", letterSpacing: "0.1em" }}>MENU</div>
         {NAV.map(n => {
           const Icon = n.icon
           const active = activePage === n.id
@@ -336,46 +336,46 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
             </button>
           )
         })}
-        <div style={{ fontSize: 9, fontWeight: 700, color: "#c4bde0", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>外部リンク</div>
+        <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(245,242,237,0.35)", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>外部リンク</div>
         {LINKS.map(l => (
           <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer"
-            style={{ ...base, textDecoration: "none", color: "#7a6e96" }}>
+            style={{ ...base, textDecoration: "none", color: "rgba(245,242,237,0.55)" }}>
             <span style={{ fontSize: 15 }}>{l.emoji}</span>
             <span style={{ flex: 1 }}>{l.label}</span>
-            <ExternalLink size={10} style={{ color: "#c4bde0" }} />
+            <ExternalLink size={10} style={{ color: "rgba(245,242,237,0.4)" }} />
           </a>
         ))}
-        <div style={{ fontSize: 9, fontWeight: 700, color: "#c4bde0", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>設定</div>
+        <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(245,242,237,0.35)", padding: "12px 8px 4px", letterSpacing: "0.1em" }}>設定</div>
         <div style={{ padding: "6px 8px 8px" }}>
-          <div style={{ fontSize: 10, color: "#9ca3af", marginBottom: 6 }}>フォント</div>
+          <div style={{ fontSize: 10, color: "rgba(245,242,237,0.4)", marginBottom: 6 }}>フォント</div>
           {(Object.entries(FONTS) as [FontChoice, typeof FONTS[FontChoice]][]).map(([key, f]) => (
             <button key={key}
               onClick={() => useSettingsStore.getState().setFont(key)}
-              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderRadius: 8, border: "none", background: font === key ? "#e8e4f5" : "transparent", color: font === key ? "#4e429a" : "#6b6080", fontSize: 12, fontWeight: font === key ? 600 : 400, cursor: "pointer", marginBottom: 2, fontFamily: f.value }}>
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderRadius: 8, border: "none", background: font === key ? "rgba(184,151,90,0.2)" : "transparent", color: font === key ? "#f5f2ed" : "rgba(245,242,237,0.5)", fontSize: 12, fontWeight: font === key ? 600 : 400, cursor: "pointer", marginBottom: 2, fontFamily: f.value }}>
               <span>{f.label}</span>
-              {font === key && <span style={{ fontSize: 10, color: "#6b5cb8" }}>✓</span>}
+              {font === key && <span style={{ fontSize: 10, color: "#b8975a" }}>✓</span>}
             </button>
           ))}
         </div>
       </nav>
-      <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(124,101,204,0.09)", display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
         {user.photoURL ? (
           <img src={user.photoURL} alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
         ) : (
-          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#c4b5fd,#f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#b8975a,#d4b87a)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
             {user.avatar}
           </div>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: "#3a2f5a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
-          <div style={{ fontSize: 10, color: "#b0a8c8", marginTop: 1 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#f5f2ed", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
+          <div style={{ fontSize: 10, color: "rgba(245,242,237,0.45)", marginTop: 1 }}>
             {user.role === "admin" ? "👑 管理者" : user.role === "manager" ? "📋 マネージャー" : "一般スタッフ"}
           </div>
         </div>
         <button onClick={onLogout} title="ログアウト"
-          style={{ width: 26, height: 26, borderRadius: 8, background: "#f5f2fd", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#c4bde0", flexShrink: 0 }}
+          style={{ width: 26, height: 26, borderRadius: 8, background: "rgba(255,255,255,0.08)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(245,242,237,0.4)", flexShrink: 0 }}
           onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
-          onMouseLeave={e => (e.currentTarget.style.color = "#c4bde0")}>
+          onMouseLeave={e => (e.currentTarget.style.color = "rgba(245,242,237,0.4)")}>
           <LogOut size={12} />
         </button>
       </div>
