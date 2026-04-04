@@ -16,6 +16,7 @@ import AchievementPage from "@/components/AchievementPage"
 import InsightPage from "@/components/InsightPage"
 import ContactsPage from "@/components/ContactsPage"
 import RolesPage from "@/components/RolesPage"
+import MinutesPage from "@/components/MinutesPage"
 import AiAssistant from "@/components/AiAssistant"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -40,6 +41,7 @@ function getTitles(visibleCount: number): Record<string, string> {
     insight: "気づきノート（学び・実践・共有）",
     contacts: "緊急連絡先",
     roles: "役職ガイド・診療補助・清潔操作",
+    minutes: "議事録・タスク管理",
     admin: "管理者ダッシュボード",
   }
 }
@@ -249,6 +251,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "insight"     && <InsightPage userRole={user.role} userName={user.name} />}
               {activePage === "contacts"   && <ContactsPage />}
               {activePage === "roles"      && <RolesPage />}
+              {activePage === "minutes"    && <MinutesPage userRole={user.role} />}
               {activePage === "admin"      && (
                 isAdminOrManager ? <AdminPage /> : (
                   <div style={{ padding: 60, textAlign: "center" }}>
@@ -271,7 +274,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 /* ───── ユーザー情報付きサイドバー ───── */
 import { useSettingsStore, FONTS } from "@/store/useSettingsStore"
 import type { FontChoice } from "@/store/useSettingsStore"
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -284,6 +287,7 @@ const NAV = [
   { id: "insight",     icon: Lightbulb,          label: "気づきノート",     badge: null, alert: false },
   { id: "contacts",    icon: Phone,              label: "緊急連絡先",       badge: null, alert: false },
   { id: "roles",       icon: Users,              label: "役職ガイド",       badge: null, alert: false },
+  { id: "minutes",     icon: FileText,           label: "📝 議事録・タスク", badge: null, alert: false },
   { id: "admin",       icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
 ]
 const LINKS = [
