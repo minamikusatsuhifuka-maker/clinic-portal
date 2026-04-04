@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAchievementStore, type LifeGoal } from "@/store/useAchievementStore"
 import { Plus, X, Heart, Trash2, Edit3, Check, ChevronDown, ChevronUp } from "lucide-react"
@@ -175,9 +175,10 @@ function DirectorMessageForm({ onClose }: { onClose: () => void }) {
   )
 }
 
-export default function AchievementPage({ userRole = "staff", userName = "スタッフ" }: { userRole?: string; userName?: string }) {
+export default function AchievementPage({ userRole = "staff", userName = "スタッフ", defaultTab = "director" }: { userRole?: string; userName?: string; defaultTab?: "director" | "goals" | "gratitude" }) {
   const { lifeGoals, gratitudeCards, directorMessages, updateLifeGoal, deleteLifeGoal, likeGratitudeCard, likeDirectorMessage, deleteDirectorMessage, updateDirectorMessage } = useAchievementStore()
-  const [tab, setTab] = useState<"director" | "goals" | "gratitude">("director")
+  const [tab, setTab] = useState<"director" | "goals" | "gratitude">(defaultTab)
+  useEffect(() => { setTab(defaultTab) }, [defaultTab])
   const [showGoalForm, setShowGoalForm] = useState(false)
   const [editingMsgId, setEditingMsgId] = useState<string | null>(null)
   const [expandedMsgId, setExpandedMsgId] = useState<string | null>(null)

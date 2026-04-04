@@ -37,7 +37,8 @@ function getTitles(visibleCount: number): Record<string, string> {
     matrix: "役割マトリクス",
     confidence: "4つの自信",
     nearmiss: "ヒヤリハット・事例共有",
-    achievement: "人生目標・感謝・院長メッセージ",
+    achievement: "人生を豊かにする教え",
+    lifegoals: "人生目標・感謝",
     insight: "気づきノート（学び・実践・共有）",
     contacts: "緊急連絡先",
     roles: "役職ガイド・診療補助・清潔操作",
@@ -247,7 +248,8 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "matrix"     && <MatrixPage />}
               {activePage === "confidence" && <ConfidencePage userRole={user.role} />}
               {activePage === "nearmiss"   && <NearMissPage />}
-              {activePage === "achievement" && <AchievementPage userRole={user.role} userName={user.name} />}
+              {activePage === "achievement" && <AchievementPage userRole={user.role} userName={user.name} defaultTab="director" />}
+              {activePage === "lifegoals"   && <AchievementPage userRole={user.role} userName={user.name} defaultTab="goals" />}
               {activePage === "insight"     && <InsightPage userRole={user.role} userName={user.name} />}
               {activePage === "contacts"   && <ContactsPage />}
               {activePage === "roles"      && <RolesPage />}
@@ -274,7 +276,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 /* ───── ユーザー情報付きサイドバー ───── */
 import { useSettingsStore, FONTS, FONT_SIZES } from "@/store/useSettingsStore"
 import type { FontChoice, FontSize } from "@/store/useSettingsStore"
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun, Heart } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -283,7 +285,8 @@ const NAV = [
   { id: "matrix",     icon: Grid3X3,            label: "役割マトリクス",   badge: null, alert: false },
   { id: "confidence", icon: Star,               label: "4つの自信",        badge: null, alert: false },
   { id: "nearmiss",    icon: MessageCircleHeart, label: "ヒヤリハット共有", badge: 6,    alert: false },
-  { id: "achievement", icon: Trophy,             label: "人生・感謝・院長", badge: null, alert: false },
+  { id: "achievement", icon: BookOpen,            label: "人生を豊かにする教え", badge: null, alert: false },
+  { id: "lifegoals",   icon: Heart,              label: "人生目標・感謝",   badge: null, alert: false },
   { id: "insight",     icon: Lightbulb,          label: "気づきノート",     badge: null, alert: false },
   { id: "contacts",    icon: Phone,              label: "緊急連絡先",       badge: null, alert: false },
   { id: "roles",       icon: Users,              label: "役職ガイド",       badge: null, alert: false },
