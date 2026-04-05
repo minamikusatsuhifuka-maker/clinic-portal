@@ -28,37 +28,12 @@ export default function KnowledgePage() {
     setLoading(true)
     setStatus("ファイルを読み込んでいます...")
     try {
-      let content = ""
-      let type: KnowledgeDoc["type"] = "text"
+      const content = await file.text()
+      const type: KnowledgeDoc["type"] =
+        file.name.endsWith(".md") ? "md" : "text"
 
-      if (file.name.endsWith(".pdf")) {
-        type = "pdf"
-        const buffer = await file.arrayBuffer()
-        const uint8 = new Uint8Array(buffer)
-        // PDFをbase64に変換（大きなファイルはチャンクで処理）
-        let binary = ""
-        const chunkSize = 8192
-        for (let i = 0; i < uint8.length; i += chunkSize) {
-          binary += String.fromCharCode(...uint8.slice(i, i + chunkSize))
-        }
-        const base64 = btoa(binary)
-        // Gemini API でPDFからテキスト抽出
-        const res = await fetch("/api/extract-text", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ base64, mimeType: "application/pdf", filename: file.name }),
-        })
-        const data = await res.json()
-        content = data.text ?? "PDFの読み込みに失敗しました"
-      } else if (file.name.endsWith(".md")) {
-        type = "md"
-        content = await file.text()
-      } else {
-        type = "text"
-        content = await file.text()
-      }
-
-      setForm(f => ({ ...f, title: file.name.replace(/\.[^.]+$/, ""), content, type }))
+      const title = file.name.replace(/\.[^.]+$/, "")
+      setForm(f => ({ ...f, title, content, type }))
       setShowForm(true)
       setStatus("")
     } catch (e) {
@@ -119,7 +94,7 @@ export default function KnowledgePage() {
         </div>
       </div>
 
-      <input ref={fileRef} type="file" accept=".txt,.md,.pdf" style={{ display: "none" }}
+      <input ref={fileRef} type="file" accept=".txt,.md" style={{ display: "none" }}
         onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} />
 
       {/* ステータス */}
@@ -155,7 +130,7 @@ export default function KnowledgePage() {
                 </select>
               </div>
               <textarea value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
-                placeholder={"理念・教え・ルールなどのテキストを貼り付けてください。\n\n例：\n私たちは患者さんの笑顔のために存在します...\n\nアチーブメントの教えを土台に..."}
+                placeholder={"理念・教え・ルールなどのテキストを貼り付けてください。\n※ PDFの内容はテキストとしてここに貼り付けてください\n\n例：\n私たちは患者さんの笑顔のために存在します...\n\nアチーブメントの教えを土台に..."}
                 rows={10}
                 style={{ border: "0.5px solid rgba(26,30,46,0.15)", borderRadius: 10, padding: "9px 12px", fontSize: 13, outline: "none", background: "var(--subtle-bg,#edeae4)", resize: "vertical", fontFamily: "inherit", lineHeight: 1.75, color: "var(--text-primary,#1e2230)" }} />
               <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
