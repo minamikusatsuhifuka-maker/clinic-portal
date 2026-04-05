@@ -468,7 +468,7 @@ export function MatrixPage() {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {cells.map((c) => (
-          <div key={c.key} className={`rounded-2xl py-5 pr-5 pl-7 border ${c.cls}`}>
+          <div key={c.key} className={`rounded-2xl border ${c.cls}`} style={{ paddingTop:20, paddingBottom:20, paddingLeft:32, paddingRight:20 }}>
             <div className="text-[10px] font-bold opacity-70 mb-0.5" style={{ letterSpacing: "0.06em" }}>{c.quadrantLabel}</div>
             <div className="font-bold text-xs mb-0.5">{c.title}</div>
             <div className="text-[10px] opacity-60 mb-4">{c.sub}</div>
