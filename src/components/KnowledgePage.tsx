@@ -21,6 +21,7 @@ export default function KnowledgePage() {
   })
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState("")
+  const [isDragging, setIsDragging] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   // ファイルアップロード処理
@@ -96,6 +97,30 @@ export default function KnowledgePage() {
 
       <input ref={fileRef} type="file" accept=".txt,.md" style={{ display: "none" }}
         onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} />
+
+      {/* ドラッグ&ドロップゾーン */}
+      <div
+        onClick={() => fileRef.current?.click()}
+        onDragOver={e => { e.preventDefault(); setIsDragging(true) }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={e => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]) }}
+        style={{
+          marginBottom: 16,
+          padding: 24,
+          borderRadius: 12,
+          border: isDragging ? "1.5px dashed #b8975a" : "1.5px dashed rgba(26,30,46,0.2)",
+          background: isDragging ? "#f7f1e8" : "transparent",
+          textAlign: "center",
+          cursor: "pointer",
+          transition: "all 0.15s",
+        }}>
+        <div style={{ fontSize: 15, fontWeight: 500, color: isDragging ? "#b8975a" : "var(--text-primary,#1e2230)", marginBottom: 4 }}>
+          📂 ここにファイルをドロップ
+        </div>
+        <div style={{ fontSize: 12, color: "var(--text-secondary,#6b7280)" }}>
+          .txt / .md ファイルに対応
+        </div>
+      </div>
 
       {/* ステータス */}
       {status && (
