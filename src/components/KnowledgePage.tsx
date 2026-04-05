@@ -24,15 +24,14 @@ export default function KnowledgePage() {
   const [isDragging, setIsDragging] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  // ファイルアップロード処理
-  const handleFile = async (file: File) => {
+  // 単一ファイル → フォーム表示
+  const handleSingleFile = async (file: File) => {
     setLoading(true)
     setStatus("ファイルを読み込んでいます...")
     try {
       const content = await file.text()
       const type: KnowledgeDoc["type"] =
         file.name.endsWith(".md") ? "md" : "text"
-
       const title = file.name.replace(/\.[^.]+$/, "")
       setForm(f => ({ ...f, title, content, type }))
       setShowForm(true)
@@ -42,6 +41,35 @@ export default function KnowledgePage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // 複数ファイル一括アップロード
+  const handleFiles = async (files: FileList | File[]) => {
+    const fileArray = Array.from(files)
+    if (!fileArray.length) return
+
+    if (fileArray.length === 1) {
+      await handleSingleFile(fileArray[0])
+      return
+    }
+
+    setLoading(true)
+    setStatus(`${fileArray.length}件のファイルを読み込んでいます...`)
+    let saved = 0
+    for (const file of fileArray) {
+      try {
+        const content = await file.text()
+        const title = file.name.replace(/\.[^.]+$/, "")
+        const type: KnowledgeDoc["type"] = file.name.endsWith(".md") ? "md" : "text"
+        addDoc({ title, content, type, category: "philosophy", enabled: true })
+        saved++
+      } catch (e) {
+        console.error(`${file.name} の読み込みに失敗:`, e)
+      }
+    }
+    setLoading(false)
+    setStatus(`${saved}件保存しました。Airが参照できる状態になっています。`)
+    setTimeout(() => setStatus(""), 4000)
   }
 
   const handleSubmit = () => {
@@ -95,15 +123,15 @@ export default function KnowledgePage() {
         </div>
       </div>
 
-      <input ref={fileRef} type="file" accept=".txt,.md" style={{ display: "none" }}
-        onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} />
+      <input ref={fileRef} type="file" accept=".txt,.md" multiple style={{ display: "none" }}
+        onChange={e => { if (e.target.files?.length) handleFiles(e.target.files) }} />
 
       {/* ドラッグ&ドロップゾーン */}
       <div
         onClick={() => fileRef.current?.click()}
         onDragOver={e => { e.preventDefault(); setIsDragging(true) }}
         onDragLeave={() => setIsDragging(false)}
-        onDrop={e => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]) }}
+        onDrop={e => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files) }}
         style={{
           marginBottom: 16,
           padding: 24,
@@ -115,10 +143,10 @@ export default function KnowledgePage() {
           transition: "all 0.15s",
         }}>
         <div style={{ fontSize: 15, fontWeight: 500, color: isDragging ? "#b8975a" : "var(--text-primary,#1e2230)", marginBottom: 4 }}>
-          📂 ここにファイルをドロップ
+          📂 ここにファイルをドロップ（複数可）
         </div>
         <div style={{ fontSize: 12, color: "var(--text-secondary,#6b7280)" }}>
-          .txt / .md ファイルに対応
+          .txt / .md ファイル対応 · 複数ファイルは一括保存
         </div>
       </div>
 
