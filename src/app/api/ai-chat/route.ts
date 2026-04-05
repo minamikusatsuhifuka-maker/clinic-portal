@@ -2,7 +2,7 @@ import { NextRequest } from "next/server"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 
 export async function POST(req: NextRequest) {
-  const { messages, currentPage, userRole } = await req.json()
+  const { messages, currentPage, userRole, knowledgeContext } = await req.json()
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY
 
   if (!apiKey || apiKey === "your_gemini_api_key_here") {
@@ -116,7 +116,13 @@ export async function POST(req: NextRequest) {
   「GRIPの4つのうち、今どれが弱いと感じますか？」
 
 ■ 4つの自信（スタッフの離職・モチベーション低下時に活用）
-  会社・職業・商品・自分への自信のどれが低下しているかを特定して対策する`
+  会社・職業・商品・自分への自信のどれが低下しているかを特定して対策する
+${knowledgeContext ? `
+【クリニックの理念・大切にしている教え】
+以下はこのクリニックが大切にしている理念・教えです。回答の際は必ずこれを判断基準・土台としてください：
+
+${knowledgeContext}
+` : ""}`
 
   const genAI = new GoogleGenerativeAI(apiKey)
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })

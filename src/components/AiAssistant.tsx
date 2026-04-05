@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Send, Loader2, RotateCcw, Sparkles, X, ChevronDown } from "lucide-react"
 import VoiceInputButton from "@/components/VoiceInputButton"
 import { useAppStore } from "@/store/useAppStore"
+import { useKnowledgeStore } from "@/store/useKnowledgeStore"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
@@ -54,6 +55,7 @@ interface Props { userRole?: string }
 
 export default function AiAssistant({ userRole = "staff" }: Props) {
   const { activePage } = useAppStore()
+  const { getActiveContext } = useKnowledgeStore()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([INITIAL])
   const [input, setInput] = useState("")
@@ -113,10 +115,11 @@ export default function AiAssistant({ userRole = "staff" }: Props) {
     abortRef.current = new AbortController()
 
     try {
+      const knowledgeContext = getActiveContext()
       const res = await fetch("/api/ai-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages, currentPage: activePage, userRole }),
+        body: JSON.stringify({ messages: newMessages, currentPage: activePage, userRole, knowledgeContext }),
         signal: abortRef.current.signal,
       })
 

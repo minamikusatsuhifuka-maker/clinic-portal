@@ -17,6 +17,7 @@ import InsightPage from "@/components/InsightPage"
 import ContactsPage from "@/components/ContactsPage"
 import RolesPage from "@/components/RolesPage"
 import MinutesPage from "@/components/MinutesPage"
+import KnowledgePage from "@/components/KnowledgePage"
 import AiAssistant from "@/components/AiAssistant"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -43,6 +44,7 @@ function getTitles(visibleCount: number): Record<string, string> {
     contacts: "緊急連絡先",
     roles: "役職ガイド・診療補助・清潔操作",
     minutes: "議事録・タスク管理",
+    knowledge: "クリニック知識ベース",
     admin: "管理者ダッシュボード",
   }
 }
@@ -254,6 +256,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "contacts"   && <ContactsPage />}
               {activePage === "roles"      && <RolesPage />}
               {activePage === "minutes"    && <MinutesPage userRole={user.role} />}
+              {activePage === "knowledge"  && <KnowledgePage />}
               {activePage === "admin"      && (
                 isAdminOrManager ? <AdminPage /> : (
                   <div style={{ padding: 60, textAlign: "center" }}>
@@ -276,7 +279,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 /* ───── ユーザー情報付きサイドバー ───── */
 import { useSettingsStore, FONTS, FONT_SIZES } from "@/store/useSettingsStore"
 import type { FontChoice, FontSize } from "@/store/useSettingsStore"
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun, Heart } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun, Heart, Database } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -291,6 +294,7 @@ const NAV = [
   { id: "contacts",    icon: Phone,              label: "緊急連絡先",       badge: null, alert: false },
   { id: "roles",       icon: Users,              label: "役職ガイド",       badge: null, alert: false },
   { id: "minutes",     icon: FileText,           label: "📝 議事録・タスク", badge: null, alert: false },
+  { id: "knowledge",   icon: Database,           label: "知識ベース",       badge: null, alert: false },
   { id: "admin",       icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
 ]
 const LINKS = [
@@ -334,7 +338,7 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
         {NAV.map(n => {
           const Icon = n.icon
           const active = activePage === n.id
-          if (n.id === "admin" && user.role === "staff") return null
+          if ((n.id === "admin" || n.id === "knowledge") && user.role === "staff") return null
           return (
             <button key={n.id} onClick={() => setActivePage(n.id)}
               style={{ ...base, background: active ? (dk ? "rgba(184,151,90,0.2)" : "#f0ede8") : "transparent", borderLeft: active ? "2px solid #b8975a" : "2px solid transparent", color: active ? (dk ? "#f8f6f2" : "#1e2230") : sbInactive, fontWeight: active ? 600 : 400 }}
