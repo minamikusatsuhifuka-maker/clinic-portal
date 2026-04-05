@@ -17,10 +17,10 @@ function ManualDetailModal({ manual, onClose, onEdit }: { manual: ManualItem; on
       style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <motion.div initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.94, opacity: 0 }}
-        className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 py-4 border-b border-violet-100 flex items-center justify-between rounded-t-3xl z-10">
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto overflow-x-visible">
+        <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 py-5 border-b border-violet-100 flex items-center justify-between rounded-t-3xl z-10">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">{manual.icon}</span>
+            <span className="text-2xl flex-shrink-0 overflow-visible">{manual.icon}</span>
             <div>
               <div className="font-bold text-violet-900 text-sm">{manual.title}</div>
               <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${TAG_CLS[manual.tag]}`}>{manual.tag}</span>
@@ -38,7 +38,7 @@ function ManualDetailModal({ manual, onClose, onEdit }: { manual: ManualItem; on
         <div className="p-6">
           <p className="text-xs text-violet-400 mb-4">{manual.desc}</p>
           <div className="bg-violet-50 rounded-2xl p-4">
-            <pre className="text-sm text-violet-800 whitespace-pre-wrap leading-relaxed font-sans">{manual.content}</pre>
+            <pre className="text-sm text-violet-800 whitespace-pre-wrap leading-relaxed font-sans break-words">{manual.content}</pre>
           </div>
         </div>
       </motion.div>
@@ -66,7 +66,7 @@ export default function ManualPage() {
             initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
             whileHover={{ scale: 1.01, y: -1 }} whileTap={{ scale: 0.99 }}
             onClick={() => setSelected(m)}
-            className="bg-white rounded-2xl border border-violet-100 shadow-sm p-4 text-left flex items-center gap-3 hover:border-violet-200 hover:shadow-md transition-all">
+            className="bg-white rounded-2xl border border-violet-100 shadow-sm p-4 pl-4 text-left flex items-center gap-3 overflow-visible hover:border-violet-200 hover:shadow-md transition-all">
             <span className="text-2xl flex-shrink-0">{m.icon}</span>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
