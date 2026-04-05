@@ -208,6 +208,70 @@ JSON形式のみで返答：
     finally { setKbLoading(false); setTimeout(() => setKbStatus(""), 4000) }
   }
 
+  const mergeMessages = async () => {
+    if (directorMessages.length < 2) return
+    if (!confirm(`現在${directorMessages.length}件のメッセージをAIが分析し、類似内容を統合します。よろしいですか？`)) return
+
+    setKbLoading(true)
+    setKbStatus("AIがメッセージを分析・統合中...")
+
+    try {
+      const msgList = directorMessages.map((m, i) =>
+        `[${i+1}] タイトル:「${m.title}」\n原理原則:${m.principle}\n本文:${m.body.slice(0, 200)}...`
+      ).join("\n\n---\n\n")
+
+      const res = await fetch("/api/knowledge-generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          context: msgList,
+          format: "json",
+          prompt: `上記は院長メッセージの一覧です。
+以下の基準で整理・統合してください：
+1. 内容が似ている・重複しているメッセージは1つにまとめる
+2. 各メッセージのエッセンスを残しながら、より充実した内容に統合する
+3. タイトルは簡潔で力強いものにする
+4. 原理原則のタグも統合する
+
+JSON形式で返答してください：
+[
+  {
+    "title": "統合後のタイトル",
+    "body": "統合後の本文（改行は\\nで表現）",
+    "principle": "統合後の原理原則タグ"
+  }
+]
+
+統合後のメッセージ数は元の数より少なくなるはずです。
+必ず既存メッセージのエッセンスを全て含めてください。`
+        })
+      })
+
+      const data = await res.json()
+      if (data.ok && Array.isArray(data.data) && data.data.length > 0) {
+        const merged = data.data
+        const before = directorMessages.length
+
+        // 既存メッセージを全削除して統合後で置き換え
+        for (const m of [...directorMessages]) {
+          deleteDirectorMessage(m.id)
+        }
+        for (const m of merged) {
+          addDirectorMessage({ title: m.title, body: m.body, principle: m.principle })
+        }
+
+        setKbStatus(`✅ ${before}件 → ${merged.length}件に統合しました`)
+      } else {
+        setKbStatus("統合に失敗しました")
+      }
+    } catch (e) {
+      setKbStatus(`エラー: ${e}`)
+    } finally {
+      setKbLoading(false)
+      setTimeout(() => setKbStatus(""), 4000)
+    }
+  }
+
   const [tab, setTab] = useState<"director" | "goals" | "gratitude">(defaultTab)
   useEffect(() => { setTab(defaultTab) }, [defaultTab])
   const [showGoalForm, setShowGoalForm] = useState(false)
@@ -254,7 +318,11 @@ JSON形式のみで返答：
             </div>
           )}
           {isAdmin && (
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, flexWrap: "wrap" }}>
+              <button onClick={mergeMessages} disabled={kbLoading || directorMessages.length < 2}
+                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "#f5f2fd", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading || directorMessages.length < 2 ? 0.5 : 1 }}>
+                {kbLoading ? "処理中..." : "🔀 AIで統合・整理"}
+              </button>
               <button onClick={generateMessageFromKnowledge} disabled={kbLoading}
                 style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "#f7f1e8", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading ? 0.6 : 1 }}>
                 {kbLoading ? "生成中..." : "📚 知識ベースから生成"}
