@@ -414,7 +414,7 @@ export function MatrixPage() {
     { key: "q4", quadrantLabel: "第4象限", title: "非重要・非緊急", sub: "削減・排除", cls: "bg-slate-50 border-slate-200 text-slate-500", dot: "text-slate-400", items: m.q4 },
   ]
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 960 }}>
+    <div style={{ padding: "28px 36px", maxWidth: 960 }}>
       {/* 知識ベース生成ボタン */}
       {kbStatus && <div style={{ padding: "8px 14px", borderRadius: 10, background: "#f0f9f4", fontSize: 12, color: "#0f6e56", marginBottom: 8 }}>{kbStatus}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
@@ -468,7 +468,7 @@ export function MatrixPage() {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {cells.map((c) => (
-          <div key={c.key} className={`rounded-2xl py-5 px-6 border ${c.cls}`}>
+          <div key={c.key} className={`rounded-2xl py-5 pr-5 pl-7 border ${c.cls}`}>
             <div className="text-[10px] font-bold opacity-70 mb-0.5" style={{ letterSpacing: "0.06em" }}>{c.quadrantLabel}</div>
             <div className="font-bold text-xs mb-0.5">{c.title}</div>
             <div className="text-[10px] opacity-60 mb-4">{c.sub}</div>
