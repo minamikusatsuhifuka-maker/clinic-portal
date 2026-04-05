@@ -414,7 +414,7 @@ export function MatrixPage() {
     { key: "q4", quadrantLabel: "第4象限", title: "非重要・非緊急", sub: "削減・排除", cls: "bg-slate-50 border-slate-200 text-slate-500", dot: "text-slate-400", items: m.q4 },
   ]
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: "24px 28px", maxWidth: 960 }}>
       {/* 知識ベース生成ボタン */}
       {kbStatus && <div style={{ padding: "8px 14px", borderRadius: 10, background: "#f0f9f4", fontSize: 12, color: "#0f6e56", marginBottom: 8 }}>{kbStatus}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
@@ -431,15 +431,15 @@ export function MatrixPage() {
           {kbItems.map((item, i) => (
             <div key={i} style={{ background: "#fff", borderRadius: 14, border: "0.5px solid rgba(26,30,46,0.1)", padding: "14px 16px" }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: "#1e2230", marginBottom: 8 }}>{item.role}</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 {[
                   { label: "重要×緊急", items: item.q1, bg: "#fef2f2", color: "#c0392b" },
                   { label: "重要×非緊急", items: item.q2, bg: "#f5f2fd", color: "#5f4ba8" },
                   { label: "緊急×非重要", items: item.q3, bg: "#fffbeb", color: "#b45309" },
                   { label: "非重要×非緊急", items: item.q4, bg: "#f3f4f6", color: "#6b7280" },
                 ].map((q, j) => (
-                  <div key={j} style={{ background: q.bg, borderRadius: 10, padding: "8px 10px" }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: q.color, marginBottom: 4 }}>{q.label}</div>
+                  <div key={j} style={{ background: q.bg, borderRadius: 10, padding: "10px 14px" }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: q.color, marginBottom: 6 }}>{q.label}</div>
                     {q.items?.map((t, k) => (
                       <div key={k} style={{ fontSize: 11, color: "#3a3e4e", lineHeight: 1.6 }}>・{t}</div>
                     ))}
@@ -451,7 +451,7 @@ export function MatrixPage() {
         </div>
       )}
 
-      <div className="flex gap-2 mb-5 flex-wrap">
+      <div className="flex gap-2 mb-6 flex-wrap">
         {[
           { id:"nurse",       label:"看護師"    },
           { id:"receptionist",label:"マルチタスク" },
@@ -466,15 +466,15 @@ export function MatrixPage() {
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {cells.map((c) => (
-          <div key={c.key} className={`rounded-2xl p-4 border ${c.cls}`}>
+          <div key={c.key} className={`rounded-2xl p-5 border ${c.cls}`}>
             <div className="text-[10px] font-bold opacity-70 mb-0.5" style={{ letterSpacing: "0.06em" }}>{c.quadrantLabel}</div>
             <div className="font-bold text-xs mb-0.5">{c.title}</div>
-            <div className="text-[10px] opacity-60 mb-3">{c.sub}</div>
-            <div className="space-y-1.5">
+            <div className="text-[10px] opacity-60 mb-4">{c.sub}</div>
+            <div className="space-y-2">
               {c.items.map((item) => (
-                <div key={item} className="flex items-start gap-2 text-xs">
+                <div key={item} className="flex items-start gap-2.5 text-xs">
                   <span className={`mt-0.5 text-[8px] flex-shrink-0 ${c.dot}`}>●</span>
                   <span>{item}</span>
                 </div>
