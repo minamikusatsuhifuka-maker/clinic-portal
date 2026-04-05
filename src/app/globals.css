@@ -32,3 +32,4 @@ html.dark * { color: inherit; }
 button { transition: all 0.15s ease; }
 input, textarea, select { font-family: inherit; color: var(--text-primary); }
 ::placeholder { color: var(--text-secondary); opacity: 0.7; }
+/* force redeploy 2026年 4月 6日 月曜日 01時45分47秒 JST */
