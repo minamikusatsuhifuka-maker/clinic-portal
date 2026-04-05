@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAppStore } from "@/store/useAppStore"
+import { useKnowledgeStore } from "@/store/useKnowledgeStore"
 import { ThumbsUp, Plus, X, ChevronRight } from "lucide-react"
 
 /* ---- ヒヤリハット ---- */
@@ -373,6 +374,37 @@ const MATRIX: Record<string, { q1: string[]; q2: string[]; q3: string[]; q4: str
 }
 
 export function MatrixPage() {
+  const { getActiveContext } = useKnowledgeStore()
+  const [kbLoading, setKbLoading] = useState(false)
+  const [kbStatus, setKbStatus] = useState("")
+  const [kbItems, setKbItems] = useState<{role: string; q1: string[]; q2: string[]; q3: string[]; q4: string[]}[]>([])
+
+  const generateFromKnowledge = async () => {
+    const ctx = getActiveContext()
+    if (!ctx) { setKbStatus("知識ベースに資料が登録されていません"); setTimeout(() => setKbStatus(""), 3000); return }
+    setKbLoading(true); setKbStatus("知識ベースから役割マトリクスを生成中...")
+    try {
+      const res = await fetch("/api/knowledge-generate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          context: ctx,
+          format: "json",
+          prompt: `上記の理念・教えに基づいて、皮膚科クリニックの役割マトリクスを生成してください。
+以下のJSON形式で、看護師・医療事務・医師の3職種について、四象限（緊急×重要）の業務を各3〜5件生成してください：
+[{"role":"看護師","q1":["重要かつ緊急な業務..."],"q2":["重要だが非緊急な業務..."],"q3":["緊急だが非重要な業務..."],"q4":["非重要・非緊急な業務..."]}]`
+        }),
+      })
+      const data = await res.json()
+      if (data.ok && Array.isArray(data.data)) {
+        setKbItems(data.data)
+        setKbStatus("知識ベースから生成しました")
+      } else {
+        setKbStatus("生成に失敗しました")
+      }
+    } catch (e) { setKbStatus(`エラー: ${e}`) }
+    finally { setKbLoading(false); setTimeout(() => setKbStatus(""), 4000) }
+  }
+
   const [role, setRole] = useState("nurse")
   const m = MATRIX[role]
   const cells = [
@@ -383,6 +415,42 @@ export function MatrixPage() {
   ]
   return (
     <div style={{ padding: 24 }}>
+      {/* 知識ベース生成ボタン */}
+      {kbStatus && <div style={{ padding: "8px 14px", borderRadius: 10, background: "#f0f9f4", fontSize: 12, color: "#0f6e56", marginBottom: 8 }}>{kbStatus}</div>}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+        <button onClick={generateFromKnowledge} disabled={kbLoading}
+          style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 10, background: "#f7f1e8", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading ? 0.6 : 1 }}>
+          {kbLoading ? "生成中..." : "📚 知識ベースから役割を生成"}
+        </button>
+      </div>
+
+      {/* 知識ベース生成結果 */}
+      {kbItems.length > 0 && (
+        <div style={{ marginBottom: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#b8975a", padding: "6px 0" }}>📚 知識ベースから生成した役割マトリクス</div>
+          {kbItems.map((item, i) => (
+            <div key={i} style={{ background: "#fff", borderRadius: 14, border: "0.5px solid rgba(26,30,46,0.1)", padding: "14px 16px" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#1e2230", marginBottom: 8 }}>{item.role}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {[
+                  { label: "重要×緊急", items: item.q1, bg: "#fef2f2", color: "#c0392b" },
+                  { label: "重要×非緊急", items: item.q2, bg: "#f5f2fd", color: "#5f4ba8" },
+                  { label: "緊急×非重要", items: item.q3, bg: "#fffbeb", color: "#b45309" },
+                  { label: "非重要×非緊急", items: item.q4, bg: "#f3f4f6", color: "#6b7280" },
+                ].map((q, j) => (
+                  <div key={j} style={{ background: q.bg, borderRadius: 10, padding: "8px 10px" }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: q.color, marginBottom: 4 }}>{q.label}</div>
+                    {q.items?.map((t, k) => (
+                      <div key={k} style={{ fontSize: 11, color: "#3a3e4e", lineHeight: 1.6 }}>・{t}</div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="flex gap-2 mb-5 flex-wrap">
         {[
           { id:"nurse",       label:"看護師"    },
@@ -545,6 +613,37 @@ const MANAGER_ACTIONS: { category: string; color: string; bg: string; actions: s
 ]
 
 export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
+  const { getActiveContext } = useKnowledgeStore()
+  const [kbLoading, setKbLoading] = useState(false)
+  const [kbStatus, setKbStatus] = useState("")
+  const [kbActions, setKbActions] = useState<{company: string[]; job: string[]; product: string[]; self: string[]} | null>(null)
+
+  const generateFromKnowledge = async () => {
+    const ctx = getActiveContext()
+    if (!ctx) { setKbStatus("知識ベースに資料が登録されていません"); setTimeout(() => setKbStatus(""), 3000); return }
+    setKbLoading(true); setKbStatus("知識ベースから4つの自信の施策を生成中...")
+    try {
+      const res = await fetch("/api/knowledge-generate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          context: ctx,
+          format: "json",
+          prompt: `上記の理念・教えに基づいて、スタッフの「4つの自信（会社・職業・商品・自分）」を高めるための具体的な施策を生成してください。
+JSON形式で返答：
+{"company":["施策1","施策2","施策3"],"job":["施策1","施策2","施策3"],"product":["施策1","施策2","施策3"],"self":["施策1","施策2","施策3"]}`
+        }),
+      })
+      const data = await res.json()
+      if (data.ok && data.data && typeof data.data === "object") {
+        setKbActions(data.data)
+        setKbStatus("知識ベースから4つの自信の施策を生成しました")
+      } else {
+        setKbStatus("生成に失敗しました")
+      }
+    } catch (e) { setKbStatus(`エラー: ${e}`) }
+    finally { setKbLoading(false); setTimeout(() => setKbStatus(""), 4000) }
+  }
+
   const isManager = userRole === "admin" || userRole === "manager"
   const scores = [
     { label:"会社への自信", icon:"🏥", val:72, grad:"from-sky-400 to-blue-400", bg:"bg-sky-50", border:"border-sky-200", txt:"text-sky-700",
@@ -558,6 +657,34 @@ export function ConfidencePage({ userRole = "staff" }: { userRole?: string }) {
   ]
   return (
     <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20, overflowX: "hidden" }}>
+      {/* 知識ベース生成ボタン */}
+      {kbStatus && <div style={{ padding: "8px 14px", borderRadius: 10, background: "#f0f9f4", fontSize: 12, color: "#0f6e56" }}>{kbStatus}</div>}
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button onClick={generateFromKnowledge} disabled={kbLoading}
+          style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 10, background: "#f7f1e8", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading ? 0.6 : 1 }}>
+          {kbLoading ? "生成中..." : "📚 知識ベースから施策を生成"}
+        </button>
+      </div>
+
+      {/* 知識ベース生成結果 */}
+      {kbActions && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
+          {[
+            { key: "company" as const, label: "会社への自信", icon: "🏥", bg: "#f0f7ff", color: "#185fa5" },
+            { key: "job" as const, label: "職業への自信", icon: "🩺", bg: "#e1f5ee", color: "#0f6e56" },
+            { key: "product" as const, label: "商品への自信", icon: "⭐", bg: "#fffbeb", color: "#b45309" },
+            { key: "self" as const, label: "自分への自信", icon: "💪", bg: "#fdf2f8", color: "#be185d" },
+          ].map(c => (
+            <div key={c.key} style={{ background: c.bg, borderRadius: 12, padding: "12px 14px" }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: c.color, marginBottom: 6 }}>{c.icon} {c.label}</div>
+              {kbActions[c.key]?.map((a: string, i: number) => (
+                <div key={i} style={{ fontSize: 11, color: "#3a3e4e", lineHeight: 1.7 }}>・{a}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, width: "100%" }}>
         {scores.map((s) => (
           <div key={s.label} className={`${s.bg} ${s.border} border rounded-2xl`} style={{ minWidth: 0, overflow: "visible", padding: "16px 16px 12px 16px" }}>

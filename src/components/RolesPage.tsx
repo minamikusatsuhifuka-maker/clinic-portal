@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { useKnowledgeStore } from "@/store/useKnowledgeStore"
 
 const card: React.CSSProperties = {
   background: "var(--surface-bg)", borderRadius: 16,
@@ -509,6 +510,34 @@ function RoleCard({ role }: { role: Role }) {
 }
 
 export default function RolesPage() {
+  const { getActiveContext } = useKnowledgeStore()
+  const [kbLoading, setKbLoading] = useState(false)
+  const [kbStatus, setKbStatus] = useState("")
+  const [kbGuide, setKbGuide] = useState<{role: string; expert: string[]; mindset: string}[]>([])
+
+  const generateFromKnowledge = async () => {
+    const ctx = getActiveContext()
+    if (!ctx) { setKbStatus("知識ベースに資料が登録されていません"); setTimeout(() => setKbStatus(""), 3000); return }
+    setKbLoading(true); setKbStatus("知識ベースから役職ガイドを生成中...")
+    try {
+      const res = await fetch("/api/knowledge-generate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          context: ctx,
+          format: "json",
+          prompt: `上記の理念・教えに基づいて、皮膚科クリニックの各職種（医療事務・看護師・医師）のエキスパートとしての心得を生成してください。
+JSON形式で返答：[{"role":"職種名","expert":["エキスパートとして大切なこと1","2","3"],"mindset":"この職種の仕事への姿勢・マインドセット"}]`
+        }),
+      })
+      const data = await res.json()
+      if (data.ok && Array.isArray(data.data)) {
+        setKbGuide(data.data)
+        setKbStatus("知識ベースから役職ガイドを生成しました")
+      } else { setKbStatus("生成に失敗しました") }
+    } catch (e) { setKbStatus(`エラー: ${e}`) }
+    finally { setKbLoading(false); setTimeout(() => setKbStatus(""), 4000) }
+  }
+
   const [tab, setTab] = useState<TabId>("roles")
 
   const tabs: { id: TabId; label: string; emoji: string }[] = [
@@ -529,6 +558,15 @@ export default function RolesPage() {
         </div>
       </div>
 
+      {/* 知識ベース生成ボタン */}
+      {kbStatus && <div style={{ padding: "8px 14px", borderRadius: 10, background: "#f0f9f4", fontSize: 12, color: "#0f6e56", marginBottom: 8 }}>{kbStatus}</div>}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+        <button onClick={generateFromKnowledge} disabled={kbLoading}
+          style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 10, background: "#f7f1e8", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading ? 0.6 : 1 }}>
+          {kbLoading ? "生成中..." : "📚 知識ベースから役職ガイドを生成"}
+        </button>
+      </div>
+
       {/* タブ */}
       <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
         {tabs.map(t => (
@@ -541,6 +579,25 @@ export default function RolesPage() {
           </button>
         ))}
       </div>
+
+      {/* 知識ベース生成結果 */}
+      {kbGuide.length > 0 && (
+        <div style={{ marginBottom: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#b8975a", padding: "6px 0" }}>📚 知識ベースから生成した役職別エキスパートの心得</div>
+          {kbGuide.map((g, i) => (
+            <div key={i} style={{ background: "#fff", borderRadius: 14, border: "0.5px solid rgba(26,30,46,0.1)", padding: "14px 16px" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#1e2230", marginBottom: 8 }}>{g.role}</div>
+              <div style={{ fontSize: 12, color: "#b8975a", fontStyle: "italic", marginBottom: 8 }}>{g.mindset}</div>
+              {g.expert.map((e, j) => (
+                <div key={j} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 4 }}>
+                  <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#b8975a", marginTop: 7, flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: "#3a3e4e", lineHeight: 1.7 }}>{e}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* 役職別ガイド */}
       {tab === "roles" && (

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAchievementStore, type LifeGoal } from "@/store/useAchievementStore"
+import { useKnowledgeStore } from "@/store/useKnowledgeStore"
 import { Plus, X, Heart, Trash2, Edit3, Check, ChevronDown, ChevronUp } from "lucide-react"
 
 const card: React.CSSProperties = {
@@ -176,7 +177,37 @@ function DirectorMessageForm({ onClose }: { onClose: () => void }) {
 }
 
 export default function AchievementPage({ userRole = "staff", userName = "スタッフ", defaultTab = "director" }: { userRole?: string; userName?: string; defaultTab?: "director" | "goals" | "gratitude" }) {
-  const { lifeGoals, gratitudeCards, directorMessages, updateLifeGoal, deleteLifeGoal, likeGratitudeCard, likeDirectorMessage, deleteDirectorMessage, updateDirectorMessage } = useAchievementStore()
+  const { lifeGoals, gratitudeCards, directorMessages, updateLifeGoal, deleteLifeGoal, likeGratitudeCard, likeDirectorMessage, deleteDirectorMessage, updateDirectorMessage, addDirectorMessage } = useAchievementStore()
+  const { getActiveContext } = useKnowledgeStore()
+  const [kbLoading, setKbLoading] = useState(false)
+  const [kbStatus, setKbStatus] = useState("")
+
+  const generateMessageFromKnowledge = async () => {
+    const ctx = getActiveContext()
+    if (!ctx) { setKbStatus("知識ベースに資料が登録されていません"); setTimeout(() => setKbStatus(""), 3000); return }
+    setKbLoading(true); setKbStatus("知識ベースから院長メッセージを生成中...")
+    try {
+      const res = await fetch("/api/knowledge-generate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          context: ctx,
+          format: "json",
+          prompt: `上記の理念・教えに基づいて、クリニックスタッフへの院長メッセージを3件生成してください。
+JSON形式のみで返答：
+[{"title":"メッセージタイトル","body":"メッセージ本文（改行は\\nで）","principle":"関連する原理原則"}]`
+        }),
+      })
+      const data = await res.json()
+      if (data.ok && Array.isArray(data.data)) {
+        for (const m of data.data) {
+          addDirectorMessage({ title: m.title, body: m.body, principle: m.principle })
+        }
+        setKbStatus(`${data.data.length}件の院長メッセージを生成・追加しました`)
+      } else { setKbStatus("生成に失敗しました") }
+    } catch (e) { setKbStatus(`エラー: ${e}`) }
+    finally { setKbLoading(false); setTimeout(() => setKbStatus(""), 4000) }
+  }
+
   const [tab, setTab] = useState<"director" | "goals" | "gratitude">(defaultTab)
   useEffect(() => { setTab(defaultTab) }, [defaultTab])
   const [showGoalForm, setShowGoalForm] = useState(false)
@@ -217,8 +248,17 @@ export default function AchievementPage({ userRole = "staff", userName = "スタ
 
       {showDirector && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {kbStatus && (
+            <div style={{ padding: "8px 14px", borderRadius: 10, background: "#f0f9f4", fontSize: 12, color: "#0f6e56" }}>
+              {kbStatus}
+            </div>
+          )}
           {isAdmin && (
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <button onClick={generateMessageFromKnowledge} disabled={kbLoading}
+                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "#f7f1e8", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading ? 0.6 : 1 }}>
+                {kbLoading ? "生成中..." : "📚 知識ベースから生成"}
+              </button>
               <button onClick={() => setShowDirectorForm(true)}
                 style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg,#fbbf24,#f59e0b)", color: "white", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer" }}>
                 <Plus size={14} />メッセージを投稿
