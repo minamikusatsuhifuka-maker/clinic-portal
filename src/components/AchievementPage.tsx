@@ -234,33 +234,40 @@ JSON形式のみで返答：
 4. 原理原則のタグも統合する
 
 JSON形式で返答してください：
-[
-  {
-    "title": "統合後のタイトル",
-    "body": "統合後の本文（改行は\\nで表現）",
-    "principle": "統合後の原理原則タグ"
-  }
-]
+{
+  "messages": [
+    { "title": "統合後タイトル", "body": "本文（改行は\\nで表現）", "principle": "原理原則" }
+  ],
+  "report": [
+    { "after": "統合後タイトル", "before": ["元のタイトル1", "元のタイトル2"], "principle": "原理原則" }
+  ]
+}
 
 統合後のメッセージ数は元の数より少なくなるはずです。
-必ず既存メッセージのエッセンスを全て含めてください。`
+必ず既存メッセージのエッセンスを全て含めてください。
+reportには、どのメッセージがどのメッセージに統合されたかの情報を含めてください。`
         })
       })
 
       const data = await res.json()
-      if (data.ok && Array.isArray(data.data) && data.data.length > 0) {
-        const merged = data.data
+      const result = data.data
+      const messages = result?.messages ?? (Array.isArray(result) ? result : null)
+      if (data.ok && messages && messages.length > 0) {
         const before = directorMessages.length
 
         // 既存メッセージを全削除して統合後で置き換え
         for (const m of [...directorMessages]) {
           deleteDirectorMessage(m.id)
         }
-        for (const m of merged) {
+        for (const m of messages) {
           addDirectorMessage({ title: m.title, body: m.body, principle: m.principle })
         }
 
-        setKbStatus(`✅ ${before}件 → ${merged.length}件に統合しました`)
+        // 統合レポートを保存
+        setMergeReport(result?.report ?? [])
+        setShowReport(true)
+
+        setKbStatus(`✅ ${before}件 → ${messages.length}件に統合しました`)
       } else {
         setKbStatus("統合に失敗しました")
       }
@@ -280,6 +287,8 @@ JSON形式で返答してください：
   const [editMsgForm, setEditMsgForm] = useState({ title: '', body: '', principle: '' })
   const [showGratitudeForm, setShowGratitudeForm] = useState(false)
   const [showDirectorForm, setShowDirectorForm] = useState(false)
+  const [mergeReport, setMergeReport] = useState<{before: string[]; after: string; principle: string}[]>([])
+  const [showReport, setShowReport] = useState(false)
   const isAdmin = userRole === "admin" || userRole === "manager"
 
   const tabs = [
@@ -318,19 +327,40 @@ JSON形式で返答してください：
             </div>
           )}
           {isAdmin && (
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, flexWrap: "wrap" }}>
-              <button onClick={mergeMessages} disabled={kbLoading || directorMessages.length < 2}
-                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "#f5f2fd", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading || directorMessages.length < 2 ? 0.5 : 1 }}>
-                {kbLoading ? "処理中..." : "🔀 AIで統合・整理"}
-              </button>
-              <button onClick={generateMessageFromKnowledge} disabled={kbLoading}
-                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "#f7f1e8", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading ? 0.6 : 1 }}>
-                {kbLoading ? "生成中..." : "📚 知識ベースから生成"}
-              </button>
-              <button onClick={() => setShowDirectorForm(true)}
-                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg,#fbbf24,#f59e0b)", color: "white", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer" }}>
-                <Plus size={14} />メッセージを投稿
-              </button>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
+              <div style={{ fontSize: 13, color: "#6b7280" }}>
+                現在 <span style={{ fontSize: 16, fontWeight: 700, color: "#1e2230" }}>{directorMessages.length}</span> 件
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button onClick={mergeMessages} disabled={kbLoading || directorMessages.length < 2}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "#f5f2fd", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading || directorMessages.length < 2 ? 0.5 : 1 }}>
+                  {kbLoading ? "処理中..." : "🔀 AIで統合・整理"}
+                </button>
+                <button onClick={generateMessageFromKnowledge} disabled={kbLoading}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "#f7f1e8", border: "0.5px solid #b8975a", color: "#b8975a", fontSize: 12, fontWeight: 500, cursor: "pointer", opacity: kbLoading ? 0.6 : 1 }}>
+                  {kbLoading ? "生成中..." : "📚 知識ベースから生成"}
+                </button>
+                <button onClick={() => setShowDirectorForm(true)}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg,#fbbf24,#f59e0b)", color: "white", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer" }}>
+                  <Plus size={14} />メッセージを投稿
+                </button>
+              </div>
+            </div>
+          )}
+          {showReport && mergeReport.length > 0 && (
+            <div style={{ marginBottom: 16, background: "#f7f1e8", border: "0.5px solid #b8975a", borderRadius: 12, padding: "14px 16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#b8975a" }}>🔀 統合レポート</div>
+                <button onClick={() => setShowReport(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#b8975a", fontSize: 11 }}>✕ 閉じる</button>
+              </div>
+              {mergeReport.map((r, i) => (
+                <div key={i} style={{ marginBottom: 8, paddingBottom: 8, borderBottom: i < mergeReport.length - 1 ? "0.5px solid rgba(184,151,90,0.2)" : "none" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#1e2230", marginBottom: 3 }}>→ 「{r.after}」</div>
+                  <div style={{ fontSize: 11, color: "#6b7280" }}>
+                    統合元: {r.before.map((b, j) => <span key={j} style={{ background: "#fff", padding: "1px 6px", borderRadius: 4, marginRight: 4, border: "0.5px solid rgba(184,151,90,0.3)" }}>「{b}」</span>)}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
           {directorMessages.map((m, i) => (
