@@ -20,6 +20,15 @@ import MinutesPage from "@/components/MinutesPage"
 import KnowledgePage from "@/components/KnowledgePage"
 import DiagnosisPage from "@/components/DiagnosisPage"
 import AiAssistant from "@/components/AiAssistant"
+import OneOnOnePage from "@/components/OneOnOnePage"
+import OJTPage from "@/components/OJTPage"
+import SkillMapPage from "@/components/SkillMapPage"
+import MBOPage from "@/components/MBOPage"
+import RolePlayPage from "@/components/RolePlayPage"
+import QuizPage from "@/components/QuizPage"
+import CareerPage from "@/components/CareerPage"
+import SurveyPage from "@/components/SurveyPage"
+import MVPPage from "@/components/MVPPage"
 import { AnimatePresence, motion } from "framer-motion"
 
 export type UserRole = "staff" | "manager" | "admin"
@@ -29,6 +38,8 @@ export interface AppUser {
   avatar: string
   photoURL?: string | null
   email?: string
+  staffId?: string
+  jobRole?: string
 }
 
 function getTitles(visibleCount: number): Record<string, string> {
@@ -48,6 +59,15 @@ function getTitles(visibleCount: number): Record<string, string> {
     knowledge: "クリニック知識ベース",
     diagnosis: "AIスタッフ診断",
     admin: "管理者ダッシュボード",
+    oneonone: "🤝 1on1面談記録",
+    ojt: "📋 OJTチェックリスト",
+    skillmap: "🗺️ スキルマップ",
+    mbo: "🎯 個人目標MBO",
+    roleplay: "🎭 AIロールプレイ",
+    quiz: "📝 知識確認テスト",
+    career: "🚀 キャリアパス",
+    survey: "📊 エンゲージメント",
+    mvp: "🏆 MVP表彰",
   }
 }
 
@@ -200,7 +220,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
 
 /* ───── メインアプリ ───── */
 function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
-  const { activePage } = useAppStore()
+  const { activePage, setActivePage } = useAppStore()
   const { riskVisibility } = useEditStore()
   const visibleCount = RISKS.filter((r) => riskVisibility[r.id] !== false).length
   const TITLES = getTitles(visibleCount)
@@ -260,6 +280,15 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "minutes"    && <MinutesPage userRole={user.role} />}
               {activePage === "knowledge"  && <KnowledgePage />}
               {activePage === "diagnosis"  && <DiagnosisPage user={user} />}
+              {activePage === "oneonone"   && <OneOnOnePage userRole={user.role} currentUserName={user.name} currentUserStaffId={user.staffId} />}
+              {activePage === "ojt"        && <OJTPage userRole={user.role} currentUserStaffId={user.staffId || ""} currentUserName={user.name} />}
+              {activePage === "skillmap"   && <SkillMapPage userRole={user.role} currentUserStaffId={user.staffId || ""} currentUserRole={user.jobRole || "受付"} />}
+              {activePage === "mbo"        && <MBOPage userRole={user.role} currentUserStaffId={user.staffId || ""} currentUserRole={user.jobRole || "受付"} />}
+              {activePage === "roleplay"   && <RolePlayPage userRole={user.role} currentUserStaffId={user.staffId || ""} />}
+              {activePage === "quiz"       && <QuizPage userRole={user.role} currentUserStaffId={user.staffId || ""} onNavigate={setActivePage} />}
+              {activePage === "career"     && <CareerPage userRole={user.role} currentUserStaffId={user.staffId || ""} currentUserRole={user.jobRole || "受付"} />}
+              {activePage === "survey"     && <SurveyPage userRole={user.role} currentUserStaffId={user.staffId || ""} />}
+              {activePage === "mvp"        && <MVPPage userRole={user.role} currentUserStaffId={user.staffId || ""} currentUserName={user.name} />}
               {activePage === "admin"      && (
                 isAdminOrManager ? <AdminPage /> : (
                   <div style={{ padding: 60, textAlign: "center" }}>
@@ -282,7 +311,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 /* ───── ユーザー情報付きサイドバー ───── */
 import { useSettingsStore, FONTS, FONT_SIZES } from "@/store/useSettingsStore"
 import type { FontChoice, FontSize } from "@/store/useSettingsStore"
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun, Heart, Database, Activity } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun, Heart, Database, Activity, CheckSquare, Map, BarChart2, Award, Target, Drama, HelpCircle, TrendingUp } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -299,6 +328,15 @@ const NAV = [
   { id: "minutes",     icon: FileText,           label: "📝 議事録・タスク", badge: null, alert: false },
   { id: "knowledge",   icon: Database,           label: "知識ベース",       badge: null, alert: false },
   { id: "diagnosis",   icon: Activity,           label: "強み・成長診断",   badge: null, alert: false },
+  { id: "oneonone",    icon: Users,              label: "🤝 1on1面談記録",  badge: null, alert: false },
+  { id: "ojt",         icon: CheckSquare,        label: "📋 OJTチェックリスト", badge: null, alert: false },
+  { id: "skillmap",    icon: Map,                label: "🗺️ スキルマップ",   badge: null, alert: false },
+  { id: "mbo",         icon: Target,             label: "🎯 個人目標MBO",    badge: null, alert: false },
+  { id: "roleplay",    icon: Drama,              label: "🎭 AIロールプレイ", badge: null, alert: false },
+  { id: "quiz",        icon: HelpCircle,         label: "📝 知識確認テスト", badge: null, alert: false },
+  { id: "career",      icon: TrendingUp,         label: "🚀 キャリアパス",   badge: null, alert: false },
+  { id: "survey",      icon: BarChart2,          label: "📊 エンゲージメント", badge: null, alert: false },
+  { id: "mvp",         icon: Award,              label: "🏆 MVP表彰",       badge: null, alert: false },
   { id: "admin",       icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
 ]
 const LINKS = [
@@ -343,6 +381,7 @@ function SidebarWithUser({ user, onLogout }: { user: AppUser; onLogout: () => vo
           const Icon = n.icon
           const active = activePage === n.id
           if ((n.id === "admin" || n.id === "knowledge") && user.role === "staff") return null
+          if (n.id === "oneonone" && user.role === "staff") return null
           return (
             <button key={n.id} onClick={() => setActivePage(n.id)}
               style={{ ...base, background: active ? (dk ? "rgba(184,151,90,0.2)" : "#f0ede8") : "transparent", borderLeft: active ? "2px solid #b8975a" : "2px solid transparent", color: active ? (dk ? "#f8f6f2" : "#1e2230") : sbInactive, fontWeight: active ? 600 : 400 }}
