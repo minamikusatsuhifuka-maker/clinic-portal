@@ -18,6 +18,7 @@ import ContactsPage from "@/components/ContactsPage"
 import RolesPage from "@/components/RolesPage"
 import MinutesPage from "@/components/MinutesPage"
 import KnowledgePage from "@/components/KnowledgePage"
+import DiagnosisPage from "@/components/DiagnosisPage"
 import AiAssistant from "@/components/AiAssistant"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -45,6 +46,7 @@ function getTitles(visibleCount: number): Record<string, string> {
     roles: "役職ガイド・診療補助・清潔操作",
     minutes: "議事録・タスク管理",
     knowledge: "クリニック知識ベース",
+    diagnosis: "AIスタッフ診断",
     admin: "管理者ダッシュボード",
   }
 }
@@ -257,6 +259,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               {activePage === "roles"      && <RolesPage />}
               {activePage === "minutes"    && <MinutesPage userRole={user.role} />}
               {activePage === "knowledge"  && <KnowledgePage />}
+              {activePage === "diagnosis"  && <DiagnosisPage user={user} />}
               {activePage === "admin"      && (
                 isAdminOrManager ? <AdminPage /> : (
                   <div style={{ padding: 60, textAlign: "center" }}>
@@ -279,7 +282,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
 /* ───── ユーザー情報付きサイドバー ───── */
 import { useSettingsStore, FONTS, FONT_SIZES } from "@/store/useSettingsStore"
 import type { FontChoice, FontSize } from "@/store/useSettingsStore"
-import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun, Heart, Database } from "lucide-react"
+import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, Settings, Bell, ExternalLink, ShieldCheck, LogOut, Trophy, Lightbulb, Phone, Users, FileText, Moon, Sun, Heart, Database, Activity } from "lucide-react"
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
@@ -295,6 +298,7 @@ const NAV = [
   { id: "roles",       icon: Users,              label: "役職ガイド",       badge: null, alert: false },
   { id: "minutes",     icon: FileText,           label: "📝 議事録・タスク", badge: null, alert: false },
   { id: "knowledge",   icon: Database,           label: "知識ベース",       badge: null, alert: false },
+  { id: "diagnosis",   icon: Activity,           label: "強み・成長診断",   badge: null, alert: false },
   { id: "admin",       icon: ShieldCheck,        label: "管理者画面",       badge: null, alert: false },
 ]
 const LINKS = [
