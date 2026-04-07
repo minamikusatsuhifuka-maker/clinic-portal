@@ -30,6 +30,7 @@ import CareerPage from "@/components/CareerPage"
 import SurveyPage from "@/components/SurveyPage"
 import MVPPage from "@/components/MVPPage"
 import GuidePage from "@/components/GuidePage"
+import { supabase as supabaseClient } from "@/lib/supabase"
 import { AnimatePresence, motion } from "framer-motion"
 
 export type UserRole = "staff" | "manager" | "admin"
@@ -78,6 +79,19 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [googleError, setGoogleError] = useState("")
   const firebaseReady = isFirebaseConfigured()
+
+  // デモログイン：Supabaseのstaffテーブルからstaff_idを取得
+  const demoLogin = async (name: string, role: "staff" | "manager" | "admin", avatar: string, jobRole?: string) => {
+    let staffId: string | undefined
+    if (supabaseClient) {
+      const { data } = await supabaseClient.from("staff").select("id, role").eq("name", name).single()
+      if (data) {
+        staffId = data.id
+        if (!jobRole) jobRole = data.role
+      }
+    }
+    onLogin({ name, role, avatar, staffId, jobRole })
+  }
 
   const handleGoogleLogin = async () => {
     setGoogleLoading(true)
@@ -170,7 +184,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
         {/* デモログインボタン */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <button
-            onClick={() => onLogin({ name: "田中 花子", role: "staff", avatar: "田" })}
+            onClick={() => demoLogin("田中 花子", "staff", "田", "受付")}
             style={{
               padding: "14px", borderRadius: 16,
               border: "1px solid rgba(124,101,204,0.2)",
@@ -183,7 +197,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
           </button>
 
           <button
-            onClick={() => onLogin({ name: "山田 マネージャー", role: "manager", avatar: "山" })}
+            onClick={() => demoLogin("山田 マネージャー", "manager", "山", "看護師")}
             style={{
               padding: "14px", borderRadius: 16,
               border: "1px solid rgba(251,191,36,0.4)",
@@ -196,7 +210,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: AppUser) => void }) {
           </button>
 
           <button
-            onClick={() => onLogin({ name: "佐藤 院長", role: "admin", avatar: "佐" })}
+            onClick={() => demoLogin("佐藤 院長", "admin", "佐", "受付")}
             style={{
               padding: "14px", borderRadius: 16,
               border: "1px solid rgba(167,139,250,0.35)",
