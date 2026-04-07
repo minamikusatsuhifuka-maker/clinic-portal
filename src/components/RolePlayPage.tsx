@@ -3,7 +3,14 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Loader2, Send, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react"
 import { supabase } from "@/lib/supabase"
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from "recharts"
+import dynamic from "next/dynamic"
+
+const RadarChart = dynamic(() => import("recharts").then(m => ({ default: m.RadarChart })), { ssr: false })
+const PolarGrid = dynamic(() => import("recharts").then(m => ({ default: m.PolarGrid })), { ssr: false })
+const PolarAngleAxis = dynamic(() => import("recharts").then(m => ({ default: m.PolarAngleAxis })), { ssr: false })
+const PolarRadiusAxis = dynamic(() => import("recharts").then(m => ({ default: m.PolarRadiusAxis })), { ssr: false })
+const Radar = dynamic(() => import("recharts").then(m => ({ default: m.Radar })), { ssr: false })
+const ResponsiveContainer = dynamic(() => import("recharts").then(m => ({ default: m.ResponsiveContainer })), { ssr: false })
 
 interface RolePlayPageProps {
   userRole: "staff" | "manager" | "admin"
@@ -14,14 +21,13 @@ interface Scenario {
   id: string; category: string; difficulty: "easy" | "medium" | "hard"
   title: string; patient_setting: string; opening_line: string; system_prompt: string
 }
-interface ChatMessage { role: "user" | "assistant"; content: string }
+interface ChatMessage { role: "user" | "assistant"; content: string; time?: string }
 interface Evaluation {
   scores: { language: number; empathy: number; accuracy: number; resolution: number }
-  good_points: string; improvements: string
+  total?: number; good_points: string; improvements: string; best_line?: string; level?: string
 }
 interface Session {
-  id: string; staff_id: string; scenario_id: string
-  messages: ChatMessage[]; evaluation: Evaluation | null; completed_at: string | null
+  id: string; scenario_id: string; evaluation: Evaluation | null; completed_at: string | null
 }
 
 const card: React.CSSProperties = {
@@ -31,7 +37,25 @@ const card: React.CSSProperties = {
 }
 
 const DIFFICULTY = { easy: { label: "初級🟢", color: "#22c55e" }, medium: { label: "中級🟡", color: "#eab308" }, hard: { label: "上級🔴", color: "#ef4444" } }
-const CATEGORIES = ["初診受付", "会計説明", "クレーム対応"]
+const CAT_ICON: Record<string, string> = { "初診受付": "🏥", "会計説明": "💴", "クレーム対応": "⚡", "電話応対": "📞", "処置説明": "💉" }
+const CATEGORIES = ["初診受付", "会計説明", "クレーム対応", "電話応対", "処置説明"]
+const LEVEL_COLOR: Record<string, string> = { S: "#b8975a", A: "#22c55e", B: "#3b82f6", C: "#eab308", D: "#ef4444" }
+
+const now = () => new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+
+// タイピングインジケーター
+function TypingIndicator() {
+  return (
+    <div style={{ display: "flex", gap: 4, padding: "12px 16px", alignItems: "center" }}>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>👤</div>
+      <div style={{ padding: "10px 14px", borderRadius: "14px 14px 14px 4px", background: "#fef9ee", display: "flex", gap: 4 }}>
+        {[0, 1, 2].map(i => (
+          <motion.div key={i} animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: i * 0.2 }} style={{ width: 6, height: 6, borderRadius: "50%", background: "#b8975a" }} />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayPageProps) {
   const [scenarios, setScenarios] = useState<Scenario[]>([])
@@ -39,6 +63,7 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
   const [loading, setLoading] = useState(true)
   const [screen, setScreen] = useState<"select" | "play" | "result">("select")
   const [catFilter, setCatFilter] = useState("")
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
 
   // ロールプレイ中
   const [activeScenario, setActiveScenario] = useState<Scenario | null>(null)
@@ -51,6 +76,7 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
   // 評価
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null)
   const [evaluating, setEvaluating] = useState(false)
+  const [scoreAnimated, setScoreAnimated] = useState(0)
 
   const chatEndRef = useRef<HTMLDivElement>(null)
 
@@ -59,7 +85,7 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
     setLoading(true)
     const [{ data: sc }, { data: se }] = await Promise.all([
       supabase.from("roleplay_scenarios").select("*").eq("is_active", true),
-      supabase.from("roleplay_sessions").select("*").eq("staff_id", currentUserStaffId),
+      supabase.from("roleplay_sessions").select("id, scenario_id, evaluation, completed_at").eq("staff_id", currentUserStaffId).order("created_at", { ascending: false }).limit(20),
     ])
     if (sc) setScenarios(sc)
     if (se) setSessions(se as Session[])
@@ -67,20 +93,30 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
   }, [currentUserStaffId])
 
   useEffect(() => { fetchData() }, [fetchData])
-  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }) }, [messages])
+  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }) }, [messages, sending])
+
+  // スコアカウントアップアニメーション
+  useEffect(() => {
+    if (screen !== "result" || !evaluation) return
+    const target = evaluation.total || ((evaluation.scores.language + evaluation.scores.empathy + evaluation.scores.accuracy + evaluation.scores.resolution) / 4)
+    let current = 0
+    const interval = setInterval(() => {
+      current += 0.1
+      if (current >= target) { setScoreAnimated(Math.round(target * 10) / 10); clearInterval(interval) }
+      else setScoreAnimated(Math.round(current * 10) / 10)
+    }, 30)
+    return () => clearInterval(interval)
+  }, [screen, evaluation])
 
   const startScenario = async (scenario: Scenario) => {
     setActiveScenario(scenario)
-    const opening: ChatMessage = { role: "assistant", content: scenario.opening_line }
+    const opening: ChatMessage = { role: "assistant", content: scenario.opening_line, time: now() }
     setMessages([opening])
     setScreen("play")
     setEvaluation(null)
-    // セッション作成
     if (supabase) {
       const { data } = await supabase.from("roleplay_sessions").insert({
-        staff_id: currentUserStaffId,
-        scenario_id: scenario.id,
-        messages: [opening],
+        staff_id: currentUserStaffId, scenario_id: scenario.id, messages: [opening],
       }).select("id").single()
       if (data) setSessionId(data.id)
     }
@@ -88,7 +124,7 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
 
   const sendMessage = async () => {
     if (!input.trim() || !activeScenario || sending) return
-    const userMsg: ChatMessage = { role: "user", content: input.trim() }
+    const userMsg: ChatMessage = { role: "user", content: input.trim(), time: now() }
     const newMessages = [...messages, userMsg]
     setMessages(newMessages)
     setInput("")
@@ -103,17 +139,25 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
           system_prompt: activeScenario.system_prompt,
         }),
       })
-      const data = await res.json()
-      const assistantMsg: ChatMessage = { role: "assistant", content: data.response || data.error }
-      const updated = [...newMessages, assistantMsg]
-      setMessages(updated)
-
-      // セッション更新
+      // ストリーミング読み取り
+      const reader = res.body?.getReader()
+      const decoder = new TextDecoder()
+      let fullText = ""
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          fullText += decoder.decode(value, { stream: true })
+          setMessages([...newMessages, { role: "assistant", content: fullText, time: now() }])
+        }
+      }
+      const final: ChatMessage[] = [...newMessages, { role: "assistant", content: fullText || "…", time: now() }]
+      setMessages(final)
       if (supabase && sessionId) {
-        await supabase.from("roleplay_sessions").update({ messages: updated }).eq("id", sessionId)
+        await supabase.from("roleplay_sessions").update({ messages: final }).eq("id", sessionId)
       }
     } catch {
-      setMessages(prev => [...prev, { role: "assistant", content: "通信エラーが発生しました。" }])
+      setMessages(prev => [...prev, { role: "assistant", content: "すみません、聞き取れませんでした…", time: now() }])
     }
     setSending(false)
   }
@@ -129,7 +173,6 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
       })
       const data = await res.json()
       setEvaluation(data)
-      // セッション更新
       if (supabase && sessionId) {
         await supabase.from("roleplay_sessions").update({ evaluation: data, completed_at: new Date().toISOString() }).eq("id", sessionId)
       }
@@ -141,11 +184,11 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
   const getBestScore = (scenarioId: string) => {
     const completed = sessions.filter(s => s.scenario_id === scenarioId && s.evaluation)
     if (completed.length === 0) return null
-    const best = completed.reduce((max, s) => {
-      const avg = s.evaluation ? (s.evaluation.scores.language + s.evaluation.scores.empathy + s.evaluation.scores.accuracy + s.evaluation.scores.resolution) / 4 : 0
+    return completed.reduce((max, s) => {
+      const e = s.evaluation!
+      const avg = e.total || (e.scores.language + e.scores.empathy + e.scores.accuracy + e.scores.resolution) / 4
       return avg > max ? avg : max
     }, 0)
-    return Math.round(best * 10) / 10
   }
 
   const userTurns = messages.filter(m => m.role === "user").length
@@ -155,30 +198,52 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
   // シナリオ選択
   if (screen === "select") {
     const filtered = catFilter ? scenarios.filter(s => s.category === catFilter) : scenarios
+    const activeCats = [...new Set(scenarios.map(s => s.category))]
     return (
       <div style={{ padding: 24, maxWidth: 800 }}>
         <h2 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)", marginBottom: 16 }}>🎭 AIロールプレイ — シナリオ選択</h2>
-        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <div style={{ display: "flex", gap: 6, marginBottom: 16, flexWrap: "wrap" }}>
           <button onClick={() => setCatFilter("")} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: !catFilter ? "#b8975a" : "var(--subtle-bg)", color: !catFilter ? "white" : "var(--text-secondary)", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>すべて</button>
-          {CATEGORIES.map(c => (
-            <button key={c} onClick={() => setCatFilter(c)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: catFilter === c ? "#b8975a" : "var(--subtle-bg)", color: catFilter === c ? "white" : "var(--text-secondary)", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{c}</button>
+          {activeCats.map(c => (
+            <button key={c} onClick={() => setCatFilter(c)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: catFilter === c ? "#b8975a" : "var(--subtle-bg)", color: catFilter === c ? "white" : "var(--text-secondary)", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+              {CAT_ICON[c] || "📋"} {c}
+            </button>
           ))}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {filtered.map(s => {
             const best = getBestScore(s.id)
+            const isExpanded = expandedCard === s.id
             return (
-              <motion.div key={s.id} whileHover={{ y: -2 }} style={{ ...card, padding: 18, cursor: "pointer" }} onClick={() => startScenario(s)}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-                  <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: `${DIFFICULTY[s.difficulty].color}15`, color: DIFFICULTY[s.difficulty].color, fontWeight: 700 }}>{DIFFICULTY[s.difficulty].label}</span>
-                  <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--subtle-bg)", color: "var(--text-secondary)" }}>{s.category}</span>
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 6 }}>{s.title}</div>
-                <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 8 }}>{s.patient_setting}</div>
+              <motion.div key={s.id} whileHover={{ scale: 1.03 }} transition={{ type: "spring", stiffness: 300 }} style={{ ...card, padding: 18, cursor: "pointer", position: "relative" }}>
+                {/* ベストスコア */}
                 {best !== null && (
-                  <div style={{ fontSize: 11, color: "#b8975a", fontWeight: 600 }}>⭐ ベスト: {best}/5.0</div>
+                  <div style={{ position: "absolute", top: 10, right: 12, fontSize: 11, fontWeight: 700, color: "#b8975a", background: "#fef3c7", padding: "2px 8px", borderRadius: 8 }}>
+                    ⭐ {Math.round(best * 10) / 10}
+                  </div>
                 )}
-                <button style={{ marginTop: 8, width: "100%", padding: "8px 0", borderRadius: 8, background: "linear-gradient(135deg,#b8975a,#d4b87a)", color: "white", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <span style={{ fontSize: 20 }}>{CAT_ICON[s.category] || "📋"}</span>
+                  <div>
+                    <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: `${DIFFICULTY[s.difficulty].color}15`, color: DIFFICULTY[s.difficulty].color, fontWeight: 700 }}>{DIFFICULTY[s.difficulty].label}</span>
+                    <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--subtle-bg)", color: "var(--text-secondary)", marginLeft: 4 }}>{s.category}</span>
+                  </div>
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 8 }}>{s.title}</div>
+
+                {/* 患者設定（折りたたみ） */}
+                <button onClick={(e) => { e.stopPropagation(); setExpandedCard(isExpanded ? null : s.id) }} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)", background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 8 }}>
+                  {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />} 患者設定
+                </button>
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: "hidden" }}>
+                      <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 8, padding: "6px 8px", borderRadius: 8, background: "var(--subtle-bg)" }}>👤 {s.patient_setting}</div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button onClick={() => startScenario(s)} style={{ width: "100%", padding: "8px 0", borderRadius: 8, background: "linear-gradient(135deg,#b8975a,#d4b87a)", color: "white", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer" }}>
                   練習開始
                 </button>
               </motion.div>
@@ -193,61 +258,62 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
   if (screen === "play" && activeScenario) {
     return (
       <div style={{ padding: 24, maxWidth: 700, display: "flex", flexDirection: "column", height: "calc(100vh - 100px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        {/* ヘッダー */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
           <button onClick={() => { setScreen("select"); setMessages([]) }} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary)" }}><ArrowLeft size={18} /></button>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>🎭 {activeScenario.title}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>{CAT_ICON[activeScenario.category] || "🎭"} {activeScenario.title}</div>
+            <div style={{ fontSize: 10, color: DIFFICULTY[activeScenario.difficulty].color, fontWeight: 600 }}>{DIFFICULTY[activeScenario.difficulty].label}</div>
           </div>
-          <button onClick={() => setShowSetting(!showSetting)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary)", fontSize: 11 }}>
-            患者設定 {showSetting ? <ChevronUp size={12} style={{ verticalAlign: "middle" }} /> : <ChevronDown size={12} style={{ verticalAlign: "middle" }} />}
-          </button>
         </div>
 
-        {showSetting && (
-          <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} style={{ ...card, padding: 12, marginBottom: 12, fontSize: 12, color: "var(--text-secondary)", overflow: "hidden" }}>
-            👤 {activeScenario.patient_setting}
-          </motion.div>
-        )}
+        {/* 患者設定バー */}
+        <div style={{ ...card, padding: "8px 14px", marginBottom: 10, display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }} onClick={() => setShowSetting(!showSetting)}>
+          <span style={{ fontSize: 14 }}>👤</span>
+          <span style={{ fontSize: 12, color: "var(--text-secondary)", flex: 1 }}>{showSetting ? activeScenario.patient_setting : "患者設定を表示..."}</span>
+          {showSetting ? <ChevronUp size={12} style={{ color: "var(--text-secondary)" }} /> : <ChevronDown size={12} style={{ color: "var(--text-secondary)" }} />}
+        </div>
 
         {/* チャットエリア */}
-        <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 10, padding: "10px 0" }}>
+        <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6, padding: "10px 0" }}>
           {messages.map((m, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-              <div style={{
-                maxWidth: "75%", padding: "10px 14px", borderRadius: 14,
-                background: m.role === "user" ? "linear-gradient(135deg,#b8975a,#d4b87a)" : "var(--subtle-bg)",
-                color: m.role === "user" ? "white" : "var(--text-primary)",
-                fontSize: 13, lineHeight: 1.6,
-                borderBottomRightRadius: m.role === "user" ? 4 : 14,
-                borderBottomLeftRadius: m.role === "assistant" ? 4 : 14,
-              }}>
-                {m.role === "assistant" && <div style={{ fontSize: 10, color: "var(--text-secondary)", marginBottom: 3 }}>👤 患者</div>}
-                {m.content}
+            <motion.div key={i} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", gap: 6, alignItems: "flex-end" }}>
+              {m.role === "assistant" && (
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>👤</div>
+              )}
+              <div>
+                <div style={{
+                  maxWidth: 320, padding: "10px 14px",
+                  borderRadius: m.role === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+                  background: m.role === "user" ? "linear-gradient(135deg,#b8975a,#d4b87a)" : "#fef9ee",
+                  color: m.role === "user" ? "white" : "var(--text-primary)",
+                  fontSize: 13, lineHeight: 1.6,
+                  border: m.role === "assistant" ? "1px solid rgba(184,151,90,0.2)" : "none",
+                }}>
+                  {m.content}
+                </div>
+                {m.time && <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 2, textAlign: m.role === "user" ? "right" : "left", padding: "0 4px" }}>{m.time}</div>}
               </div>
+              {m.role === "user" && (
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#b8975a,#d4b87a)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "white", fontWeight: 700, flexShrink: 0 }}>🧑</div>
+              )}
             </motion.div>
           ))}
-          {sending && (
-            <div style={{ display: "flex", gap: 4, padding: "8px 12px" }}>
-              <Loader2 size={14} style={{ animation: "spin 1s linear infinite", color: "var(--text-secondary)" }} />
-              <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>患者が返答中...</span>
-            </div>
-          )}
+          {sending && <TypingIndicator />}
           <div ref={chatEndRef} />
         </div>
 
         {/* 入力エリア */}
         <div style={{ display: "flex", gap: 8, paddingTop: 12, borderTop: "1px solid var(--subtle-bg)" }}>
-          <input style={{ flex: 1, border: "1px solid rgba(124,101,204,0.2)", borderRadius: 12, padding: "10px 14px", fontSize: 13, color: "var(--text-primary)", background: "var(--subtle-bg)", outline: "none", fontFamily: "inherit" }} placeholder="返答を入力..." value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage() } }} />
-          <button onClick={sendMessage} disabled={sending || !input.trim()} style={{ width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg,#b8975a,#d4b87a)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", opacity: sending ? 0.6 : 1 }}>
+          <textarea style={{ flex: 1, border: "1px solid rgba(124,101,204,0.2)", borderRadius: 12, padding: "10px 14px", fontSize: 13, color: "var(--text-primary)", background: "var(--subtle-bg)", outline: "none", fontFamily: "inherit", resize: "none", minHeight: 42, maxHeight: 100 }} rows={1} placeholder="返答を入力...（Enter送信 / Shift+Enter改行）" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage() } }} />
+          <button onClick={sendMessage} disabled={sending || !input.trim()} style={{ width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg,#b8975a,#d4b87a)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", opacity: sending || !input.trim() ? 0.5 : 1, flexShrink: 0 }}>
             <Send size={16} style={{ color: "white" }} />
           </button>
         </div>
 
-        {userTurns >= 3 && (
-          <button onClick={evaluate} disabled={evaluating} style={{ marginTop: 10, width: "100%", padding: 12, borderRadius: 12, background: "linear-gradient(135deg,#a78bfa,#f472b6)", color: "white", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer", opacity: evaluating ? 0.7 : 1 }}>
-            {evaluating ? "評価中..." : "✅ 終了して評価を受ける"}
-          </button>
-        )}
+        <button onClick={evaluate} disabled={evaluating || userTurns < 3} style={{ marginTop: 10, width: "100%", padding: 12, borderRadius: 12, background: userTurns >= 3 ? "linear-gradient(135deg,#a78bfa,#f472b6)" : "var(--subtle-bg)", color: userTurns >= 3 ? "white" : "var(--text-secondary)", fontSize: 13, fontWeight: 700, border: "none", cursor: userTurns >= 3 ? "pointer" : "default", opacity: evaluating ? 0.7 : 1 }}>
+          {evaluating ? "評価中..." : userTurns < 3 ? `✅ 終了して評価（あと${3 - userTurns}往復）` : "✅ 終了して評価を受ける"}
+        </button>
       </div>
     )
   }
@@ -260,19 +326,28 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
       { axis: "正確性", score: evaluation.scores.accuracy * 20 },
       { axis: "解決力", score: evaluation.scores.resolution * 20 },
     ]
-    const avg = Math.round(((evaluation.scores.language + evaluation.scores.empathy + evaluation.scores.accuracy + evaluation.scores.resolution) / 4) * 10) / 10
+    const levelColor = LEVEL_COLOR[evaluation.level || "C"] || "#6b7280"
 
     return (
       <div style={{ padding: 24, maxWidth: 700 }}>
         <h2 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)", marginBottom: 20 }}>📊 ロールプレイ評価 — {activeScenario.title}</h2>
 
-        <div style={{ ...card, padding: 24, textAlign: "center", marginBottom: 16 }}>
-          <div style={{ fontSize: 48, fontWeight: 800, color: "#b8975a" }}>{avg}</div>
-          <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>総合スコア / 5.0</div>
+        {/* 総合スコア */}
+        <div style={{ ...card, padding: 32, textAlign: "center", marginBottom: 16, position: "relative" }}>
+          {evaluation.level && (
+            <div style={{ position: "absolute", top: 16, right: 20, fontSize: 28, fontWeight: 900, color: levelColor }}>
+              {evaluation.level}
+            </div>
+          )}
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }} style={{ fontSize: 56, fontWeight: 900, color: "#b8975a" }}>
+            {scoreAnimated}
+          </motion.div>
+          <div style={{ fontSize: 14, color: "var(--text-secondary)" }}>総合スコア / 5.0</div>
         </div>
 
+        {/* レーダーチャート */}
         <div style={{ ...card, padding: 20, marginBottom: 16 }}>
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={280}>
             <RadarChart data={radarData}>
               <PolarGrid stroke="rgba(124,101,204,0.15)" />
               <PolarAngleAxis dataKey="axis" tick={{ fontSize: 12, fill: "var(--text-secondary)" }} />
@@ -282,15 +357,24 @@ export default function RolePlayPage({ userRole, currentUserStaffId }: RolePlayP
           </ResponsiveContainer>
         </div>
 
+        {/* ベストライン */}
+        {evaluation.best_line && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} style={{ ...card, padding: 14, marginBottom: 12, background: "linear-gradient(135deg, #fffbeb, #fef3c7)", textAlign: "center" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#92400e", marginBottom: 4 }}>✨ ベスト発言</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#78350f", lineHeight: 1.6 }}>「{evaluation.best_line}」</div>
+          </motion.div>
+        )}
+
+        {/* 良かった点・改善点 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-          <div style={{ ...card, padding: 16, background: "linear-gradient(135deg, #f0fdf4, #dcfce7)" }}>
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} style={{ ...card, padding: 16, background: "linear-gradient(135deg, #f0fdf4, #dcfce7)" }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#166534", marginBottom: 6 }}>✅ 良かった点</div>
-            <div style={{ fontSize: 13, color: "#15803d", lineHeight: 1.6 }}>{evaluation.good_points}</div>
-          </div>
-          <div style={{ ...card, padding: 16, background: "linear-gradient(135deg, #fffbeb, #fef3c7)" }}>
+            <div style={{ fontSize: 12, color: "#15803d", lineHeight: 1.7 }}>{evaluation.good_points}</div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} style={{ ...card, padding: 16, background: "linear-gradient(135deg, #fffbeb, #fef3c7)" }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#92400e", marginBottom: 6 }}>💡 改善点</div>
-            <div style={{ fontSize: 13, color: "#b45309", lineHeight: 1.6 }}>{evaluation.improvements}</div>
-          </div>
+            <div style={{ fontSize: 12, color: "#b45309", lineHeight: 1.7 }}>{evaluation.improvements}</div>
+          </motion.div>
         </div>
 
         <div style={{ display: "flex", gap: 10 }}>
