@@ -29,6 +29,7 @@ import QuizPage from "@/components/QuizPage"
 import CareerPage from "@/components/CareerPage"
 import SurveyPage from "@/components/SurveyPage"
 import MVPPage from "@/components/MVPPage"
+import GuidePage from "@/components/GuidePage"
 import { AnimatePresence, motion } from "framer-motion"
 
 export type UserRole = "staff" | "manager" | "admin"
@@ -45,6 +46,7 @@ export interface AppUser {
 function getTitles(visibleCount: number): Record<string, string> {
   return {
     home: "ダッシュボード",
+    guide: "📖 使い方ガイド",
     risk: `リスク管理（${visibleCount}項目）`,
     manual: "業務マニュアル",
     matrix: "役割マトリクス",
@@ -267,6 +269,7 @@ function MainApp({ user, onLogout }: { user: AppUser; onLogout: () => void }) {
               initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.16 }}>
               {activePage === "home"       && <HomePage />}
+              {activePage === "guide"      && <GuidePage userRole={user.role} />}
               {activePage === "risk"       && <RiskPage userRole={user.role} />}
               {activePage === "manual"     && <ManualPage />}
               {activePage === "matrix"     && <MatrixPage />}
@@ -315,6 +318,7 @@ import { Shield, BookOpen, Grid3X3, Star, MessageCircleHeart, LayoutDashboard, S
 
 const NAV = [
   { id: "home",       icon: LayoutDashboard,    label: "ダッシュボード",   badge: null, alert: false },
+  { id: "guide",      icon: BookOpen,           label: "📖 使い方ガイド",  badge: null, alert: false },
   { id: "risk",       icon: Shield,             label: "リスク管理",       badge: null, alert: true  },
   { id: "manual",     icon: BookOpen,           label: "業務マニュアル",   badge: null, alert: false },
   { id: "matrix",     icon: Grid3X3,            label: "役割マトリクス",   badge: null, alert: false },
