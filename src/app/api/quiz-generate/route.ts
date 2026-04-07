@@ -15,12 +15,12 @@ export async function POST(req: NextRequest) {
   const genAI = new GoogleGenerativeAI(apiKey)
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
 
-  const prompt = `以下のテキストから4択クイズを${count}問作成してください。
-南草津皮フ科クリニックのスタッフが業務知識を確認するためのクイズです。
+  const prompt = `あなたは南草津皮フ科クリニックのスタッフ教育担当です。
+以下のテキストから、スタッフの業務知識を確認する4択クイズを${count}問作成してください。
 テキスト：${source_content}
-
-以下のJSON形式のみで返してください（マークダウン・前置き不要）：
-[{"question":"問題文","choices":["A","B","C","D"],"answer":"A","explanation":"解説（50字以内）"}]`
+【ルール】実践的な問題、紛らわしすぎない選択肢、解説は「なぜ正解か」を具体的に。難易度は基本問題6割・応用問題4割のバランスで。
+【出力形式】JSONのみ（マークダウン・前置き不要）：
+[{"question":"問題文","choices":["A","B","C","D"],"answer":"A","explanation":"解説（60字以内）"}]`
 
   try {
     const result = await model.generateContent(prompt)
