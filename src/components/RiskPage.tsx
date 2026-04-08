@@ -69,15 +69,15 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
           animate={{ scale:1, opacity:1, y:0 }}
           exit={{ scale:0.94, opacity:0, y:12 }}
           transition={{ type:"spring", stiffness:300, damping:28 }}
-          className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
 
           {/* ヘッダー */}
-          <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 py-4 border-b border-violet-100 flex items-start justify-between rounded-t-3xl z-10">
-            <div className="flex items-start gap-3 flex-1 min-w-0">
-              <span className="text-2xl flex-shrink-0 mt-0.5">{risk.icon}</span>
-              <div className="min-w-0">
-                <div className="font-bold text-violet-900 text-sm leading-snug">{risk.name}</div>
-                <span style={{ ...LEVEL_STYLE[risk.level], fontSize:10, padding:"2px 10px", borderRadius:999, display:"inline-block", marginTop:6 }}>
+          <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 py-5 border-b border-violet-100 flex items-start justify-between rounded-t-3xl z-10">
+            <div className="flex items-start gap-4 flex-1 min-w-0">
+              <span className="text-3xl flex-shrink-0 mt-0.5">{risk.icon}</span>
+              <div className="min-w-0 space-y-2">
+                <div className="font-bold text-violet-900 text-xl leading-snug">{risk.name}</div>
+                <span style={{ ...LEVEL_STYLE[risk.level], fontSize:10, padding:"3px 12px", borderRadius:999, display:"inline-block" }}>
                   {risk.level}
                 </span>
               </div>
@@ -88,16 +88,16 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
             </button>
           </div>
 
-          <div className="p-5 space-y-5">
+          <div className="p-6 space-y-6">
 
             {/* ★ 新人向けTips（最上部に目立つ配置） */}
             {risk.newStaffTips && (
-              <div style={{ background:"linear-gradient(135deg,#f5f2fd,#fce4ec)", border:"1px solid rgba(167,139,250,0.25)", borderRadius:14, padding:"14px 16px" }}>
-                <div className="flex items-start gap-2.5">
-                  <span style={{ fontSize:20, flexShrink:0 }}>🌸</span>
+              <div style={{ background:"linear-gradient(135deg,#f5f2fd,#fce4ec)", border:"1px solid rgba(167,139,250,0.25)", borderRadius:16, padding:"18px 20px" }}>
+                <div className="flex items-start gap-3">
+                  <span style={{ fontSize:22, flexShrink:0 }}>🌸</span>
                   <div>
-                    <div style={{ fontSize:11, fontWeight:700, color:"#7c65cc", marginBottom:4, letterSpacing:"0.04em" }}>新人スタッフへ</div>
-                    <div style={{ fontSize:13, color:"var(--text-primary)", lineHeight:1.7 }}>{risk.newStaffTips}</div>
+                    <div style={{ fontSize:12, fontWeight:700, color:"#7c65cc", marginBottom:6, letterSpacing:"0.04em" }}>新人スタッフへ</div>
+                    <div style={{ fontSize:13, color:"var(--text-primary)", lineHeight:1.8 }}>{risk.newStaffTips}</div>
                   </div>
                 </div>
               </div>
@@ -105,9 +105,9 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
 
             {/* ★ 一行サマリー */}
             {risk.summary && (
-              <div style={{ background:levelBg.bg, border:`1.5px solid ${levelBg.border}`, borderRadius:12, padding:"10px 14px", display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ background:levelBg.bg, border:`1.5px solid ${levelBg.border}`, borderRadius:14, padding:"14px 18px", display:"flex", alignItems:"center", gap:12 }}>
                 <CheckCircle2 size={16} style={{ color:levelBg.text, flexShrink:0 }} />
-                <div style={{ fontSize:13, fontWeight:600, color:levelBg.text }}>{risk.summary}</div>
+                <div style={{ fontSize:13, fontWeight:600, color:levelBg.text, lineHeight:1.7 }}>{risk.summary}</div>
               </div>
             )}
 
@@ -180,13 +180,13 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
                   </button>
                 </div>
               ) : (
-                <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
                   {flow.map((step, i) => (
-                    <div key={i} style={{ display:"flex", gap:12 }}>
-                      <div style={{ width:28, height:28, borderRadius:"50%", background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, flexShrink:0, marginTop:2 }}>{i + 1}</div>
-                      <div>
-                        <div style={{ fontSize:13, fontWeight:600, color:"var(--text-primary)" }}>{step.title}</div>
-                        <div style={{ fontSize:12, color:"var(--text-secondary)", marginTop:3, lineHeight:1.7 }}>{step.desc}</div>
+                    <div key={i} style={{ display:"flex", gap:14, background:"var(--subtle-bg)", borderRadius:14, padding:"14px 16px" }}>
+                      <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#a78bfa,#f472b6)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:700, flexShrink:0 }}>{i + 1}</div>
+                      <div style={{ paddingTop:2 }}>
+                        <div style={{ fontSize:13, fontWeight:600, color:"var(--text-primary)", marginBottom:4 }}>{step.title}</div>
+                        <div style={{ fontSize:12, color:"var(--text-secondary)", lineHeight:1.8 }}>{step.desc}</div>
                       </div>
                     </div>
                   ))}
@@ -203,9 +203,9 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
                   <Pencil size={11} />編集
                 </button>
               </div>
-              <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+              <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 {contacts.map((c, i) => (
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"var(--subtle-bg)", borderRadius:12, padding:"10px 14px" }}>
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:14, background:"var(--subtle-bg)", borderRadius:14, padding:"14px 18px" }}>
                     <span style={{ fontSize:18, flexShrink:0 }}>{c.icon}</span>
                     <div style={{ flex:1, fontSize:12, fontWeight:600, color:"var(--text-primary)" }}>{c.name}</div>
                     {c.phone !== "未定" ? (
@@ -235,16 +235,16 @@ function RiskModal({ risk, onClose }: { risk: Risk; onClose: () => void }) {
                   <span style={{ fontSize:12, fontWeight:700, color:"#22c55e" }}>{done}/{risk.checklist.length}</span>
                 </div>
               </div>
-              <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
+              <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
                 {risk.checklist.map((item, i) => (
                   <button key={i} onClick={() => toggleCheck(risk.id, i, risk.checklist.length)}
-                    style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:12, background:"transparent", border:"none", cursor:"pointer", textAlign:"left", transition:"background 0.15s" }}
+                    style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 14px", borderRadius:12, background:"transparent", border:"none", cursor:"pointer", textAlign:"left", transition:"background 0.15s" }}
                     onMouseEnter={e => (e.currentTarget.style.background = "#f5f2fd")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                     <div style={{ width:20, height:20, borderRadius:6, border:checks[i]?"none":"1.5px solid #d9d0f7", background:checks[i]?"#22c55e":"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.2s" }}>
                       {checks[i] && <span style={{ color:"white", fontSize:11, fontWeight:700 }}>✓</span>}
                     </div>
-                    <span style={{ fontSize:13, color:checks[i]?"#b0a8c8":"#3a2f5a", textDecoration:checks[i]?"line-through":"none", lineHeight:1.5 }}>{item}</span>
+                    <span style={{ fontSize:13, color:checks[i]?"#b0a8c8":"#3a2f5a", textDecoration:checks[i]?"line-through":"none", lineHeight:1.7 }}>{item}</span>
                   </button>
                 ))}
               </div>

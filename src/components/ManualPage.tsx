@@ -18,12 +18,12 @@ function ManualDetailModal({ manual, onClose, onEdit }: { manual: ManualItem; on
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <motion.div initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.94, opacity: 0 }}
         className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
-        <div className="px-7 py-5 border-b border-violet-100 flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl flex-shrink-0">{manual.icon}</span>
+        <div className="px-7 py-5 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-4">
+            <span className="text-4xl flex-shrink-0">{manual.icon}</span>
             <div>
-              <div className="font-bold text-violet-900 text-sm">{manual.title}</div>
-              <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${TAG_CLS[manual.tag]}`}>{manual.tag}</span>
+              <h2 className="font-bold text-[#1e2230] text-xl leading-snug">{manual.title}</h2>
+              <span className={`inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ${TAG_CLS[manual.tag]}`}>{manual.tag}</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -35,9 +35,10 @@ function ManualDetailModal({ manual, onClose, onEdit }: { manual: ManualItem; on
             </button>
           </div>
         </div>
-        <div className="overflow-y-auto flex-1 p-7">
-          <p className="text-xs text-violet-400 mb-4">{manual.desc}</p>
-          <div className="bg-violet-50 rounded-2xl p-5">
+        <div className="overflow-y-auto flex-1 p-7 space-y-4">
+          <p className="text-sm text-gray-500 leading-relaxed">{manual.desc}</p>
+          <div className="border-t border-gray-100" />
+          <div className="bg-violet-50 rounded-2xl p-6">
             <pre className="text-sm text-violet-800 whitespace-pre-wrap leading-relaxed font-sans break-words">{manual.content}</pre>
           </div>
         </div>
